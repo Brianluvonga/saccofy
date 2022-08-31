@@ -56,9 +56,12 @@ initializeCurrentUser(AuthNotifier authNotifier) async {
 
 CollectionReference usersRef = FirebaseFirestore.instance.collection("users");
 
-Future<UserModel> getLoggedInUser(String uid) async {
+//
+//
+//fetch details of logged in user
+Future<UserModel> getLoggedInUser(String? uid) async {
   //initiate user
-  UserModel user = UserModel();
+  UserModel? user = UserModel();
 
   //
   //
@@ -72,6 +75,7 @@ Future<UserModel> getLoggedInUser(String uid) async {
     user.phonenumber = snapshot.get('phonenumber');
     user.yob = snapshot.get('yob');
   } catch (e) {
+    // ignore: avoid_print
     print(e);
   }
 

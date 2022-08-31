@@ -3,7 +3,7 @@ import 'package:saccofy/user/models/user_model.dart';
 class DepositFundsToSacco {
   String? id;
   UserModel? member;
-  String? amountDeposited;
+  double? amountDeposited;
   String? dateDeposited;
   String? referenceNumber;
   String? modeOfPayment = '';

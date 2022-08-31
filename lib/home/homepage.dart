@@ -4,6 +4,7 @@ import 'package:saccofy/sacco/activate/create_sacco/activate_sacco.dart';
 import 'package:saccofy/user/account/login.dart';
 import 'package:saccofy/user/auth/firebase/api.dart';
 import 'package:saccofy/user/auth/firebase/auth_notifier.dart';
+import 'package:saccofy/user/models/user_model.dart';
 import 'package:saccofy/user/settings/profile2.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,6 +15,15 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  UserModel? currentMember;
+  AuthNotifier? authNotifier;
+  @override
+  void didChangeDependencies() async {
+    super.didChangeDependencies();
+    currentMember = await getLoggedInUser(authNotifier!.user!.uid);
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     //initializeCurrentUser

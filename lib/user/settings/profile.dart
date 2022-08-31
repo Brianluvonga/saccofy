@@ -1,4 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:saccofy/user/auth/firebase/api.dart';
+import 'package:saccofy/user/auth/firebase/auth_notifier.dart';
+import 'package:saccofy/user/models/user_model.dart';
 
 class UserSettingsPage extends StatefulWidget {
   const UserSettingsPage({Key? key}) : super(key: key);
@@ -8,9 +13,23 @@ class UserSettingsPage extends StatefulWidget {
 }
 
 class _UserSettingsPageState extends State<UserSettingsPage> {
+  //
+  //initializeCurrentUser
+
+  AuthNotifier? currentUser;
+
+  UserModel? currentMember;
+  @override
+  void didChangeDependencies() async {
+    super.didChangeDependencies();
+    currentMember = await getLoggedInUser(currentUser!.user!.uid);
+    setState(() {});
+  }
   // settings widget cards
 
   Widget firstname() {
+    AuthNotifier? authNotifier =
+        Provider.of<AuthNotifier?>(context, listen: false);
     return Card(
       color: Colors.pink[100],
       elevation: 8.0,
@@ -33,11 +52,11 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                       "Username",
                       textAlign: TextAlign.center,
                     ),
-                    subtitle: const Text(
-                      "",
-                      // authNotifier.user!.displayName.toString(),
+                    subtitle: Text(
+                      authNotifier!.user!.displayName!,
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: Color(0xff2a0404), fontSize: 15),
+                      style: const TextStyle(
+                          color: Color.fromARGB(255, 7, 2, 7), fontSize: 10),
                     ),
                     onTap: () {
                       // Navigator.push(
@@ -58,13 +77,15 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
   }
 
   Widget userEmail() {
+    AuthNotifier? authNotifier =
+        Provider.of<AuthNotifier?>(context, listen: false);
     return Card(
       color: Colors.pink[100],
       elevation: 8.0,
       shadowColor: Colors.black,
       child: Container(
           height: 120,
-          width: 150,
+          width: 175,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15.0),
           ),
@@ -81,11 +102,14 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                       "Email",
                       textAlign: TextAlign.center,
                     ),
-                    subtitle: const Text(
-                      '',
+                    subtitle: Text(
+                      authNotifier!.user!.email!,
+
+                      // '',
                       // fetch from database
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: Color(0xff2a0404), fontSize: 12),
+                      style: const TextStyle(
+                          color: Color(0xff2a0404), fontSize: 10),
                     ),
                     onTap: () {
                       // Navigator.push(
@@ -129,8 +153,8 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                       "ID NO",
                       textAlign: TextAlign.center,
                     ),
-                    subtitle: const Text(
-                      '',
+                    subtitle: Text(
+                      currentMember!.firstname.toString(),
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Color(0xff2a0404), fontSize: 12),
                     ),
