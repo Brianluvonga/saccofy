@@ -18,7 +18,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
 
   AuthNotifier? currentUser;
 
-  UserModel? currentMember;
+  UserModel currentMember = UserModel();
   @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
@@ -154,7 +154,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                       textAlign: TextAlign.center,
                     ),
                     subtitle: Text(
-                      currentMember!.firstname.toString(),
+                      currentMember.firstname!,
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Color(0xff2a0404), fontSize: 12),
                     ),

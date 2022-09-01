@@ -158,17 +158,35 @@ class _LoginUserFormState extends State<LoginUserForm> {
     if (!_formKey.currentState!.validate()) {
       return;
     } else {
-      _formKey.currentState!.save();
+      try {
+        _formKey.currentState!.save();
 
-      AuthNotifier authNotifier =
-          Provider.of<AuthNotifier>(context, listen: false);
-      signInUser(_user, authNotifier);
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const Navigation(),
-        ),
-      );
+        AuthNotifier authNotifier =
+            Provider.of<AuthNotifier>(context, listen: false);
+        signInUser(_user, authNotifier);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            duration: const Duration(seconds: 1),
+            backgroundColor: Colors.red[600],
+            content: const Text("Login Successful", style: TextStyle()),
+          ),
+        );
+        // ignore: use_build_context_synchronously
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const Navigation(),
+          ),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            backgroundColor: Colors.black,
+            content: Text(
+                "Login Not Successful, invalid credentials or poor internet connection"),
+          ),
+        );
+      }
     }
   }
 

@@ -31,6 +31,7 @@ registerUser(UserModel user, AuthNotifier authNotifier) async {
       .createUserWithEmailAndPassword(
           email: user.email!.trim(), password: user.password!.trim())
       .catchError(
+        // ignore: invalid_return_type_for_catch_error
         (error) => print(error.code),
       );
   userRef.doc(registerResult.user!.uid).set(user.toJson());
@@ -49,9 +50,9 @@ registerUser(UserModel user, AuthNotifier authNotifier) async {
 
 //=========================== INITIALIZE CURRENT USER ==========================
 
-initializeCurrentUser(AuthNotifier authNotifier) async {
+initializeCurrentUser(AuthNotifier? authNotifier) async {
   var appUser = FirebaseAuth.instance.currentUser;
-  authNotifier.setUser(appUser!);
+  authNotifier!.setUser(appUser!);
 }
 
 CollectionReference usersRef = FirebaseFirestore.instance.collection("users");
@@ -61,7 +62,7 @@ CollectionReference usersRef = FirebaseFirestore.instance.collection("users");
 //fetch details of logged in user
 Future<UserModel> getLoggedInUser(String? uid) async {
   //initiate user
-  UserModel? user = UserModel();
+  UserModel user = UserModel();
 
   //
   //
