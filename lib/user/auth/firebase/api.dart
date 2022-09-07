@@ -2,14 +2,19 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:saccofy/user/account/login.dart';
 import 'package:saccofy/user/auth/firebase/auth_notifier.dart';
+import 'package:saccofy/user/auth/firebase/user_model_notifier.dart';
 import 'package:saccofy/user/models/user_model.dart';
 
 CollectionReference userRef = FirebaseFirestore.instance.collection("users");
 
+UserModel _currentUser = UserModel();
+
+UserModel get currentUser => _currentUser;
 //
 //
 //
-signInUser(UserModel user, AuthNotifier authNotifier) async {
+signInUser(UserModel user, UserModelNotifier currentUser) async {
+  AuthNotifier? authNotifier;
   UserCredential result = await FirebaseAuth.instance
       .signInWithEmailAndPassword(
           email: user.email!.trim(), password: user.password!.trim())
@@ -17,11 +22,19 @@ signInUser(UserModel user, AuthNotifier authNotifier) async {
         (error) => print(error.code),
       );
 
+  _currentUser = await getLoggedInUser(result.user!.uid);
+  print(_currentUser);
+
+  if (_currentUser != null) {
+    print(_currentUser);
+    currentUser.setCurrentUser(_currentUser);
+  }
+
   User? firebaseUser = result.user;
 
   if (firebaseUser != null) {
     print(firebaseUser);
-    authNotifier.setUser(firebaseUser);
+    authNotifier!.setUser(firebaseUser);
   }
 }
 

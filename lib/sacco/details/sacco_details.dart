@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:saccofy/sacco/notifier/sacco_notifier.dart';
 
 class SaccoInfoScreen extends StatefulWidget {
   const SaccoInfoScreen({Key? key}) : super(key: key);
@@ -42,6 +44,51 @@ class _SaccoInfoScreenState extends State<SaccoInfoScreen>
     });
   }
 
+  //widget to display total number of members in the sacco
+
+  Widget saccoGrid() {
+    SaccoNotifier saccoNotifier =
+        Provider.of<SaccoNotifier>(context, listen: false);
+
+    return GridView.builder(
+      shrinkWrap: true,
+      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: 100,
+          childAspectRatio: 3 / 2,
+          crossAxisSpacing: 20,
+          mainAxisSpacing: 20),
+      itemCount: saccoNotifier.saccoList.length,
+      itemBuilder: (BuildContext ctx, index) {
+        return Container(
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+              color: Colors.amber, borderRadius: BorderRadius.circular(15)),
+          child: ListTile(
+            title: Text(saccoNotifier.saccoList[index].saccoName.toString(),
+                style: const TextStyle(fontSize: 12)),
+            subtitle:
+                Text(saccoNotifier.saccoList[index].aboutSacco.toString()),
+            leading: const Icon(
+              Icons.image_rounded,
+              size: 35,
+            ),
+            trailing: Text(saccoNotifier.saccoList[index].purpose.toString()),
+            onTap: () {
+              saccoNotifier.currentSacco = saccoNotifier.saccoList[index];
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (BuildContext context) {
+                    return const SaccoInfoScreen();
+                  },
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final double tempHeight = MediaQuery.of(context).size.height -
@@ -53,13 +100,17 @@ class _SaccoInfoScreenState extends State<SaccoInfoScreen>
         backgroundColor: Colors.transparent,
         body: Stack(
           children: <Widget>[
-            Column(
-              children: const <Widget>[
-                AspectRatio(
-                  aspectRatio: 1.2,
-                  // child: Image.asset('images/brian.jpeg'),
-                ),
-              ],
+            Positioned(
+              // top: 50,
+              child: Column(
+                children: <Widget>[
+                  saccoGrid(),
+                  AspectRatio(
+                    aspectRatio: 1.2,
+                    child: saccoGrid(),
+                  ),
+                ],
+              ),
             ),
             Positioned(
               top: (MediaQuery.of(context).size.width / 1.2) - 24.0,
@@ -148,17 +199,19 @@ class _SaccoInfoScreenState extends State<SaccoInfoScreen>
                               ],
                             ),
                           ),
-                          AnimatedOpacity(
-                            duration: const Duration(milliseconds: 500),
-                            opacity: opacity1,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: Row(
-                                children: <Widget>[
-                                  getTimeBoxUI('24', 'Classe'),
-                                  getTimeBoxUI('2hours', 'Time'),
-                                  getTimeBoxUI('24', 'Seat'),
-                                ],
+                          Container(
+                            child: AnimatedOpacity(
+                              duration: const Duration(milliseconds: 500),
+                              opacity: opacity1,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8),
+                                child: Row(
+                                  children: <Widget>[
+                                    // saccoGrid(),
+                                    getTimeBoxUI('2hours', 'Time'),
+                                    getTimeBoxUI('24', 'Seat'),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -274,6 +327,54 @@ class _SaccoInfoScreenState extends State<SaccoInfoScreen>
               ),
             )
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget memberCard() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: const BorderRadius.all(Radius.circular(16.0)),
+          boxShadow: <BoxShadow>[
+            BoxShadow(
+                color: Colors.grey.withOpacity(0.2),
+                offset: const Offset(1.1, 1.1),
+                blurRadius: 8.0),
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.only(
+              left: 18.0, right: 18.0, top: 12.0, bottom: 12.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              saccoGrid(),
+              // Text(
+              //   text1,
+              //   textAlign: TextAlign.center,
+              //   style: const TextStyle(
+              //       fontWeight: FontWeight.w600,
+              //       fontSize: 14,
+              //       letterSpacing: 0.27,
+              //       color: Colors.lightBlue),
+              // ),
+              // Text(
+              //   txt2,
+              //   textAlign: TextAlign.center,
+              //   style: const TextStyle(
+              //     fontWeight: FontWeight.w200,
+              //     fontSize: 14,
+              //     letterSpacing: 0.27,
+              //     color: Colors.grey,
+              //   ),
+              // ),
+            ],
+          ),
         ),
       ),
     );

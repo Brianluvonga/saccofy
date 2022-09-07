@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:saccofy/user/auth/firebase/api.dart';
 import 'package:saccofy/user/auth/firebase/auth_notifier.dart';
+import 'package:saccofy/user/auth/firebase/user_model_notifier.dart';
 import 'package:saccofy/user/models/user_model.dart';
 
 class UserSettingsPage extends StatefulWidget {
@@ -28,8 +29,8 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
   // settings widget cards
 
   Widget firstname() {
-    AuthNotifier? authNotifier =
-        Provider.of<AuthNotifier?>(context, listen: false);
+    UserModelNotifier? currentUser =
+        Provider.of<UserModelNotifier?>(context, listen: false);
     return Card(
       color: Colors.pink[100],
       elevation: 8.0,
@@ -51,11 +52,15 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                     title: const Text(
                       "Username",
                       textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 12),
                     ),
                     subtitle: Text(
-                      authNotifier!.user!.displayName!,
+                      currentUser!.currentUser.firstname! +
+                          " " +
+                          currentUser.currentUser.lastname!,
+                      // '',
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
+                      style: TextStyle(
                           color: Color.fromARGB(255, 7, 2, 7), fontSize: 10),
                     ),
                     onTap: () {
@@ -77,8 +82,8 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
   }
 
   Widget userEmail() {
-    AuthNotifier? authNotifier =
-        Provider.of<AuthNotifier?>(context, listen: false);
+    UserModelNotifier? currentUser =
+        Provider.of<UserModelNotifier?>(context, listen: false);
     return Card(
       color: Colors.pink[100],
       elevation: 8.0,
@@ -101,15 +106,14 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                     title: const Text(
                       "Email",
                       textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 12),
                     ),
                     subtitle: Text(
-                      authNotifier!.user!.email!,
+                      currentUser!.currentUser.email!,
 
-                      // '',
                       // fetch from database
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
-                          color: Color(0xff2a0404), fontSize: 10),
+                      style: TextStyle(color: Color(0xff2a0404), fontSize: 10),
                     ),
                     onTap: () {
                       // Navigator.push(
@@ -130,107 +134,119 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
   }
 
   Widget idno() {
+    UserModelNotifier? currentUser =
+        Provider.of<UserModelNotifier?>(context, listen: false);
     return Card(
       color: Colors.pink[100],
       elevation: 8.0,
       shadowColor: Colors.black,
       child: Container(
-          height: 120,
-          width: 150,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15.0),
-          ),
-          child: Container(
-            alignment: Alignment.center,
-            width: MediaQuery.of(context).size.width,
-            // height: MediaQuery.of(context).size.height * 0.16,
-            child: Center(
-              child: ListView(
-                children: <Widget>[
-                  ListTile(
-                    leading: const Icon(Icons.card_membership),
-                    title: const Text(
-                      "ID NO",
-                      textAlign: TextAlign.center,
-                    ),
-                    subtitle: Text(
-                      currentMember.firstname!,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Color(0xff2a0404), fontSize: 12),
-                    ),
-                    onTap: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (BuildContext context) =>
-
-                      //   ),
-                      // )
-                    },
+        height: 120,
+        width: 150,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        child: Container(
+          alignment: Alignment.center,
+          width: MediaQuery.of(context).size.width,
+          // height: MediaQuery.of(context).size.height * 0.16,
+          child: Center(
+            child: ListView(
+              children: <Widget>[
+                ListTile(
+                  leading: const Icon(Icons.card_membership),
+                  title: const Text(
+                    "ID NO",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 12),
                   ),
-                  const Icon(Icons.edit)
-                ],
-              ),
+                  subtitle: Text(
+                    currentUser!.currentUser.idno.toString(),
+
+                    // '',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Color(0xff2a0404), fontSize: 12),
+                  ),
+                  onTap: () {
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (BuildContext context) =>
+
+                    //   ),
+                    // )
+                  },
+                ),
+                const Icon(Icons.edit)
+              ],
             ),
-          )),
+          ),
+        ),
+      ),
     );
   }
 
   Widget gender() {
+    UserModelNotifier? currentUser =
+        Provider.of<UserModelNotifier?>(context, listen: false);
     return Card(
       color: Colors.pink[100],
       elevation: 8.0,
       shadowColor: Colors.black,
       child: Container(
-          height: 120,
-          width: 150,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15.0),
-          ),
-          child: Container(
-            alignment: Alignment.center,
-            width: MediaQuery.of(context).size.width,
-            // height: MediaQuery.of(context).size.height * 0.16,
-            child: Center(
-              child: ListView(
-                children: <Widget>[
-                  ListTile(
-                    leading: const Icon(Icons.supervisor_account_rounded),
-                    title: const Text(
-                      "Gender",
-                      textAlign: TextAlign.center,
-                    ),
-                    subtitle: const Text(
-                      '',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Color(0xff2a0404), fontSize: 12),
-                    ),
-                    onTap: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (BuildContext context) =>
-
-                      //   ),
-                      // )
-                    },
+        height: 120,
+        width: 150,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        child: Container(
+          alignment: Alignment.center,
+          width: MediaQuery.of(context).size.width,
+          // height: MediaQuery.of(context).size.height * 0.16,
+          child: Center(
+            child: ListView(
+              children: <Widget>[
+                ListTile(
+                  leading: const Icon(Icons.supervisor_account_rounded),
+                  title: const Text(
+                    "Gender",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 12),
                   ),
-                  const Icon(Icons.edit)
-                ],
-              ),
+                  subtitle: Text(
+                    currentUser!.currentUser.gender!,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Color(0xff2a0404), fontSize: 12),
+                  ),
+                  onTap: () {
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (BuildContext context) =>
+
+                    //   ),
+                    // )
+                  },
+                ),
+                const Icon(Icons.edit)
+              ],
             ),
-          )),
+          ),
+        ),
+      ),
     );
   }
 
   Widget phoneNumber() {
+    UserModelNotifier? currentUser =
+        Provider.of<UserModelNotifier?>(context, listen: false);
     return Card(
       color: Colors.pink[100],
       elevation: 8.0,
       shadowColor: Colors.black,
       child: Container(
           height: 120,
-          width: 150,
+          width: 170,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15.0),
           ),
@@ -246,9 +262,10 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                     title: const Text(
                       "Phone No",
                       textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 12),
                     ),
-                    subtitle: const Text(
-                      '',
+                    subtitle: Text(
+                      currentUser!.currentUser.phonenumber!,
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Color(0xff2a0404), fontSize: 12),
                     ),
@@ -271,13 +288,15 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
   }
 
   Widget about() {
+    UserModelNotifier? currentUser =
+        Provider.of<UserModelNotifier?>(context, listen: false);
     return Card(
       color: Colors.pink[100],
       elevation: 8.0,
       shadowColor: Colors.black,
       child: Container(
           height: 120,
-          width: 310,
+          width: 325,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15.0),
           ),
@@ -293,56 +312,10 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                     title: const Text(
                       "About",
                       textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 12),
                     ),
-                    subtitle: const Text(
-                      '',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Color(0xff2a0404), fontSize: 12),
-                    ),
-                    onTap: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (BuildContext context) =>
-
-                      //   ),
-                      // )
-                    },
-                  ),
-                  const Icon(Icons.edit)
-                ],
-              ),
-            ),
-          )),
-    );
-  }
-
-  Widget location() {
-    return Card(
-      color: Colors.pink[100],
-      elevation: 8.0,
-      shadowColor: Colors.black,
-      child: Container(
-          height: 120,
-          width: 150,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15.0),
-          ),
-          child: Container(
-            alignment: Alignment.center,
-            width: MediaQuery.of(context).size.width,
-            // height: MediaQuery.of(context).size.height * 0.16,
-            child: Center(
-              child: ListView(
-                children: <Widget>[
-                  ListTile(
-                    leading: const Icon(Icons.location_on),
-                    title: const Text(
-                      "Location",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.black),
-                    ),
-                    subtitle: const Text(
+                    subtitle: Text(
+                      // currentUser!.currentUser.!,
                       '',
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Color(0xff2a0404), fontSize: 12),
@@ -391,7 +364,11 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
-                      Row(children: <Widget>[about()]),
+                      Row(
+                        children: <Widget>[
+                          about(),
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -448,7 +425,9 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
-                      Row(children: <Widget>[idno(), location()]),
+                      Row(children: <Widget>[
+                        idno(),
+                      ]),
                     ],
                   ),
                 ),
@@ -458,5 +437,9 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
         ],
       ),
     );
+  }
+
+  Widget editProfileElement() {
+    return Container();
   }
 }

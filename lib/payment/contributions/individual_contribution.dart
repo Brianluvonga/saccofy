@@ -15,6 +15,8 @@ class _SaccoIndividualPaymentContributionsState
   Widget memberInfoCard() {
     return Card(
       color: Colors.pink[100],
+      elevation: 8.0,
+      shadowColor: Colors.black,
       child: Container(
           height: 120,
           width: 300,
@@ -46,14 +48,14 @@ class _SaccoIndividualPaymentContributionsState
               ),
             ),
           )),
-      elevation: 8.0,
-      shadowColor: Colors.black,
     );
   }
 
   Widget memberContributionCard() {
     return Card(
       color: Colors.white,
+      elevation: 8.0,
+      shadowColor: Colors.black,
       child: Container(
           height: 100,
           width: 370,
@@ -89,8 +91,6 @@ class _SaccoIndividualPaymentContributionsState
               ),
             ),
           )),
-      elevation: 8.0,
-      shadowColor: Colors.black,
     );
   }
 

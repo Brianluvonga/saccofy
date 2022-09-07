@@ -510,7 +510,10 @@ class _ActivateSaccoState extends State<ActivateSacco> {
                             padding:
                                 const EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10),
                             minWidth: 200,
-                            onPressed: () => saveSacco(),
+                            onPressed: () {
+                              saveSacco();
+                              Navigator.pop(context);
+                            },
                             child: const Text(
                               'Create Sacco',
                               textAlign: TextAlign.center,

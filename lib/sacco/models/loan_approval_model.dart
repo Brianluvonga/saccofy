@@ -2,11 +2,26 @@ import 'package:saccofy/user/models/user_model.dart';
 
 class LoanApprovalModel {
   UserModel? member;
-  String? id;
+  String? approveId;
   String? approvalTime;
-  bool? is_approved;
+  bool? isApproved;
 
-  LoanApprovalModel();
+  LoanApprovalModel({this.isApproved = false});
+
+  LoanApprovalModel.fromMap(Map<String, dynamic> approve) {
+    member = approve["member"];
+    approveId = approve["approveId"];
+    approvalTime = approve["approvalTime"];
+    isApproved = approve["isApproved"];
+  }
+  Map<String, dynamic> toMap() {
+    return {
+      "member": member,
+      "approveId": approveId,
+      "approvalTime": approvalTime,
+      "isApproved": isApproved,
+    };
+  }
 }
 
 class MembersLoanApprovalModel {

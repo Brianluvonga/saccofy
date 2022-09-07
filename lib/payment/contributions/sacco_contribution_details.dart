@@ -13,6 +13,8 @@ class _PaymentContributionsState extends State<PaymentContributions> {
   Widget statistics() {
     return Card(
       color: Colors.pink[100],
+      elevation: 8.0,
+      shadowColor: Colors.black,
       child: Container(
           height: 120,
           width: 150,
@@ -31,12 +33,11 @@ class _PaymentContributionsState extends State<PaymentContributions> {
                       "Name",
                       textAlign: TextAlign.center,
                     ),
-                    subtitle: Text(
+                    subtitle: const Text(
                       "",
                       // authNotifier.user!.displayName.toString(),
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
-                          color: Color(0xff2a0404), fontSize: 15),
+                      style: TextStyle(color: Color(0xff2a0404), fontSize: 15),
                     ),
                     onTap: () {
                       // Navigator.push(
@@ -53,14 +54,14 @@ class _PaymentContributionsState extends State<PaymentContributions> {
               ),
             ),
           )),
-      elevation: 8.0,
-      shadowColor: Colors.black,
     );
   }
 
   Widget memberContributionCard() {
     return Card(
       color: Colors.white,
+      elevation: 8.0,
+      shadowColor: Colors.black,
       child: Container(
           height: 100,
           width: 370,
@@ -95,8 +96,6 @@ class _PaymentContributionsState extends State<PaymentContributions> {
               ),
             ),
           )),
-      elevation: 8.0,
-      shadowColor: Colors.black,
     );
   }
 

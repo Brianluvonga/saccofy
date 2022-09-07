@@ -27,7 +27,7 @@ class _NavigationState extends State<Navigation> {
     });
   }
 
-  final bool _isNotification = false;
+  // final bool _isNotification = false;
 
   @override
   Widget build(BuildContext context) {

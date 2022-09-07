@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:saccofy/sacco/activate/create_sacco/activate_sacco.dart';
+import 'package:saccofy/sacco/details/feed/sacco_feed.dart';
 import 'package:saccofy/user/account/login.dart';
 import 'package:saccofy/user/auth/firebase/api.dart';
 import 'package:saccofy/user/auth/firebase/auth_notifier.dart';
+import 'package:saccofy/user/auth/firebase/user_model_notifier.dart';
 import 'package:saccofy/user/models/user_model.dart';
 import 'package:saccofy/user/settings/profile2.dart';
 
@@ -30,6 +32,9 @@ class _HomePageState extends State<HomePage> {
     //
     AuthNotifier? authNotifier =
         Provider.of<AuthNotifier?>(context, listen: false);
+
+    UserModelNotifier? currentUser =
+        Provider.of<UserModelNotifier?>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         // title: const Text("Create Sacco"),
@@ -55,6 +60,9 @@ class _HomePageState extends State<HomePage> {
                   ),
                   Text(
                     authNotifier.user!.displayName.toString(),
+                  ),
+                  Text(
+                    currentUser!.currentUser.firstname.toString(),
                   ),
                 ],
               ),
@@ -82,12 +90,12 @@ class _HomePageState extends State<HomePage> {
               ),
               title: const Text('Sacco'),
               onTap: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     builder: (context) => AssetFeed(),
-                //   ),
-                // );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SaccoFeed(),
+                  ),
+                );
               },
             ),
             const Divider(),
@@ -151,7 +159,7 @@ class _HomePageState extends State<HomePage> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
                             Row(
-                              children: <Widget>[
+                              children: const <Widget>[
                                 // userSection(),
                               ],
                             ),
@@ -172,7 +180,7 @@ class _HomePageState extends State<HomePage> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
                             Row(
-                              children: <Widget>[],
+                              children: const <Widget>[],
                             ),
                           ],
                         ),
@@ -191,7 +199,7 @@ class _HomePageState extends State<HomePage> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
                             Row(
-                              children: <Widget>[],
+                              children: const <Widget>[],
                             ),
                           ],
                         ),
@@ -210,7 +218,7 @@ class _HomePageState extends State<HomePage> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
                             Row(
-                              children: <Widget>[],
+                              children: const <Widget>[],
                             ),
                           ],
                         ),
@@ -229,7 +237,7 @@ class _HomePageState extends State<HomePage> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
                             Row(
-                              children: <Widget>[],
+                              children: const <Widget>[],
                             ),
                           ],
                         ),
@@ -248,7 +256,7 @@ class _HomePageState extends State<HomePage> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
                             Row(
-                              children: <Widget>[],
+                              children: const <Widget>[],
                             ),
                           ],
                         ),

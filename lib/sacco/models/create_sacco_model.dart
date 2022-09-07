@@ -5,12 +5,12 @@ class Sacco {
   String? saccoName;
   String? type;
   String? termconditions;
-  List<String>? members;
+  List<dynamic>? members;
   String? role;
   String? purpose;
   String? aboutSacco;
   Timestamp? createdDate;
-  String? updatedDate;
+  Timestamp? updatedDate;
 
   Sacco();
 

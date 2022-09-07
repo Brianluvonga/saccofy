@@ -49,7 +49,7 @@ getMemberApprovalPercentage(
   // ignore: unnecessary_null_comparison
   if (members == null) {
     return;
-  } else if (member.is_approved = true) {
+  } else if (member.isApproved = true) {
     countMemberApprovalStatus = countMemberApprovalStatus + 1;
     var ans = countMemberApprovalStatus * percentage;
     var solution = ans / totalMembers;

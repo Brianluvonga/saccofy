@@ -9,6 +9,7 @@ import 'package:saccofy/user/account/register.dart';
 import 'package:saccofy/user/account/reset_password.dart';
 import 'package:saccofy/user/auth/firebase/api.dart';
 import 'package:saccofy/user/auth/firebase/auth_notifier.dart';
+import 'package:saccofy/user/auth/firebase/user_model_notifier.dart';
 import 'package:saccofy/user/models/user_model.dart';
 
 class LoginUserForm extends StatefulWidget {
@@ -43,7 +44,8 @@ class _LoginUserFormState extends State<LoginUserForm> {
   Future<void> _loginUserEmailAndPassword() async {
     try {
       final UserCredential user = await _auth.signInWithEmailAndPassword(
-          email: emailController.text, password: passController.text);
+          email: emailController.toString(),
+          password: passController.toString());
       User? currentUser = user.user;
       currentUser;
       // ignore: use_build_context_synchronously
@@ -161,9 +163,10 @@ class _LoginUserFormState extends State<LoginUserForm> {
       try {
         _formKey.currentState!.save();
 
-        AuthNotifier authNotifier =
-            Provider.of<AuthNotifier>(context, listen: false);
+        UserModelNotifier authNotifier =
+            Provider.of<UserModelNotifier>(context, listen: false);
         signInUser(_user, authNotifier);
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             duration: const Duration(seconds: 1),
@@ -459,7 +462,7 @@ class _LoginUserFormState extends State<LoginUserForm> {
             Text(
               'Forgot Password?',
               style: TextStyle(
-                color: Color.fromARGB(255, 53, 50, 50),
+                color: Colors.pink,
                 fontSize: 15,
                 fontWeight: FontWeight.w500,
               ),

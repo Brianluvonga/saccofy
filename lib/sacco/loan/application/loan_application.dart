@@ -1,10 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:saccofy/payment/mpesa/integrations.dart';
+import 'package:saccofy/sacco/loan/models/loan_request_model.dart';
+import 'package:saccofy/sacco/loan/notifier/loan_notifier.dart';
 import 'package:saccofy/user/account/login.dart';
+import 'package:saccofy/user/auth/firebase/auth_notifier.dart';
 
 class LoanApplicationForm extends StatefulWidget {
   const LoanApplicationForm({Key? key}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _LoanApplicationFormState createState() => _LoanApplicationFormState();
 }
 
@@ -13,9 +20,11 @@ class _LoanApplicationFormState extends State<LoanApplicationForm> {
   TextEditingController appdateController = TextEditingController();
   TextEditingController repaydateController = TextEditingController();
 
+  LoanRequest request = LoanRequest();
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  Future applicationDate() async {
+  Future<void> applicationDate() async {
     DateTime? selectDate = DateTime.now();
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -23,6 +32,7 @@ class _LoanApplicationFormState extends State<LoanApplicationForm> {
       firstDate: DateTime(2022),
       lastDate: DateTime(2023),
     );
+
     if (picked != null && picked != selectDate) {
       setState(
         () {
@@ -98,9 +108,9 @@ class _LoanApplicationFormState extends State<LoanApplicationForm> {
           }
           return null;
         },
-        // onSaved: (String? value) {
-        //   _startup.startupname = value;
-        // },
+        onSaved: (String? value) {
+          request.dateOfRequest = value as Timestamp;
+        },
       ),
     );
   }
@@ -136,15 +146,15 @@ class _LoanApplicationFormState extends State<LoanApplicationForm> {
         style: const TextStyle(
             fontSize: 10, color: Colors.black, fontFamily: 'times'),
         cursorColor: Colors.black,
-        // validator: (String? value) {
-        //   if (value!.isEmpty) {
-        //     return 'This field is required';
-        //   }
-        //   return null;
-        // },
-        // onSaved: (String? value) {
-        //   _startup.startupname = value;
-        // },
+        validator: (String? value) {
+          if (value!.isEmpty) {
+            return 'This field is required';
+          }
+          return null;
+        },
+        onSaved: (String? value) {
+          request.loanType = value;
+        },
       ),
     );
   }
@@ -154,47 +164,47 @@ class _LoanApplicationFormState extends State<LoanApplicationForm> {
       width: 270,
       height: 45,
       child: TextFormField(
-          textCapitalization: TextCapitalization.words,
-          decoration: InputDecoration(
-              suffixIcon: Icon(
-                Icons.calendar_today,
-                size: 16,
-                color: Colors.pink[300],
-              ),
-              labelText: 'Repayment Date',
-              enabledBorder: const OutlineInputBorder(
-                // borderRadius: BorderRadius.all(Radius.circular(32.0)),
-                borderSide: BorderSide(width: 1, color: Colors.black),
-              ),
-              focusedBorder: const OutlineInputBorder(
-                // borderRadius: BorderRadius.all(Radius.circular(32.0)),
-                borderSide: BorderSide(width: 1, color: Colors.black),
-              ),
-              fillColor: Colors.white,
-              contentPadding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-              filled: true,
-              hintText: 'Repayment Date',
-              // border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
-              labelStyle: const TextStyle(color: Colors.black)),
-          keyboardType: TextInputType.name,
-          style: const TextStyle(
-              fontSize: 10, color: Colors.black, fontFamily: 'times'),
-          cursorColor: Colors.black,
-          controller: repaydateController,
-          onTap: () {
-            repayDate();
-            FocusScope.of(context).requestFocus(FocusNode());
+        textCapitalization: TextCapitalization.words,
+        decoration: InputDecoration(
+            suffixIcon: Icon(
+              Icons.calendar_today,
+              size: 16,
+              color: Colors.pink[300],
+            ),
+            labelText: 'Repayment Date',
+            enabledBorder: const OutlineInputBorder(
+              // borderRadius: BorderRadius.all(Radius.circular(32.0)),
+              borderSide: BorderSide(width: 1, color: Colors.black),
+            ),
+            focusedBorder: const OutlineInputBorder(
+              // borderRadius: BorderRadius.all(Radius.circular(32.0)),
+              borderSide: BorderSide(width: 1, color: Colors.black),
+            ),
+            fillColor: Colors.white,
+            contentPadding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+            filled: true,
+            hintText: 'Repayment Date',
+            // border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+            labelStyle: const TextStyle(color: Colors.black)),
+        keyboardType: TextInputType.name,
+        style: const TextStyle(
+            fontSize: 10, color: Colors.black, fontFamily: 'times'),
+        cursorColor: Colors.black,
+        controller: repaydateController,
+        onTap: () {
+          repayDate();
+          FocusScope.of(context).requestFocus(FocusNode());
+        },
+        validator: (String? value) {
+          if (value!.isEmpty) {
+            return 'This field is required';
           }
-          // validator: (String? value) {
-          //   if (value!.isEmpty) {
-          //     return 'This field is required';
-          //   }
-          //   return null;
-          // },
-          // onSaved: (String? value) {
-          //   _startup.startupname = value;
-          // },
-          ),
+          return null;
+        },
+        onSaved: (String? value) {
+          request.dateOfRepayment = value as Timestamp;
+        },
+      ),
     );
   }
 
@@ -229,15 +239,15 @@ class _LoanApplicationFormState extends State<LoanApplicationForm> {
         style: const TextStyle(
             fontSize: 10, color: Colors.black, fontFamily: 'times'),
         cursorColor: Colors.black,
-        // validator: (String? value) {
-        //   if (value!.isEmpty) {
-        //     return 'This field is required';
-        //   }
-        //   return null;
-        // },
-        // onSaved: (String? value) {
-        //   _startup.startupname = value;
-        // },
+        validator: (String? value) {
+          if (value!.isEmpty) {
+            return 'This field is required';
+          }
+          return null;
+        },
+        onSaved: (String? value) {
+          request.purpose = value;
+        },
       ),
     );
   }
@@ -272,15 +282,15 @@ class _LoanApplicationFormState extends State<LoanApplicationForm> {
           style: const TextStyle(
               fontSize: 10, color: Colors.black, fontFamily: 'times'),
           cursorColor: Colors.black,
-          // validator: (String? value) {
-          //   if (value!.isEmpty) {
-          //     return 'This field is required';
-          //   }
-          //   return null;
-          // },
-          // onSaved: (String? value) {
-          //   _startup.email = value!;
-          // },
+          validator: (String? value) {
+            if (value!.isEmpty) {
+              return 'This field is required';
+            }
+            return null;
+          },
+          onSaved: (String? value) {
+            request.amount = value!;
+          },
         ));
   }
 
@@ -310,16 +320,16 @@ class _LoanApplicationFormState extends State<LoanApplicationForm> {
           icon: const Icon(Icons.arrow_drop_down_outlined, color: Colors.black),
           style: const TextStyle(
               fontSize: 10, color: Colors.black, fontFamily: 'times'),
-          // validator: (String? value) {
-          //   if (value!.isEmpty) {
-          //     return 'This field is required';
-          //   }
-          //   return null;
-          // },
-          // onSaved: (String? value) {
-          //   _startup.category = value!;
-          // },
-          // elevation: 12,
+          validator: (String? value) {
+            if (value!.isEmpty) {
+              return 'This field is required';
+            }
+            return null;
+          },
+          onSaved: (String? value) {
+            request.interestRate = value! as int;
+          },
+          elevation: 12,
 
           onChanged: (String? newValue) {
             setState(() {
@@ -345,12 +355,24 @@ class _LoanApplicationFormState extends State<LoanApplicationForm> {
         ));
   }
 
-  Future<void> saveStartup() async {
+  _onLoanRequest(LoanRequest request) {
+    LoanNotifier loanNotifier =
+        Provider.of<LoanNotifier>(context, listen: false);
+
+    loanNotifier.addLoan(request);
+    Navigator.pop(context);
+  }
+
+  PaymentFunctions pay = PaymentFunctions();
+
+  Future<void> requestLoanFunc() async {
     if (!_formKey.currentState!.validate()) {
       return;
     } else {
       _formKey.currentState!.save();
-      // uploadStartup(_startup, widget.isUploading, _onStartupUploaded);
+      AuthNotifier authNotifier =
+          Provider.of<AuthNotifier>(context, listen: false);
+      pay.requestLoan(authNotifier.user!.uid, request, _onLoanRequest);
     }
   }
 
@@ -398,7 +420,7 @@ class _LoanApplicationFormState extends State<LoanApplicationForm> {
                                     MainAxisAlignment.spaceEvenly,
                                 children: <Widget>[
                                   Row(
-                                    children: <Widget>[
+                                    children: const <Widget>[
                                       // profileImage(),
                                     ],
                                   ),
@@ -513,7 +535,7 @@ class _LoanApplicationFormState extends State<LoanApplicationForm> {
                                     MainAxisAlignment.spaceEvenly,
                                 children: <Widget>[
                                   Row(
-                                    children: <Widget>[
+                                    children: const <Widget>[
                                       // password(),
                                     ],
                                   ),
@@ -524,7 +546,7 @@ class _LoanApplicationFormState extends State<LoanApplicationForm> {
                         ),
                       ),
                       Positioned(
-                        left: 60,
+                        left: 65,
                         top: 380,
                         child: Material(
                           elevation: 5.0,
@@ -533,13 +555,13 @@ class _LoanApplicationFormState extends State<LoanApplicationForm> {
                           child: MaterialButton(
                             padding:
                                 const EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10),
-                            minWidth: 180,
-                            onPressed: () => saveStartup(),
+                            minWidth: 150,
+                            onPressed: () => requestLoanFunc(),
                             child: const Text(
                               'Request Loan',
                               textAlign: TextAlign.center,
                               style:
-                                  TextStyle(fontSize: 18, color: Colors.white),
+                                  TextStyle(fontSize: 15, color: Colors.white),
                             ),
                           ),
                         ),

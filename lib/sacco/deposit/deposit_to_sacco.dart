@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:saccofy/payment/mpesa/functions/mpesa.dart';
+import 'package:saccofy/user/auth/firebase/auth_notifier.dart';
 
 class DepositToSacco extends StatefulWidget {
   const DepositToSacco({Key? key}) : super(key: key);
@@ -117,7 +119,11 @@ class _DepositToSaccoState extends State<DepositToSacco> {
     );
   }
 
-  depositToSacco() {}
+  depositToSacco() {
+    AuthNotifier authNotifier = AuthNotifier();
+    GetMpesaSTK getMpesa = GetMpesaSTK();
+    getMpesa.deposit();
+  }
 
   Widget depositButton() {
     return Center(

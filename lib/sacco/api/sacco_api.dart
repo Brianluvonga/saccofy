@@ -63,15 +63,21 @@ saccoInvitationLink(String? saccoName, String saccoId) {
 
 User? user = FirebaseAuth
     .instance.currentUser; //fetch details of current user thats current
+FirebaseFirestore sRef = FirebaseFirestore.instance;
+
 fetchSacco(SaccoNotifier saccoNotifier, String uid) async {
-  DocumentSnapshot<Map<String, dynamic>> snap =
-      await FirebaseFirestore.instance.collection('sacco').doc(uid).get();
+  QuerySnapshot<Map<String, dynamic>> snap = await sRef
+      .collection('saccos')
+      .where('saccoId', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+      // .orderBy("createdAt", descending: true)
+      .get();
 
   List<Sacco> saccoList = [];
-  // for (var doc in snap) {
-  Sacco sacco = Sacco.fromMap(snap as Map<String, dynamic>);
-  saccoList.add(sacco);
-  // }
+
+  for (var doc in snap.docs) {
+    Sacco sacco = Sacco.fromMap(doc.data());
+    saccoList.add(sacco);
+  }
   saccoNotifier.saccoList = saccoList;
 }
 
@@ -88,6 +94,7 @@ getSaccoMember(SaccoNotifier saccoNotifier, String memberId) async {
     UserModel members = UserModel.fromJson(doc.data());
     saccoMembers.add(members);
   }
+  print(saccoMembers);
   saccoNotifier.memberList = saccoMembers;
 }
 
