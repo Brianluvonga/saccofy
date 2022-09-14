@@ -73,10 +73,14 @@ fetchSacco(SaccoNotifier saccoNotifier, String uid) async {
       .get();
 
   List<Sacco> saccoList = [];
+  List<UserModel> memberList = [];
 
   for (var doc in snap.docs) {
     Sacco sacco = Sacco.fromMap(doc.data());
+    UserModel member = UserModel.fromJson(doc.data());
+
     saccoList.add(sacco);
+    memberList.add(member);
   }
   saccoNotifier.saccoList = saccoList;
 }

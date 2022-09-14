@@ -5,7 +5,6 @@ import 'package:saccofy/sacco/activate/create_sacco/activate_sacco.dart';
 import 'package:saccofy/sacco/api/sacco_api.dart';
 import 'package:saccofy/sacco/details/sacco_details.dart';
 import 'package:saccofy/sacco/notifier/sacco_notifier.dart';
-import 'package:saccofy/sacco/pages/home/home5.dart';
 import 'package:saccofy/user/auth/firebase/auth_notifier.dart';
 
 class SaccoFeed extends StatefulWidget {
@@ -129,7 +128,7 @@ class _SaccoFeedState extends State<SaccoFeed> {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (BuildContext context) {
-                      return const DesignCourseHomeScreen();
+                      return const SaccoInfoScreen();
                     },
                   ),
                 );

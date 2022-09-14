@@ -101,15 +101,22 @@ class _SaccoInfoScreenState extends State<SaccoInfoScreen>
         body: Stack(
           children: <Widget>[
             Positioned(
+              // left: 20,
               // top: 50,
-              child: Column(
-                children: <Widget>[
-                  saccoGrid(),
-                  AspectRatio(
-                    aspectRatio: 1.2,
-                    child: saccoGrid(),
-                  ),
-                ],
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Column(
+                  children: <Widget>[
+                    const SizedBox(
+                      height: 150,
+                    ),
+                    saccoGrid(),
+                    const AspectRatio(
+                      aspectRatio: 1.2,
+                      // child: saccoGrid(),
+                    ),
+                  ],
+                ),
               ),
             ),
             Positioned(
@@ -199,19 +206,17 @@ class _SaccoInfoScreenState extends State<SaccoInfoScreen>
                               ],
                             ),
                           ),
-                          Container(
-                            child: AnimatedOpacity(
-                              duration: const Duration(milliseconds: 500),
-                              opacity: opacity1,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8),
-                                child: Row(
-                                  children: <Widget>[
-                                    // saccoGrid(),
-                                    getTimeBoxUI('2hours', 'Time'),
-                                    getTimeBoxUI('24', 'Seat'),
-                                  ],
-                                ),
+                          AnimatedOpacity(
+                            duration: const Duration(milliseconds: 500),
+                            opacity: opacity1,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: Row(
+                                children: <Widget>[
+                                  // saccoGrid(),
+                                  getTimeBoxUI('2hours', 'Time'),
+                                  getTimeBoxUI('24', 'Seat'),
+                                ],
                               ),
                             ),
                           ),
