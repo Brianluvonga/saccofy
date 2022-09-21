@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:saccofy/user/account/register.dart';
 import 'package:saccofy/user/auth/firebase/api.dart';
 import 'package:saccofy/user/auth/firebase/auth_notifier.dart';
 import 'package:saccofy/user/auth/firebase/user_model_notifier.dart';
@@ -27,6 +28,20 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
     setState(() {});
   }
   // settings widget cards
+
+  void selectedItem(BuildContext context, item) {
+    switch (item) {
+      case 0:
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => const RegisterUser(
+              isUpdating: true,
+            ),
+          ),
+        );
+        break;
+    }
+  }
 
   Widget firstname() {
     UserModelNotifier? currentUser =
@@ -55,12 +70,10 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                       style: TextStyle(fontSize: 12),
                     ),
                     subtitle: Text(
-                      currentUser!.currentUser.firstname! +
-                          " " +
-                          currentUser.currentUser.lastname!,
+                      "${currentUser!.currentUser.firstname!} ${currentUser.currentUser.lastname!}",
                       // '',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: const TextStyle(
                           color: Color.fromARGB(255, 7, 2, 7), fontSize: 10),
                     ),
                     onTap: () {
@@ -73,7 +86,6 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                       // )
                     },
                   ),
-                  const Icon(Icons.edit)
                 ],
               ),
             ),
@@ -125,7 +137,6 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                       // )
                     },
                   ),
-                  const Icon(Icons.edit)
                 ],
               ),
             ),
@@ -142,7 +153,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
       shadowColor: Colors.black,
       child: Container(
         height: 120,
-        width: 150,
+        width: 325,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15.0),
         ),
@@ -177,7 +188,6 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                     // )
                   },
                 ),
-                const Icon(Icons.edit)
               ],
             ),
           ),
@@ -228,7 +238,6 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                     // )
                   },
                 ),
-                const Icon(Icons.edit)
               ],
             ),
           ),
@@ -279,7 +288,6 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                       // )
                     },
                   ),
-                  const Icon(Icons.edit)
                 ],
               ),
             ),
@@ -330,7 +338,6 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                       // )
                     },
                   ),
-                  const Icon(Icons.edit)
                 ],
               ),
             ),
@@ -348,6 +355,44 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
         ),
         centerTitle: true,
         backgroundColor: Colors.white,
+        actions: [
+          const Icon(Icons.more_vert, color: Colors.black),
+          Theme(
+            data: Theme.of(context).copyWith(
+                textTheme: const TextTheme().apply(bodyColor: Colors.black),
+                dividerColor: Colors.white,
+                iconTheme: const IconThemeData(color: Colors.white)),
+            child: Container(
+              height: 5,
+              child: PopupMenuButton<int>(
+                constraints: const BoxConstraints(
+                  minHeight: 10,
+                  maxHeight: 250,
+                ),
+                color: Colors.pink[200],
+                itemBuilder: (context) => [
+                  PopupMenuItem<int>(
+                      height: 25.0,
+                      value: 0,
+                      child: Row(
+                        children: const [
+                          Icon(
+                            Icons.edit,
+                            color: Colors.red,
+                            size: 15,
+                          ),
+                          SizedBox(
+                            width: 7,
+                          ),
+                          Text("Edit Profile", style: TextStyle(fontSize: 10))
+                        ],
+                      )),
+                ],
+                onSelected: (item) => selectedItem(context, item),
+              ),
+            ),
+          )
+        ],
       ),
       body: Stack(
         clipBehavior: Clip.none,

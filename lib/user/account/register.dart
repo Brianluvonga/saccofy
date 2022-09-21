@@ -9,7 +9,8 @@ import 'package:saccofy/user/auth/firebase/auth_notifier.dart';
 import 'package:saccofy/user/models/user_model.dart';
 
 class RegisterUser extends StatefulWidget {
-  const RegisterUser({Key? key}) : super(key: key);
+  final bool isUpdating;
+  const RegisterUser({required this.isUpdating});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -57,6 +58,7 @@ class _RegisterUserState extends State<RegisterUser> {
             hintText: 'Firstname',
             // border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
             labelStyle: TextStyle(color: Colors.black)),
+        initialValue: _user.firstname,
         keyboardType: TextInputType.name,
         style: const TextStyle(
             fontSize: 12, color: Colors.black, fontFamily: 'times'),
@@ -96,6 +98,7 @@ class _RegisterUserState extends State<RegisterUser> {
             hintText: 'Lastname',
             // border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
             labelStyle: TextStyle(color: Colors.black)),
+        initialValue: _user.lastname,
         keyboardType: TextInputType.name,
         style: const TextStyle(
             fontSize: 12, color: Colors.black, fontFamily: 'times'),
@@ -137,6 +140,7 @@ class _RegisterUserState extends State<RegisterUser> {
           // border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
           labelStyle: TextStyle(color: Colors.black),
         ),
+        initialValue: _user.password,
         keyboardType: TextInputType.name,
         style: const TextStyle(
             fontSize: 12, color: Colors.black, fontFamily: 'times'),
@@ -175,6 +179,7 @@ class _RegisterUserState extends State<RegisterUser> {
             // hintText: 'Email',
             // border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
             labelStyle: TextStyle(color: Colors.black)),
+        initialValue: _user.email,
         keyboardType: TextInputType.name,
         style: const TextStyle(
             fontSize: 12, color: Colors.black, fontFamily: 'times'),
@@ -214,6 +219,7 @@ class _RegisterUserState extends State<RegisterUser> {
             // hintText: 'Location',
             // border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
             labelStyle: TextStyle(color: Colors.black)),
+        initialValue: _user.idno,
         keyboardType: TextInputType.name,
         style: const TextStyle(
             fontSize: 12, color: Colors.black, fontFamily: 'times'),
@@ -254,6 +260,7 @@ class _RegisterUserState extends State<RegisterUser> {
             // hintText: 'Location',
 
             labelStyle: TextStyle(color: Colors.black)),
+        initialValue: _user.phonenumber,
         keyboardType: TextInputType.name,
         style: const TextStyle(
             fontSize: 12, color: Colors.black, fontFamily: 'times'),
@@ -342,7 +349,7 @@ class _RegisterUserState extends State<RegisterUser> {
       _formKey.currentState!.save();
       AuthNotifier authNotifier =
           Provider.of<AuthNotifier>(context, listen: false);
-      registerUser(_user, authNotifier);
+      registerUser(_user, widget.isUpdating, authNotifier);
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -356,9 +363,10 @@ class _RegisterUserState extends State<RegisterUser> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Create Your Account",
-          // style: TextStyle(color: Colors.pink),
+        title: Text(
+          widget.isUpdating ? "Edit Profile" : "Sign Up",
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontSize: 20),
         ),
         centerTitle: true,
         backgroundColor: Colors.pink[300],
@@ -528,10 +536,11 @@ class _RegisterUserState extends State<RegisterUser> {
                               const EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10),
                           minWidth: 200,
                           onPressed: () => registerUserToApp(),
-                          child: const Text(
-                            'Register',
+                          child: Text(
+                            widget.isUpdating ? "Edit" : "Sign Up",
                             textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 20, color: Colors.black),
+                            style: const TextStyle(
+                                fontSize: 20, color: Colors.black),
                           ),
                         ),
                       ),

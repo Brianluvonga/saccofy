@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:saccofy/sacco/activate/create_sacco/activate_sacco.dart';
 import 'package:saccofy/sacco/api/sacco_api.dart';
 import 'package:saccofy/sacco/details/sacco_details.dart';
+import 'package:saccofy/sacco/details/sacco_infomation.dart';
 import 'package:saccofy/sacco/notifier/sacco_notifier.dart';
 import 'package:saccofy/user/auth/firebase/auth_notifier.dart';
 
@@ -35,6 +36,7 @@ class _SaccoFeedState extends State<SaccoFeed> {
 
     Future _refreshList() async {
       fetchSacco(saccoNotifier, authNotifier.user!.uid.toString());
+      // getSaccoMembers();
     }
 
     return Scaffold(
@@ -80,9 +82,10 @@ class _SaccoFeedState extends State<SaccoFeed> {
           ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          saccoNotifier.currentSacco = saccoNotifier.saccoList[0];
           Navigator.of(context).push(
             MaterialPageRoute(builder: (BuildContext context) {
-              return const ActivateSacco();
+              return const ActivateSacco(isUpdating: false);
             }),
           );
         },
@@ -112,7 +115,8 @@ class _SaccoFeedState extends State<SaccoFeed> {
         return Container(
             alignment: Alignment.center,
             decoration: BoxDecoration(
-                color: Colors.amber, borderRadius: BorderRadius.circular(15)),
+                color: Colors.pink[100],
+                borderRadius: BorderRadius.circular(15)),
             child: ListTile(
               title: Text(saccoNotifier.saccoList[index].saccoName.toString(),
                   style: const TextStyle(fontSize: 12)),
@@ -128,7 +132,7 @@ class _SaccoFeedState extends State<SaccoFeed> {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (BuildContext context) {
-                      return const SaccoInfoScreen();
+                      return const SaccoDetails();
                     },
                   ),
                 );

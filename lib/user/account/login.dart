@@ -404,8 +404,14 @@ class _LoginUserFormState extends State<LoginUserForm> {
   Widget notAccomplished() {
     return InkWell(
       onTap: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const RegisterUser()));
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const RegisterUser(
+              isUpdating: false,
+            ),
+          ),
+        );
       },
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 20),

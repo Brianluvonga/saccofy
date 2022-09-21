@@ -39,7 +39,11 @@ signInUser(UserModel user, UserModelNotifier currentUser) async {
 }
 
 FirebaseAuth _user = FirebaseAuth.instance;
-registerUser(UserModel user, AuthNotifier authNotifier) async {
+registerUser(UserModel user, bool isUpdating, AuthNotifier authNotifier) async {
+  if (isUpdating) {
+    user.updatedAt = Timestamp.now();
+    await userRef.doc(user.id).update(user.toJson());
+  }
   UserCredential registerResult = await FirebaseAuth.instance
       .createUserWithEmailAndPassword(
           email: user.email!.trim(), password: user.password!.trim())
@@ -94,6 +98,20 @@ Future<UserModel> getLoggedInUser(String? uid) async {
   }
 
   return user;
+}
+
+FirebaseFirestore sRef = FirebaseFirestore.instance;
+
+fetchUser(UserModelNotifier userNotifier, String uid) async {
+  var snap = (await sRef.collection('saccos').doc(uid).get());
+  List<UserModel> memberList = [];
+
+  // for (var doc in snap.docs) {
+  UserModel member = UserModel.fromJson(snap.data() as Map<String, dynamic>);
+
+  memberList.add(member);
+  // }
+  userNotifier.userList = memberList;
 }
 
 //=================== END User =================================================

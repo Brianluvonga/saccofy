@@ -9,7 +9,8 @@ import 'package:saccofy/user/auth/firebase/api.dart';
 import 'package:saccofy/user/auth/firebase/auth_notifier.dart';
 
 class ActivateSacco extends StatefulWidget {
-  const ActivateSacco({Key? key}) : super(key: key);
+  final bool? isUpdating;
+  const ActivateSacco({Key? key, required this.isUpdating}) : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
@@ -29,21 +30,23 @@ class _ActivateSaccoState extends State<ActivateSacco> {
       child: TextFormField(
         textCapitalization: TextCapitalization.words,
         decoration: const InputDecoration(
-            labelText: 'Sacco Name',
-            enabledBorder: OutlineInputBorder(
-              // borderRadius: BorderRadius.all(Radius.circular(32.0)),
-              borderSide: BorderSide(width: 1, color: Colors.black),
-            ),
-            focusedBorder: OutlineInputBorder(
-              // borderRadius: BorderRadius.all(Radius.circular(32.0)),
-              borderSide: BorderSide(width: 1, color: Colors.black),
-            ),
-            fillColor: Colors.white,
-            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-            filled: true,
-            hintText: 'Name',
-            // border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
-            labelStyle: TextStyle(color: Colors.black)),
+          labelText: 'Sacco Name',
+          enabledBorder: OutlineInputBorder(
+            // borderRadius: BorderRadius.all(Radius.circular(32.0)),
+            borderSide: BorderSide(width: 1, color: Colors.black),
+          ),
+          focusedBorder: OutlineInputBorder(
+            // borderRadius: BorderRadius.all(Radius.circular(32.0)),
+            borderSide: BorderSide(width: 1, color: Colors.black),
+          ),
+          fillColor: Colors.white,
+          contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+          filled: true,
+          hintText: 'Name',
+          // border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+          labelStyle: TextStyle(color: Colors.black),
+        ),
+        initialValue: sacco.saccoName,
         keyboardType: TextInputType.name,
         style: const TextStyle(
             fontSize: 12, color: Colors.black, fontFamily: 'times'),
@@ -82,6 +85,7 @@ class _ActivateSaccoState extends State<ActivateSacco> {
             hintText: 'Type',
             // border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
             labelStyle: TextStyle(color: Colors.black)),
+        initialValue: sacco.type,
         keyboardType: TextInputType.name,
         style: const TextStyle(
             fontSize: 12, color: Colors.black, fontFamily: 'times'),
@@ -120,6 +124,8 @@ class _ActivateSaccoState extends State<ActivateSacco> {
             hintText: 'Period',
             // border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
             labelStyle: TextStyle(color: Colors.black)),
+        // initialValue: sacco.period,
+
         keyboardType: TextInputType.name,
         style: const TextStyle(
             fontSize: 12, color: Colors.black, fontFamily: 'times'),
@@ -159,6 +165,7 @@ class _ActivateSaccoState extends State<ActivateSacco> {
             // border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
             labelStyle: TextStyle(color: Colors.black),
           ),
+          initialValue: sacco.termconditions,
           keyboardType: TextInputType.name,
           style: const TextStyle(
               fontSize: 12, color: Colors.black, fontFamily: 'times'),
@@ -195,6 +202,7 @@ class _ActivateSaccoState extends State<ActivateSacco> {
               // hintText: 'Email',
               // border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
               labelStyle: TextStyle(color: Colors.black)),
+          initialValue: sacco.aboutSacco,
           keyboardType: TextInputType.name,
           style: const TextStyle(
               fontSize: 12, color: Colors.black, fontFamily: 'times'),
@@ -233,6 +241,7 @@ class _ActivateSaccoState extends State<ActivateSacco> {
             // hintText: 'Location',
 
             labelStyle: TextStyle(color: Colors.black)),
+        initialValue: sacco.purpose,
         keyboardType: TextInputType.name,
         style: const TextStyle(
             fontSize: 12, color: Colors.black, fontFamily: 'times'),
@@ -271,8 +280,10 @@ class _ActivateSaccoState extends State<ActivateSacco> {
               hintStyle: TextStyle(color: Colors.black, fontSize: 12),
               hintText: "Select Role",
               labelStyle: TextStyle(color: Colors.black)),
+
           // itemHeight: 20.0,
           value: dropdownValue,
+
           icon: const Icon(Icons.arrow_drop_down_outlined, color: Colors.black),
           style: const TextStyle(
               fontSize: 12, color: Colors.black, fontFamily: 'times'),
@@ -321,7 +332,7 @@ class _ActivateSaccoState extends State<ActivateSacco> {
           Provider.of<AuthNotifier>(context, listen: false);
       initializeCurrentUser(authNotifier);
 
-      await createSacco(sacco, authNotifier.user!.uid);
+      await createSacco(sacco, widget.isUpdating!, authNotifier.user!.uid);
     }
   }
 

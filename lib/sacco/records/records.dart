@@ -13,6 +13,8 @@ class _RecordsState extends State<Records> {
   Widget saccoMembers() {
     return Card(
       color: Colors.pink[100],
+      elevation: 8.0,
+      shadowColor: Colors.black,
       child: Container(
           height: 100,
           width: 310,
@@ -43,14 +45,14 @@ class _RecordsState extends State<Records> {
               ),
             ),
           )),
-      elevation: 8.0,
-      shadowColor: Colors.black,
     );
   }
 
   Widget saccoSavings() {
     return Card(
       color: Colors.pink[100],
+      elevation: 8.0,
+      shadowColor: Colors.black,
       child: Container(
           height: 100,
           width: 150,
@@ -90,14 +92,14 @@ class _RecordsState extends State<Records> {
               ),
             ),
           )),
-      elevation: 8.0,
-      shadowColor: Colors.black,
     );
   }
 
   Widget others() {
     return Card(
       color: Colors.pink[100],
+      elevation: 8.0,
+      shadowColor: Colors.black,
       child: Container(
           height: 100,
           width: 150,
@@ -127,14 +129,14 @@ class _RecordsState extends State<Records> {
               ),
             ),
           )),
-      elevation: 8.0,
-      shadowColor: Colors.black,
     );
   }
 
   Widget loans() {
     return Card(
       color: Colors.pink[100],
+      elevation: 8.0,
+      shadowColor: Colors.black,
       child: Container(
           height: 100,
           width: 150,
@@ -166,52 +168,53 @@ class _RecordsState extends State<Records> {
               ),
             ),
           )),
-      elevation: 8.0,
-      shadowColor: Colors.black,
     );
   }
 
   Widget notifications() {
     return Card(
       color: Colors.pink[100],
-      child: Container(
-          height: 100,
-          width: 310,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15.0),
-          ),
-          child: Container(
-            alignment: Alignment.center,
-            width: MediaQuery.of(context).size.width,
-            // height: MediaQuery.of(context).size.height * 0.16,
-            child: Center(
-              child: ListView(
-                children: <Widget>[
-                  ListTile(
-                    leading: Icon(Icons.notifications, color: Colors.white),
-                    title: const Text(
-                      "Notifications & Messages",
-                      textAlign: TextAlign.center,
-                    ),
-                    subtitle: const Text(
-                      '',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Color(0xff2a0404), fontSize: 12),
-                    ),
-                    onTap: () {},
-                  ),
-                ],
-              ),
-            ),
-          )),
       elevation: 8.0,
       shadowColor: Colors.black,
+      child: Container(
+        height: 100,
+        width: 310,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        child: Container(
+          alignment: Alignment.center,
+          width: MediaQuery.of(context).size.width,
+          // height: MediaQuery.of(context).size.height * 0.16,
+          child: Center(
+            child: ListView(
+              children: <Widget>[
+                ListTile(
+                  leading: Icon(Icons.notifications, color: Colors.white),
+                  title: const Text(
+                    "Notifications & Messages",
+                    textAlign: TextAlign.center,
+                  ),
+                  subtitle: const Text(
+                    '',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Color(0xff2a0404), fontSize: 12),
+                  ),
+                  onTap: () {},
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 
   Widget saccoDetails() {
     return Card(
       color: Colors.pink[100],
+      elevation: 8.0,
+      shadowColor: Colors.black,
       child: Container(
           height: 100,
           width: 150,
@@ -252,8 +255,6 @@ class _RecordsState extends State<Records> {
               ),
             ),
           )),
-      elevation: 8.0,
-      shadowColor: Colors.black,
     );
   }
 
@@ -270,7 +271,6 @@ class _RecordsState extends State<Records> {
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.more_vert, color: Colors.black),
-            tooltip: 'Open shopping cart',
             onPressed: () {
               // handle the press
             },
@@ -349,7 +349,7 @@ class _RecordsState extends State<Records> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
                       Row(children: <Widget>[
-                        saccoDetails(),
+                        // saccoDetails(),
                         others(),
                       ]),
                     ],

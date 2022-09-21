@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:saccofy/sacco/api/sacco_api.dart';
 import 'package:saccofy/sacco/notifier/sacco_notifier.dart';
 
 class SaccoInfoScreen extends StatefulWidget {
@@ -27,6 +28,32 @@ class _SaccoInfoScreenState extends State<SaccoInfoScreen>
     setData();
     super.initState();
   }
+
+  // Widget memberWidget() {
+  //   return FutureBuilder(
+  //     future: getSaccoMembers(),
+  //     builder: (BuildContext context, snapshot) {
+  //       if (snapshot.hasData) {
+  //         if (snapshot.connectionState == ConnectionState.waiting) {
+  //           return Center(
+  //             child: CircularProgressIndicator(),
+  //           );
+  //         } else {
+  //           return Center(
+  //             // here only return is missing
+  //             child: Text(snapshot.data!.toString()),
+  //           );
+  //         }
+  //       } else if (snapshot.hasError) {
+  //         Text('no data');
+  //       }
+  //       return CircularProgressIndicator(
+  //         color: Colors.pink,
+  //         strokeWidth: 2,
+  //       );
+  //     },
+  //   );
+  // }
 
   Future<void> setData() async {
     animationController?.forward();
@@ -91,6 +118,8 @@ class _SaccoInfoScreenState extends State<SaccoInfoScreen>
 
   @override
   Widget build(BuildContext context) {
+    SaccoNotifier saccoNotifier =
+        Provider.of<SaccoNotifier>(context, listen: false);
     final double tempHeight = MediaQuery.of(context).size.height -
         (MediaQuery.of(context).size.width / 1.2) +
         24.0;
@@ -105,12 +134,15 @@ class _SaccoInfoScreenState extends State<SaccoInfoScreen>
               // top: 50,
               child: Padding(
                 padding: const EdgeInsets.all(10),
-                child: Column(
+                child: Row(
                   children: <Widget>[
                     const SizedBox(
                       height: 150,
                     ),
-                    saccoGrid(),
+                    Text(
+                      'Sacco Name: ${saccoNotifier.currentSacco.saccoName}',
+                      style: TextStyle(fontSize: 20),
+                    ),
                     const AspectRatio(
                       aspectRatio: 1.2,
                       // child: saccoGrid(),
@@ -182,27 +214,7 @@ class _SaccoInfoScreenState extends State<SaccoInfoScreen>
                                   ),
                                 ),
                                 // ignore: avoid_unnecessary_containers
-                                // Container(
-                                //   child: Row(
-                                //     children: const <Widget>[
-                                //       Text(
-                                //         '4.3',
-                                //         textAlign: TextAlign.left,
-                                //         style: TextStyle(
-                                //           fontWeight: FontWeight.w200,
-                                //           fontSize: 22,
-                                //           letterSpacing: 0.27,
-                                //           color: Colors.grey,
-                                //         ),
-                                //       ),
-                                //       Icon(
-                                //         Icons.star,
-                                //         color: Colors.lightBlue,
-                                //         size: 24,
-                                //       ),
-                                //     ],
-                                //   ),
-                                // )
+                                //
                               ],
                             ),
                           ),
@@ -213,7 +225,10 @@ class _SaccoInfoScreenState extends State<SaccoInfoScreen>
                               padding: const EdgeInsets.all(8),
                               child: Row(
                                 children: <Widget>[
-                                  // saccoGrid(),
+                                  // memberWidget(),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
                                   getTimeBoxUI('2hours', 'Time'),
                                   getTimeBoxUI('24', 'Seat'),
                                 ],

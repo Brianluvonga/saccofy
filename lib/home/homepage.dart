@@ -7,6 +7,7 @@ import 'package:saccofy/user/auth/firebase/api.dart';
 import 'package:saccofy/user/auth/firebase/auth_notifier.dart';
 import 'package:saccofy/user/auth/firebase/user_model_notifier.dart';
 import 'package:saccofy/user/models/user_model.dart';
+import 'package:saccofy/user/settings/profile.dart';
 import 'package:saccofy/user/settings/profile2.dart';
 
 class HomePage extends StatefulWidget {
@@ -47,26 +48,10 @@ class _HomePageState extends State<HomePage> {
           padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
-              decoration: const BoxDecoration(
-                color: Colors.white,
-              ),
-              child: Column(
-                children: [
-                  Text(
-                    authNotifier!.user!.email.toString(),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    authNotifier.user!.displayName.toString(),
-                  ),
-                  Text(
-                    currentUser!.currentUser.firstname.toString(),
-                  ),
-                ],
-              ),
-            ),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                ),
+                child: const ProfileFeed()),
             ListTile(
               leading: Icon(
                 Icons.person,
@@ -77,7 +62,7 @@ class _HomePageState extends State<HomePage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const Profile2(),
+                    builder: (context) => const UserSettingsPage(),
                   ),
                 );
               },
@@ -130,7 +115,7 @@ class _HomePageState extends State<HomePage> {
               ),
               title: const Text('Logout'),
               onTap: () {
-                signOutUser(authNotifier);
+                // signOutUser(authNotifier);
                 Navigator.of(context).push(
                   MaterialPageRoute(builder: (BuildContext context) {
                     return const LoginUserForm();

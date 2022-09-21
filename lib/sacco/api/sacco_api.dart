@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
+import 'package:saccofy/sacco/details/member/notifier/member_notifier.dart';
 import 'package:saccofy/sacco/models/create_sacco_model.dart';
 import 'package:saccofy/sacco/notifier/sacco_notifier.dart';
 import 'package:saccofy/user/auth/firebase/auth_notifier.dart';
@@ -11,28 +12,33 @@ CollectionReference usersRef = FirebaseFirestore.instance.collection("users");
 
 UserModel userModel = UserModel();
 
-createSacco(Sacco sacco, String userUID) async {
+createSacco(Sacco sacco, bool isUpdating, String userUID) async {
   sacco.createdDate = Timestamp.now();
 
-  List members = [];
-  members.add(userUID);
+  if (isUpdating) {
+    sacco.updatedDate = Timestamp.now();
+    await saccoRef.doc(sacco.saccoName).update(sacco.toMap());
+  } else {
+    List members = [];
+    members.add(userUID);
 
-  await saccoRef.doc(userUID).set({
-    'saccoId': userUID,
-    'saccoName': sacco.saccoName,
-    'admin': userUID,
-    'type': sacco.type,
-    'members': members,
-    'purpose': sacco.purpose,
-    'aboutSacco': sacco.aboutSacco,
-    'createdDate': sacco.createdDate,
-    'updatedDate': sacco.updatedDate,
-  });
-  await FirebaseFirestore.instance.collection('users').doc(userUID).update(
-    {
+    await saccoRef.doc(userUID).set({
       'saccoId': userUID,
-    },
-  );
+      'saccoName': sacco.saccoName,
+      'admin': userUID,
+      'type': sacco.type,
+      'members': members,
+      'purpose': sacco.purpose,
+      'aboutSacco': sacco.aboutSacco,
+      'createdDate': sacco.createdDate,
+      'updatedDate': sacco.updatedDate,
+    });
+    await FirebaseFirestore.instance.collection('users').doc(userUID).update(
+      {
+        'saccoId': userUID,
+      },
+    );
+  }
 }
 
 joinSacco(String userId, String saccoId) async {
@@ -68,7 +74,7 @@ FirebaseFirestore sRef = FirebaseFirestore.instance;
 fetchSacco(SaccoNotifier saccoNotifier, String uid) async {
   QuerySnapshot<Map<String, dynamic>> snap = await sRef
       .collection('saccos')
-      .where('saccoId', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+      .where('saccoId', isEqualTo: uid)
       // .orderBy("createdAt", descending: true)
       .get();
 
@@ -115,11 +121,12 @@ getDetailsOfLoggedInUser(AuthNotifier activeUser) async {
 
 FirebaseAuth auth = FirebaseAuth.instance;
 
-Future<List<String>> getSaccoMembers() async {
+Future<List<String>> getSaccoMembers(MemberNotifier member) async {
   String uid = auth.currentUser!.uid;
   List currentMember = [];
   List saccoGroup = [];
 
+  //fetch user from document
   await FirebaseFirestore.instance
       .collection('users')
       .doc(uid)
@@ -138,6 +145,8 @@ Future<List<String>> getSaccoMembers() async {
       .doc(saccoId)
       .get()
       .then((value) => saccoGroup.add(value.data));
+
+  member.memberList = saccoGroup[0]['members'];
 
   return saccoGroup[0]['members'];
 }
