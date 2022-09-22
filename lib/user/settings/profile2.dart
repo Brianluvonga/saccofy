@@ -48,13 +48,33 @@ class _ProfileFeedState extends State<ProfileFeed> {
               return ListTile(
                 title: Text(
                   authNotifier.userList[index].firstname.toString(),
-                  style: TextStyle(color: Colors.black),
+                  style: const TextStyle(fontSize: 10),
                 ),
-                subtitle:
-                    Text(authNotifier.userList[index].lastname.toString()),
-                leading: Text(authNotifier.userList[index].email.toString()),
-                trailing:
-                    Text(authNotifier.userList[index].phonenumber.toString()),
+                subtitle: Text(authNotifier.userList[index].lastname.toString(),
+                    style: const TextStyle(fontSize: 10)),
+                leading: const CircleAvatar(
+                  radius: 25,
+                  backgroundImage: NetworkImage(
+                      'https://www.testingxperts.com/wp-content/uploads/2019/02/placeholder-img.jpg'),
+                ),
+                trailing: Column(
+                  children: [
+                    Text(
+                      authNotifier.userList[index].phonenumber.toString(),
+                      style: const TextStyle(fontSize: 10),
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      authNotifier.userList[index].email.toString(),
+                      style: const TextStyle(fontSize: 10),
+                    ),
+                    const SizedBox(height: 5),
+                    InkWell(
+                      onTap: () {},
+                      child: const Icon(Icons.edit),
+                    )
+                  ],
+                ),
                 onTap: () {
                   authNotifier.currentUser = authNotifier.userList[index];
                   Navigator.of(context).push(
@@ -78,46 +98,4 @@ class _ProfileFeedState extends State<ProfileFeed> {
       ),
     );
   }
-
-  // Widget saccoGrid() {
-  //   SaccoNotifier saccoNotifier =
-  //       Provider.of<SaccoNotifier>(context, listen: false);
-
-  //   return GridView.builder(
-  //     gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-  //         maxCrossAxisExtent: 200,
-  //         childAspectRatio: 3 / 2,
-  //         crossAxisSpacing: 20,
-  //         mainAxisSpacing: 20),
-  //     itemCount: saccoNotifier.saccoList.length,
-  //     itemBuilder: (BuildContext ctx, index) {
-  //       return Container(
-  //           alignment: Alignment.center,
-  //           decoration: BoxDecoration(
-  //               color: Colors.pink[100],
-  //               borderRadius: BorderRadius.circular(15)),
-  //           child: ListTile(
-  //             title: Text(saccoNotifier.saccoList[index].saccoName.toString(),
-  //                 style: const TextStyle(fontSize: 12)),
-  //             subtitle:
-  //                 Text(saccoNotifier.saccoList[index].aboutSacco.toString()),
-  //             leading: const Icon(
-  //               Icons.image_rounded,
-  //               size: 35,
-  //             ),
-  //             trailing: Text(saccoNotifier.saccoList[index].purpose.toString()),
-  //             onTap: () {
-  //               saccoNotifier.currentSacco = saccoNotifier.saccoList[index];
-  //               Navigator.of(context).push(
-  //                 MaterialPageRoute(
-  //                   builder: (BuildContext context) {
-  //                     return const SaccoDetails();
-  //                   },
-  //                 ),
-  //               );
-  //             },
-  //           ));
-  //     },
-  // );
-  // }
 }

@@ -47,17 +47,17 @@ class _HomePageState extends State<HomePage> {
           // Important: Remove any padding from the ListView.
           padding: EdgeInsets.zero,
           children: [
-            DrawerHeader(
-                decoration: const BoxDecoration(
+            const DrawerHeader(
+                decoration: BoxDecoration(
                   color: Colors.white,
                 ),
-                child: const ProfileFeed()),
+                child: ProfileFeed()),
             ListTile(
               leading: Icon(
                 Icons.person,
-                color: Colors.red[600],
+                color: Colors.pink[600],
               ),
-              title: const Text('Profile'),
+              title: const Text('Profile', style: TextStyle(fontSize: 12)),
               onTap: () {
                 Navigator.push(
                   context,
@@ -71,9 +71,9 @@ class _HomePageState extends State<HomePage> {
             ListTile(
               leading: Icon(
                 Icons.change_circle_rounded,
-                color: Colors.red[600],
+                color: Colors.pink[400],
               ),
-              title: const Text('Sacco'),
+              title: const Text('Sacco', style: TextStyle(fontSize: 12)),
               onTap: () {
                 Navigator.push(
                   context,
@@ -87,9 +87,9 @@ class _HomePageState extends State<HomePage> {
             ListTile(
               leading: Icon(
                 Icons.payments_sharp,
-                color: Colors.red[600],
+                color: Colors.pink[400],
               ),
-              title: const Text('Payments'),
+              title: const Text('Payments', style: TextStyle(fontSize: 12)),
               onTap: () {
                 // Update the state of the app.
                 // ...
@@ -99,9 +99,9 @@ class _HomePageState extends State<HomePage> {
             ListTile(
               leading: Icon(
                 Icons.help,
-                color: Colors.red[600],
+                color: Colors.pink[400],
               ),
-              title: const Text('Help'),
+              title: const Text('Help', style: TextStyle(fontSize: 12)),
               onTap: () {
                 // Update the state of the app.
                 // ...
@@ -111,9 +111,9 @@ class _HomePageState extends State<HomePage> {
             ListTile(
               leading: Icon(
                 Icons.logout,
-                color: Colors.red[600],
+                color: Colors.pink[400],
               ),
-              title: const Text('Logout'),
+              title: const Text('Logout', style: TextStyle(fontSize: 12)),
               onTap: () {
                 // signOutUser(authNotifier);
                 Navigator.of(context).push(

@@ -103,7 +103,7 @@ Future<UserModel> getLoggedInUser(String? uid) async {
 FirebaseFirestore sRef = FirebaseFirestore.instance;
 
 fetchUser(UserModelNotifier userNotifier, String uid) async {
-  var snap = (await sRef.collection('saccos').doc(uid).get());
+  var snap = (await sRef.collection('users').doc(uid).get());
   List<UserModel> memberList = [];
 
   // for (var doc in snap.docs) {
