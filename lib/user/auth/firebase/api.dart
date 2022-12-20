@@ -34,7 +34,7 @@ signInUser(UserModel user, UserModelNotifier currentUser) async {
 
   if (firebaseUser != null) {
     print(firebaseUser);
-    authNotifier!.setUser(firebaseUser);
+    authNotifier?.setUser(firebaseUser);
   }
 }
 
@@ -51,6 +51,8 @@ registerUser(UserModel user, bool isUpdating, AuthNotifier authNotifier) async {
         // ignore: invalid_return_type_for_catch_error
         (error) => print(error.code),
       );
+  user.id = registerResult.user!.uid;
+
   userRef.doc(registerResult.user!.uid).set(user.toJson());
   // ignore: await_only_futures, avoid_single_cascade_in_expression_statements
   await FirebaseAuth.instance
@@ -64,6 +66,8 @@ registerUser(UserModel user, bool isUpdating, AuthNotifier authNotifier) async {
     authNotifier.setUser(currentUser);
   }
 }
+
+deleteUser(UserModel user, AuthNotifier authNotifier) async {}
 
 //=========================== INITIALIZE CURRENT USER ==========================
 
@@ -119,13 +123,11 @@ fetchUser(UserModelNotifier userNotifier, String uid) async {
 //
 //============================ RESET USER PASSWORD =============================
 
-resetUserPassword(AuthNotifier? authNotifier) async {
+resetUserPassword(String emailAddress) async {
   try {
-    if (authNotifier!.user!.email != null) {
-      return await _user.sendPasswordResetEmail(
-        email: authNotifier.user!.email.toString(),
-      );
-    }
+    return await _user.sendPasswordResetEmail(
+      email: emailAddress.toString(),
+    );
   } catch (e) {
     return e;
   }

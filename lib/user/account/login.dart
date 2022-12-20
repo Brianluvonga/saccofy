@@ -199,7 +199,7 @@ class _LoginUserFormState extends State<LoginUserForm> {
       appBar: AppBar(
         title: const Text(
           "User Login",
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.white, fontSize: 14),
         ),
         centerTitle: true,
         backgroundColor: Colors.pink[300],
@@ -246,7 +246,7 @@ class _LoginUserFormState extends State<LoginUserForm> {
         child: SingleChildScrollView(
           child: SizedBox(
             width: 350,
-            height: 600,
+            height: 530,
             child: Card(
               shadowColor: Colors.pink,
               elevation: 8.0,
@@ -372,7 +372,7 @@ class _LoginUserFormState extends State<LoginUserForm> {
                     const SizedBox(height: 40),
                     Positioned(
                       left: 20,
-                      top: 450,
+                      top: 400,
                       child: Column(
                         children: <Widget>[
                           GestureDetector(
@@ -422,7 +422,7 @@ class _LoginUserFormState extends State<LoginUserForm> {
           children: const <Widget>[
             Text(
               'Dont have an account ?',
-              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
             ),
             SizedBox(
               width: 20,
@@ -431,7 +431,7 @@ class _LoginUserFormState extends State<LoginUserForm> {
               'Register',
               style: TextStyle(
                 color: Colors.pink,
-                fontSize: 15,
+                fontSize: 12,
                 fontWeight: FontWeight.w800,
               ),
             ),
@@ -469,7 +469,7 @@ class _LoginUserFormState extends State<LoginUserForm> {
               'Forgot Password?',
               style: TextStyle(
                 color: Colors.pink,
-                fontSize: 15,
+                fontSize: 12,
                 fontWeight: FontWeight.w500,
               ),
             ),

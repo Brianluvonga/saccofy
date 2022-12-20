@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:saccofy/user/auth/firebase/api.dart';
+import 'package:saccofy/user/auth/firebase/auth_notifier.dart';
+import 'package:saccofy/user/models/user_model.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   const ResetPasswordScreen({Key? key}) : super(key: key);
@@ -8,7 +12,37 @@ class ResetPasswordScreen extends StatefulWidget {
 }
 
 class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
-  TextEditingController passwordReset = new TextEditingController();
+  // textediting handler
+  TextEditingController passwordReset = TextEditingController();
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  UserModel user = UserModel();
+
+  //
+  // reset password screen function
+  passReset() async {
+    if (!formKey.currentState!.validate()) {
+      return;
+    }
+    formKey.currentState!.save();
+    AuthNotifier authNotifier =
+        Provider.of<AuthNotifier>(context, listen: false);
+    resetUserPassword(authNotifier.user!.email.toString());
+
+    // show snackbar
+    if (authNotifier.user != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          duration: const Duration(seconds: 1),
+          backgroundColor: Colors.red[600],
+          content: const Text("Password Reset Link Has Sent To Your Email",
+              style: TextStyle()),
+        ),
+      );
+    }
+  }
+
+  //
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -22,19 +56,18 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
             style: TextStyle(fontSize: 16),
           ),
         ),
-        body: Center(
-            child: Column(
-          children: [
-            SizedBox(
-              height: 50,
-            ),
-            // resetPasswordHeader(),
-            SizedBox(
-              height: 50,
-            ),
-            components()
-          ],
-        )),
+        body: Form(
+          key: formKey,
+          child: Center(
+              child: Column(
+            children: [
+              const SizedBox(
+                height: 50,
+              ),
+              components()
+            ],
+          )),
+        ),
       ),
     );
   }
@@ -44,11 +77,11 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       elevation: 15,
       shadowColor: Colors.pink[200],
       child: SizedBox(
-        height: 250,
+        height: 230,
         width: 350,
         child: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.all(50),
+            padding: const EdgeInsets.all(50),
             child: Column(
               children: [
                 emailEntry(),
@@ -60,16 +93,15 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   borderRadius: BorderRadius.circular(30.0),
                   color: Colors.pink[400],
                   child: MaterialButton(
-                    padding: const EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10),
-                    minWidth: 130,
+                    padding: const EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
+                    minWidth: 110,
                     onPressed: () async {
-                      // _formKey.currentState!.save();
-                      // await _loginUserEmailAndPassword();
+                      passReset();
                     },
                     child: const Text(
                       'Submit',
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 20, color: Colors.white),
+                      style: TextStyle(fontSize: 14, color: Colors.white),
                     ),
                   ),
                 ),
@@ -84,7 +116,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   Widget resetPasswordHeader() {
     return const Center(
       child: Text(
-        'Reset  Your Password ',
+        'Reset Your Password ',
         style: TextStyle(fontSize: 30, fontStyle: FontStyle.italic),
       ),
     );
@@ -94,7 +126,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     return SizedBox(
       child: TextFormField(
         decoration: const InputDecoration(
-          labelText: 'Enter Your Email Address',
+          labelText: 'Your Email Address',
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(32.0)),
             borderSide: BorderSide(width: 1, color: Colors.pink),
@@ -112,7 +144,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         style: const TextStyle(
             fontSize: 12, color: Colors.black, fontFamily: 'times'),
         cursorColor: Colors.black,
-        controller: passwordReset,
+        // controller: passwordReset,
         validator: (String? value) {
           if (value!.isEmpty) {
             return 'Your Email Address is required';
@@ -125,9 +157,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
           return null;
         },
-        // onSaved: (String? value) {
-        //   _user.email = value!;
-        // },
+        onSaved: (String? value) {
+          user.email = value!;
+        },
       ),
     );
   }

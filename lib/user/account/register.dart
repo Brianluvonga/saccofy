@@ -1,11 +1,13 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:saccofy/builders/providers/user/user_provider.dart';
 import 'package:saccofy/user/account/login.dart';
 import 'package:saccofy/user/auth/firebase/api.dart';
 import 'package:saccofy/user/auth/firebase/auth_notifier.dart';
+import 'package:saccofy/user/auth/firebase/user_model_notifier.dart';
 import 'package:saccofy/user/models/user_model.dart';
 
 class RegisterUser extends StatefulWidget {
@@ -33,6 +35,20 @@ class _RegisterUserState extends State<RegisterUser> {
 
   // ignore: prefer_final_fields
   UserModel _user = UserModel();
+
+  @override
+  void initState() {
+    super.initState();
+    UserModelNotifier authNotifier =
+        Provider.of<UserModelNotifier>(context, listen: false);
+
+    // ignore: unrelated_type_equality_checks
+    if (authNotifier.currentUser != false) {
+      _user = authNotifier.currentUser;
+    } else {
+      _user = UserModel();
+    }
+  }
 
   // final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -63,7 +79,7 @@ class _RegisterUserState extends State<RegisterUser> {
         style: const TextStyle(
             fontSize: 12, color: Colors.black, fontFamily: 'times'),
         cursorColor: Colors.black,
-        controller: fnameController,
+        // controller: fnameController,
         validator: (String? value) {
           if (value!.isEmpty) {
             return 'Firstname required';
@@ -103,7 +119,7 @@ class _RegisterUserState extends State<RegisterUser> {
         style: const TextStyle(
             fontSize: 12, color: Colors.black, fontFamily: 'times'),
         cursorColor: Colors.black,
-        controller: lnameController,
+        // controller: lnameController,
         validator: (String? value) {
           if (value!.isEmpty) {
             return 'Lastname required';
@@ -117,35 +133,48 @@ class _RegisterUserState extends State<RegisterUser> {
     );
   }
 
+  bool _isPasswordVisible = true;
+
   Widget password() {
     return Container(
       width: 270,
       child: TextFormField(
-        obscureText: true,
+        obscureText: _isPasswordVisible,
         textCapitalization: TextCapitalization.words,
-        decoration: const InputDecoration(
+        decoration: InputDecoration(
           labelText: 'Password',
-          enabledBorder: OutlineInputBorder(
+          enabledBorder: const OutlineInputBorder(
             // borderRadius: BorderRadius.all(Radius.circular(32.0)),
             borderSide: BorderSide(width: 1, color: Colors.pink),
           ),
-          focusedBorder: OutlineInputBorder(
+          focusedBorder: const OutlineInputBorder(
             // borderRadius: BorderRadius.all(Radius.circular(32.0)),
             borderSide: BorderSide(width: 1, color: Colors.pink),
           ),
           fillColor: Colors.white,
-          contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+          contentPadding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
           filled: true,
           // hintText: 'Description',
           // border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
-          labelStyle: TextStyle(color: Colors.black),
+          labelStyle: const TextStyle(color: Colors.black),
+          suffixIcon: IconButton(
+            icon: Icon(
+                _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                color: Colors.black),
+            onPressed: () {
+              setState(() {
+                _isPasswordVisible = !_isPasswordVisible;
+              });
+            },
+          ),
         ),
+
         initialValue: _user.password,
         keyboardType: TextInputType.name,
         style: const TextStyle(
             fontSize: 12, color: Colors.black, fontFamily: 'times'),
         cursorColor: Colors.black,
-        controller: passwordController,
+        // controller: passwordController,
         validator: (String? value) {
           if (value!.isEmpty) {
             return 'Password required';
@@ -184,7 +213,7 @@ class _RegisterUserState extends State<RegisterUser> {
         style: const TextStyle(
             fontSize: 12, color: Colors.black, fontFamily: 'times'),
         cursorColor: Colors.black,
-        controller: emailController,
+        // controller: emailController,
         validator: (String? value) {
           if (value!.isEmpty) {
             return 'Email Address required';
@@ -193,6 +222,44 @@ class _RegisterUserState extends State<RegisterUser> {
         },
         onSaved: (String? value) {
           _user.email = value!;
+        },
+      ),
+    );
+  }
+
+  Widget yob() {
+    return SizedBox(
+      width: 270,
+      child: TextFormField(
+        decoration: const InputDecoration(
+            labelText: 'Year Of Birth',
+            enabledBorder: OutlineInputBorder(
+              // borderRadius: BorderRadius.all(Radius.circular(32.0)),
+              borderSide: BorderSide(width: 1, color: Colors.pink),
+            ),
+            focusedBorder: OutlineInputBorder(
+              // borderRadius: BorderRadius.all(Radius.circular(32.0)),
+              borderSide: BorderSide(width: 1, color: Colors.pink),
+            ),
+            fillColor: Colors.white,
+            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+            filled: true,
+            // hintText: 'Email',
+            // border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+            labelStyle: TextStyle(color: Colors.black)),
+        initialValue: _user.yob,
+        keyboardType: TextInputType.name,
+        style: const TextStyle(
+            fontSize: 12, color: Colors.black, fontFamily: 'times'),
+        cursorColor: Colors.black,
+        validator: (String? value) {
+          if (value!.isEmpty) {
+            return 'YOB required';
+          }
+          return null;
+        },
+        onSaved: (String? value) {
+          _user.yob = value!;
         },
       ),
     );
@@ -220,11 +287,11 @@ class _RegisterUserState extends State<RegisterUser> {
             // border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
             labelStyle: TextStyle(color: Colors.black)),
         initialValue: _user.idno,
-        keyboardType: TextInputType.name,
+        keyboardType: TextInputType.number,
         style: const TextStyle(
             fontSize: 12, color: Colors.black, fontFamily: 'times'),
         cursorColor: Colors.black,
-        controller: idnoController,
+        // controller: idnoController,
         validator: (String? value) {
           if (value!.isEmpty) {
             return 'ID No required';
@@ -261,11 +328,11 @@ class _RegisterUserState extends State<RegisterUser> {
 
             labelStyle: TextStyle(color: Colors.black)),
         initialValue: _user.phonenumber,
-        keyboardType: TextInputType.name,
+        keyboardType: TextInputType.number,
         style: const TextStyle(
             fontSize: 12, color: Colors.black, fontFamily: 'times'),
         cursorColor: Colors.black,
-        controller: telController,
+        // controller: telController,
         validator: (String? value) {
           if (value!.isEmpty) {
             return 'Phone No required';
@@ -415,7 +482,7 @@ class _RegisterUserState extends State<RegisterUser> {
                     ),
                     Positioned(
                       left: 10,
-                      top: 50,
+                      top: 10,
                       child: Column(
                         children: <Widget>[
                           GestureDetector(
@@ -440,7 +507,7 @@ class _RegisterUserState extends State<RegisterUser> {
                     ),
                     Positioned(
                       left: 10,
-                      top: 125,
+                      top: 80,
                       child: Column(
                         children: <Widget>[
                           GestureDetector(
@@ -461,7 +528,7 @@ class _RegisterUserState extends State<RegisterUser> {
                     ),
                     Positioned(
                       left: 10,
-                      top: 200,
+                      top: 160,
                       child: Column(
                         children: <Widget>[
                           GestureDetector(
@@ -484,7 +551,7 @@ class _RegisterUserState extends State<RegisterUser> {
                     ),
                     Positioned(
                       left: 10,
-                      top: 275,
+                      top: 230,
                       child: Column(
                         children: <Widget>[
                           GestureDetector(
@@ -505,7 +572,28 @@ class _RegisterUserState extends State<RegisterUser> {
                     ),
                     Positioned(
                       left: 10,
-                      top: 350,
+                      top: 300,
+                      child: Column(
+                        children: <Widget>[
+                          GestureDetector(
+                            behavior: HitTestBehavior.translucent,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[
+                                Row(
+                                  children: <Widget>[
+                                    yob(),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Positioned(
+                      left: 10,
+                      top: 370,
                       child: Column(
                         children: <Widget>[
                           GestureDetector(
@@ -535,7 +623,9 @@ class _RegisterUserState extends State<RegisterUser> {
                           padding:
                               const EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10),
                           minWidth: 200,
-                          onPressed: () => registerUserToApp(),
+                          onPressed: () {
+                            registerUserToApp();
+                          },
                           child: Text(
                             widget.isUpdating ? "Edit" : "Sign Up",
                             textAlign: TextAlign.center,
@@ -558,7 +648,9 @@ class _RegisterUserState extends State<RegisterUser> {
                               children: <Widget>[
                                 Row(
                                   children: <Widget>[
-                                    notAccomplished(),
+                                    widget.isUpdating
+                                        ? updating()
+                                        : notAccomplished(),
                                   ],
                                 ),
                               ],
@@ -575,6 +667,10 @@ class _RegisterUserState extends State<RegisterUser> {
         ),
       ),
     );
+  }
+
+  Widget updating() {
+    return Container();
   }
 
   Widget notAccomplished() {

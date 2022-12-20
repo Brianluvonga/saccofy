@@ -1,16 +1,15 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:saccofy/sacco/api/sacco_api.dart';
 import 'package:saccofy/sacco/models/create_sacco_model.dart';
+import 'package:saccofy/sacco/notifier/sacco_notifier.dart';
 import 'package:saccofy/user/account/login.dart';
 import 'package:saccofy/user/auth/firebase/api.dart';
 import 'package:saccofy/user/auth/firebase/auth_notifier.dart';
 
 class ActivateSacco extends StatefulWidget {
-  final bool? isUpdating;
-  const ActivateSacco({Key? key, required this.isUpdating}) : super(key: key);
+  final bool isUpdating;
+  ActivateSacco({Key? key, required this.isUpdating}) : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
@@ -20,8 +19,30 @@ class ActivateSacco extends StatefulWidget {
 class _ActivateSaccoState extends State<ActivateSacco> {
   TextEditingController businessCategoryController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  Sacco sacco = Sacco();
+  Sacco? sacco;
+  @override
+  void initState() {
+    super.initState();
+    SaccoNotifier saccoNotifier =
+        Provider.of<SaccoNotifier>(context, listen: false);
+
+    // ignore: unrelated_type_equality_checks
+    if (saccoNotifier.currentSacco != false) {
+      sacco = saccoNotifier.currentSacco;
+    } else {
+      sacco = Sacco();
+    }
+  }
+
+  @override
+  void dispose() {
+    if (mounted) {
+      // Cancel any active work here
+    }
+    super.dispose();
+  }
 
   // ignore: non_constant_identifier_names
   Widget saccoName() {
@@ -46,7 +67,7 @@ class _ActivateSaccoState extends State<ActivateSacco> {
           // border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
           labelStyle: TextStyle(color: Colors.black),
         ),
-        initialValue: sacco.saccoName,
+        initialValue: sacco!.saccoName,
         keyboardType: TextInputType.name,
         style: const TextStyle(
             fontSize: 12, color: Colors.black, fontFamily: 'times'),
@@ -58,7 +79,7 @@ class _ActivateSaccoState extends State<ActivateSacco> {
           return null;
         },
         onSaved: (String? value) {
-          sacco.saccoName = value;
+          sacco!.saccoName = value;
         },
       ),
     );
@@ -85,7 +106,7 @@ class _ActivateSaccoState extends State<ActivateSacco> {
             hintText: 'Type',
             // border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
             labelStyle: TextStyle(color: Colors.black)),
-        initialValue: sacco.type,
+        initialValue: sacco!.type,
         keyboardType: TextInputType.name,
         style: const TextStyle(
             fontSize: 12, color: Colors.black, fontFamily: 'times'),
@@ -97,7 +118,7 @@ class _ActivateSaccoState extends State<ActivateSacco> {
           return null;
         },
         onSaved: (String? value) {
-          sacco.type = value;
+          sacco!.type = value;
         },
       ),
     );
@@ -109,7 +130,7 @@ class _ActivateSaccoState extends State<ActivateSacco> {
       child: TextFormField(
         textCapitalization: TextCapitalization.words,
         decoration: const InputDecoration(
-            labelText: 'Period',
+            labelText: 'Duration',
             enabledBorder: OutlineInputBorder(
               // borderRadius: BorderRadius.all(Radius.circular(32.0)),
               borderSide: BorderSide(width: 1, color: Colors.black),
@@ -121,11 +142,10 @@ class _ActivateSaccoState extends State<ActivateSacco> {
             fillColor: Colors.white,
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             filled: true,
-            hintText: 'Period',
+            hintText: 'Duration',
             // border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
             labelStyle: TextStyle(color: Colors.black)),
-        // initialValue: sacco.period,
-
+        initialValue: sacco!.period,
         keyboardType: TextInputType.name,
         style: const TextStyle(
             fontSize: 12, color: Colors.black, fontFamily: 'times'),
@@ -137,13 +157,13 @@ class _ActivateSaccoState extends State<ActivateSacco> {
           return null;
         },
         onSaved: (String? value) {
-          sacco.type = value;
+          sacco!.period = value;
         },
       ),
     );
   }
 
-  Widget TermsAndConditions() {
+  Widget termsAndConditions() {
     return Container(
         width: 280,
         child: TextFormField(
@@ -165,7 +185,7 @@ class _ActivateSaccoState extends State<ActivateSacco> {
             // border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
             labelStyle: TextStyle(color: Colors.black),
           ),
-          initialValue: sacco.termconditions,
+          initialValue: sacco!.termconditions,
           keyboardType: TextInputType.name,
           style: const TextStyle(
               fontSize: 12, color: Colors.black, fontFamily: 'times'),
@@ -177,7 +197,7 @@ class _ActivateSaccoState extends State<ActivateSacco> {
             return null;
           },
           onSaved: (String? value) {
-            sacco.termconditions = value!;
+            sacco!.termconditions = value!;
           },
         ));
   }
@@ -202,7 +222,7 @@ class _ActivateSaccoState extends State<ActivateSacco> {
               // hintText: 'Email',
               // border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
               labelStyle: TextStyle(color: Colors.black)),
-          initialValue: sacco.aboutSacco,
+          initialValue: sacco!.aboutSacco,
           keyboardType: TextInputType.name,
           style: const TextStyle(
               fontSize: 12, color: Colors.black, fontFamily: 'times'),
@@ -214,7 +234,7 @@ class _ActivateSaccoState extends State<ActivateSacco> {
             return null;
           },
           onSaved: (String? value) {
-            sacco.aboutSacco = value!;
+            sacco!.aboutSacco = value!;
           },
         ));
   }
@@ -241,7 +261,7 @@ class _ActivateSaccoState extends State<ActivateSacco> {
             // hintText: 'Location',
 
             labelStyle: TextStyle(color: Colors.black)),
-        initialValue: sacco.purpose,
+        initialValue: sacco!.purpose,
         keyboardType: TextInputType.name,
         style: const TextStyle(
             fontSize: 12, color: Colors.black, fontFamily: 'times'),
@@ -253,7 +273,7 @@ class _ActivateSaccoState extends State<ActivateSacco> {
           return null;
         },
         onSaved: (String? value) {
-          sacco.purpose = value!;
+          sacco!.purpose = value!;
         },
       ),
     );
@@ -294,7 +314,7 @@ class _ActivateSaccoState extends State<ActivateSacco> {
           //   return null;
           // },
           onSaved: (String? value) {
-            sacco.role = value;
+            sacco!.role = value;
           },
           elevation: 12,
 
@@ -332,20 +352,24 @@ class _ActivateSaccoState extends State<ActivateSacco> {
           Provider.of<AuthNotifier>(context, listen: false);
       initializeCurrentUser(authNotifier);
 
-      await createSacco(sacco, widget.isUpdating!, authNotifier.user!.uid);
+      await createSacco(sacco!, widget.isUpdating, authNotifier.user!.uid);
+      // ignore: use_build_context_synchronously
+      Navigator.pop(context);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
-        title: const Text(
-          "Create Sacco",
-          // style: TextStyle(color: Colors.pink),
+        title: Text(
+          widget.isUpdating ? "Edit Sacco" : "Activate Sacco",
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontSize: 16),
         ),
-        centerTitle: true,
         backgroundColor: Colors.pink[300],
+        centerTitle: true,
       ),
       body: form(),
     );
@@ -354,8 +378,8 @@ class _ActivateSaccoState extends State<ActivateSacco> {
   Widget form() {
     return Center(
       child: Form(
-        // ignore: deprecated_member_use
-        autovalidateMode: AutovalidateMode.always, key: _formKey,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        key: _formKey,
         child: SingleChildScrollView(
           child: SizedBox(
               width: 360,
@@ -429,11 +453,10 @@ class _ActivateSaccoState extends State<ActivateSacco> {
                                 children: <Widget>[
                                   Row(
                                     children: <Widget>[
-                                      // numberOfMembers(),
                                       const SizedBox(
                                         width: 10,
                                       ),
-                                      roleField(),
+                                      about()
                                     ],
                                   ),
                                 ],
@@ -478,7 +501,7 @@ class _ActivateSaccoState extends State<ActivateSacco> {
                                     MainAxisAlignment.spaceEvenly,
                                 children: <Widget>[
                                   Row(
-                                    children: <Widget>[about()],
+                                    children: <Widget>[termsAndConditions()],
                                   ),
                                 ],
                               ),
@@ -499,8 +522,7 @@ class _ActivateSaccoState extends State<ActivateSacco> {
                                 children: <Widget>[
                                   Row(
                                     children: <Widget>[
-                                      TermsAndConditions(),
-                                      // password(),
+                                      // termsAndConditions(),
                                     ],
                                   ),
                                 ],
@@ -511,7 +533,7 @@ class _ActivateSaccoState extends State<ActivateSacco> {
                       ),
                       Positioned(
                         left: 60,
-                        top: 430,
+                        top: 380,
                         child: Material(
                           elevation: 5.0,
                           shadowColor: Colors.pink[200],
@@ -522,14 +544,14 @@ class _ActivateSaccoState extends State<ActivateSacco> {
                                 const EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10),
                             minWidth: 200,
                             onPressed: () {
+                              FocusScope.of(context).requestFocus(FocusNode());
                               saveSacco();
                               Navigator.pop(context);
                             },
-                            child: const Text(
-                              'Create Sacco',
+                            child: Text(
+                              widget.isUpdating ? "Edit Sacco" : "Create Sacco",
                               textAlign: TextAlign.center,
-                              style:
-                                  TextStyle(fontSize: 14, color: Colors.black),
+                              style: const TextStyle(fontSize: 20),
                             ),
                           ),
                         ),

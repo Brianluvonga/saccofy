@@ -48,10 +48,12 @@ class _ProfileFeedState extends State<ProfileFeed> {
               return ListTile(
                 title: Text(
                   authNotifier.userList[index].firstname.toString(),
-                  style: const TextStyle(fontSize: 10),
+                  style: const TextStyle(
+                      fontSize: 10, fontWeight: FontWeight.w500),
                 ),
                 subtitle: Text(authNotifier.userList[index].lastname.toString(),
-                    style: const TextStyle(fontSize: 10)),
+                    style: const TextStyle(
+                        fontSize: 10, fontWeight: FontWeight.w500)),
                 leading: const CircleAvatar(
                   radius: 25,
                   backgroundImage: NetworkImage(
@@ -69,10 +71,13 @@ class _ProfileFeedState extends State<ProfileFeed> {
                       style: const TextStyle(fontSize: 10),
                     ),
                     const SizedBox(height: 5),
-                    InkWell(
-                      onTap: () {},
-                      child: const Icon(Icons.edit),
-                    )
+                    // InkWell(
+                    //   onTap: () {},
+                    //   child: const Icon(
+                    //     Icons.edit,
+                    //     size: 20,
+                    //   ),
+                    // )
                   ],
                 ),
                 onTap: () {

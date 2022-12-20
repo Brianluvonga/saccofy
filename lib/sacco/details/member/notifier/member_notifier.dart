@@ -12,10 +12,10 @@ class MemberNotifier extends ChangeNotifier {
   UnmodifiableListView<UserModel> get memberList =>
       UnmodifiableListView(_memberList);
 
-  void setCurrentMember(UserModel? user) {
-    _currentMember = user;
-    notifyListeners();
-  }
+  // void setCurrentMember(UserModel? user) {
+  //   _currentMember = user;
+  //   notifyListeners();
+  // }
 
   set memberList(List<UserModel> memberList) {
     _memberList = memberList;

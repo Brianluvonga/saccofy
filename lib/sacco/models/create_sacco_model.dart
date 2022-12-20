@@ -4,10 +4,12 @@ class Sacco {
   String? saccoId;
   String? saccoName;
   String? type;
+  String? saccoLink;
   String? termconditions;
-  List<dynamic>? members;
+  List<String>? members;
   String? role;
   String? purpose;
+  String? period;
   String? aboutSacco;
   Timestamp? createdDate;
   Timestamp? updatedDate;
@@ -18,10 +20,12 @@ class Sacco {
     saccoId = sacco["saccoId"];
     saccoName = sacco["saccoName"];
     type = sacco["type"];
+    saccoLink = sacco["saccoLink"];
     termconditions = sacco["termconditions"];
     members = sacco["members"];
     role = sacco["role"];
     purpose = sacco["purpose"];
+    period = sacco["period"];
     createdDate = sacco["createdDate"];
     updatedDate = sacco["updatedDate"];
     aboutSacco = sacco["aboutSacco"];
@@ -31,10 +35,12 @@ class Sacco {
       "saccoId": saccoId,
       "saccoName": saccoName,
       "type": type,
+      "saccoLink": saccoLink,
       "termconditions": termconditions,
       "members": members,
       "role": role,
       "purpose": purpose,
+      "period": period,
       "aboutSacco": aboutSacco,
       "createdDate": createdDate,
       "updatedDate": updatedDate,

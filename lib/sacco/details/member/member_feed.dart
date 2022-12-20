@@ -10,9 +10,11 @@ import 'package:saccofy/sacco/notifier/sacco_notifier.dart';
 import 'package:saccofy/user/auth/firebase/auth_notifier.dart';
 
 class MemberFeed extends StatefulWidget {
-  const MemberFeed({Key? key}) : super(key: key);
+  const MemberFeed({Key? key, this.callBack}) : super(key: key);
+  final Function()? callBack;
 
   @override
+  // ignore: library_private_types_in_public_api
   _MemberFeedState createState() => _MemberFeedState();
 }
 
@@ -31,45 +33,31 @@ class _MemberFeedState extends State<MemberFeed> {
   Widget build(BuildContext context) {
     MemberNotifier memberNotifier =
         Provider.of<MemberNotifier>(context, listen: false);
+    AuthNotifier authNotifier =
+        Provider.of<AuthNotifier>(context, listen: false);
 
     Future _refreshList() async {
-      getSaccoMembers(memberNotifier);
+      getSaccoMembers(memberNotifier, authNotifier.user!.uid);
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sacco'),
+        title: const Text('Member Feed'),
         centerTitle: true,
         backgroundColor: Colors.pink,
         actions: [],
       ),
       body: RefreshIndicator(
-          onRefresh: _refreshList,
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: saccoGrid(),
-          )),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          memberNotifier.currentMember = memberNotifier.memberList[0];
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (BuildContext context) {
-              return const ActivateSacco(isUpdating: false);
-            }),
-          );
-        },
-        foregroundColor: Colors.pink,
-        backgroundColor: Colors.white,
-        elevation: 15,
-        child: const Icon(
-          Icons.add,
+        onRefresh: _refreshList,
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: memberFeedCard(),
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 
-  Widget saccoGrid() {
+  Widget memberFeedCard() {
     MemberNotifier memberNotifier =
         Provider.of<MemberNotifier>(context, listen: false);
 

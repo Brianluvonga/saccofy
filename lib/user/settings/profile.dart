@@ -125,7 +125,8 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
 
                       // fetch from database
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: Color(0xff2a0404), fontSize: 10),
+                      style: const TextStyle(
+                          color: Color(0xff2a0404), fontSize: 10),
                     ),
                     onTap: () {
                       // Navigator.push(
@@ -176,7 +177,8 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
 
                     // '',
                     textAlign: TextAlign.center,
-                    style: TextStyle(color: Color(0xff2a0404), fontSize: 12),
+                    style: const TextStyle(
+                        color: const Color(0xff2a0404), fontSize: 12),
                   ),
                   onTap: () {
                     // Navigator.push(
@@ -226,7 +228,8 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                   subtitle: Text(
                     currentUser!.currentUser.gender!,
                     textAlign: TextAlign.center,
-                    style: TextStyle(color: Color(0xff2a0404), fontSize: 12),
+                    style:
+                        const TextStyle(color: Color(0xff2a0404), fontSize: 12),
                   ),
                   onTap: () {
                     // Navigator.push(
@@ -276,16 +279,18 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                     subtitle: Text(
                       currentUser!.currentUser.phonenumber!,
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: Color(0xff2a0404), fontSize: 12),
+                      style: const TextStyle(
+                          color: Color(0xff2a0404), fontSize: 12),
                     ),
                     onTap: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (BuildContext context) =>
-
-                      //   ),
-                      // )
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => const RegisterUser(
+                            isUpdating: true,
+                          ),
+                        ),
+                      );
                     },
                   ),
                 ],
@@ -322,11 +327,12 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 12),
                     ),
-                    subtitle: Text(
+                    subtitle: const Text(
                       // currentUser!.currentUser.!,
                       '',
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: Color(0xff2a0404), fontSize: 12),
+                      style: const TextStyle(
+                          color: const Color(0xff2a0404), fontSize: 12),
                     ),
                     onTap: () {
                       // Navigator.push(

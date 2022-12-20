@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:saccofy/sacco/activate/create_sacco/activate_sacco.dart';
+import 'package:saccofy/sacco/details/member/member_feed.dart';
 import 'package:saccofy/sacco/loan/application/loan_application.dart';
 import 'package:saccofy/sacco/notifier/sacco_notifier.dart';
 import 'package:saccofy/sacco/records/records.dart';
@@ -13,6 +14,8 @@ class SaccoDetails extends StatefulWidget {
 }
 
 class _SaccoDetailsState extends State<SaccoDetails> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   // settings widget cards
 
   Widget sacconame() {
@@ -229,13 +232,13 @@ class _SaccoDetailsState extends State<SaccoDetails> {
                           color: Color(0xff2a0404), fontSize: 10),
                     ),
                     onTap: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (BuildContext context) =>
-
-                      //   ),
-                      // )
+                      saccoNotifier.currentSacco = saccoNotifier.saccoList[0];
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (BuildContext context) {
+                          return const MemberFeed();
+                        }),
+                      );
                     },
                   ),
                   // Icon(Icons.edit)
@@ -462,21 +465,24 @@ class _SaccoDetailsState extends State<SaccoDetails> {
         Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => const LoanApplicationForm()));
         break;
-      // case 1:
-      //   Navigator.of(context).push(
-      //     MaterialPageRoute(builder: (context) => const Records()),
-      //   );
-      //   break;
-      case 2:
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(
-              builder: (context) => const ActivateSacco(
-                isUpdating: true,
-              ),
-            ),
-            (route) => false);
-
+      case 1:
+        Navigator.of(context).push(
+          MaterialPageRoute(
+              builder: (context) => ActivateSacco(
+                    isUpdating: true,
+                  )),
+        );
         break;
+      // case 2:
+      //   Navigator.of(context).pushAndRemoveUntil(
+      //       MaterialPageRoute(
+      //         builder: (context) => ActivateSacco(
+      //           isUpdating: true,
+      //         ),
+      //       ),
+      //       (route) => false);
+
+      //   break;
       // case 3:
       //   Navigator.of(context).pushAndRemoveUntil(
       //       MaterialPageRoute(builder: (context) => const Records()),
@@ -487,10 +493,12 @@ class _SaccoDetailsState extends State<SaccoDetails> {
 
   @override
   Widget build(BuildContext context) {
+    SaccoNotifier saccoNotifier =
+        Provider.of<SaccoNotifier>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Sacco Details',
+        title: Text(
+          saccoNotifier.currentSacco.saccoName.toString(),
           style: TextStyle(color: Colors.black, fontSize: 14),
         ),
         centerTitle: true,
