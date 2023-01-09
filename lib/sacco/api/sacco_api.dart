@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
+import 'package:flutter/material.dart';
 import 'package:saccofy/sacco/details/member/notifier/member_notifier.dart';
 import 'package:saccofy/sacco/models/create_sacco_model.dart';
 import 'package:saccofy/sacco/notifier/sacco_notifier.dart';
@@ -21,7 +22,28 @@ createSacco(
   Sacco sacco,
   bool isUpdating,
   String userUID,
+  BuildContext context,
 ) async {
+  //
+  bool hasSacco = false;
+  await saccoRef.where('saccoId', isEqualTo: userUID).get().then((snapshot) {
+    if (snapshot.docs.isNotEmpty) {
+      hasSacco = true;
+    }
+  });
+
+  if (hasSacco) {
+    // show message to user
+    // ignore: use_build_context_synchronously
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        duration: Duration(seconds: 2),
+        content: Text('You already have an existing Sacco!'),
+      ),
+    );
+    // prevent user from creating a new Sacco
+    return;
+  }
   if (isUpdating) {
     sacco.updatedDate = Timestamp.now();
     await saccoRef.doc(userUID).update(sacco.toMap());
@@ -32,8 +54,7 @@ createSacco(
     members.add(userUID);
 
     // generate link to the sacco
-
-    var inivitationLink = await saccoInviteLink(sacco.saccoId.toString());
+    var inivitationLink = await saccoInviteLink(userUID);
 
     await saccoRef.doc(userUID).set({
       'saccoId': userUID,
@@ -99,20 +120,31 @@ joinSacco(String userId, String saccoId) async {
   return joinMsg;
 }
 
-saccoInviteLink(String saccoId) async {
+Future<Uri> saccoInviteLink(String saccoId) async {
+  FirebaseDynamicLinks dynamicLinks = FirebaseDynamicLinks.instance;
   final DynamicLinkParameters parameters = DynamicLinkParameters(
-    uriPrefix: 'https://saccofy.formility.co.ke',
-    link: Uri.parse('https://saccofy.formility.co.ke$saccoId'),
+    uriPrefix: "https://joinsaccofy.lupintech.co.ke",
+    link: Uri.parse("https://joinsaccofy.lupintech.co.ke/join/id=$saccoId"),
     androidParameters: const AndroidParameters(
       packageName: 'com.example.saccofy',
+      minimumVersion: 1,
     ),
     iosParameters: const IOSParameters(
       bundleId: 'com.example.saccofy',
+      minimumVersion: '1.0.1',
+    ),
+    socialMetaTagParameters: const SocialMetaTagParameters(
+      title: 'Join My Sacco',
+      description: 'Click this link to join my sacco on the Example app',
     ),
   );
 
-  final Uri? inviteUrl = parameters.longDynamicLink;
-  return inviteUrl;
+  // Uri url;
+  final ShortDynamicLink shortLink =
+      await dynamicLinks.buildShortLink(parameters);
+
+  final Uri shortUri = shortLink.shortUrl;
+  return shortUri;
 }
 
 User? user = FirebaseAuth
@@ -120,13 +152,12 @@ User? user = FirebaseAuth
 FirebaseFirestore sRef = FirebaseFirestore.instance;
 
 fetchSacco(SaccoNotifier saccoNotifier, String uid) async {
-  QuerySnapshot<Map<String, dynamic>> snap =
-      await sRef.collection('saccos').where('saccoId', isEqualTo: uid).get();
+  DocumentSnapshot snap = await sRef.collection('saccos').doc(uid).get();
 
   List<Sacco> saccoList = [];
 
-  for (var doc in snap.docs) {
-    Sacco sacco = Sacco.fromMap(doc.data());
+  if (snap.exists) {
+    Sacco sacco = Sacco.fromMap(snap.data() as Map<String, dynamic>);
 
     saccoList.add(sacco);
   }
@@ -143,7 +174,7 @@ Future<List<UserModel>> getSaccoMembers(
       await FirebaseFirestore.instance.collection('saccos').doc(saccoID).get();
 
   // get the list of member IDs for the sacco document
-  List<String> memberIDs = saccoSnapshot['members'];
+  List<dynamic> memberIDs = saccoSnapshot['members'];
 
   // fetch the details of each member from user collection
   List<UserModel> members = [];
@@ -155,7 +186,7 @@ Future<List<UserModel>> getSaccoMembers(
         .get();
 
     UserModel member =
-        UserModel.fromJson(memberSnapshot as Map<String, dynamic>);
+        UserModel.fromJson(memberSnapshot.data() as Map<String, dynamic>);
     members.add(member);
   }
   memberNotifier.memberList = members;

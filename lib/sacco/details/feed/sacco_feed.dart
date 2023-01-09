@@ -41,7 +41,7 @@ class _SaccoFeedState extends State<SaccoFeed> {
     var saccoInfo =
         FirebaseFirestore.instance.collection('users').doc(sacco.saccoId);
 
-    Future _refreshList() async {
+    Future refreshList() async {
       fetchSacco(saccoNotifier, saccoInfo.toString());
       // getSaccoMembers();
     }
@@ -54,7 +54,7 @@ class _SaccoFeedState extends State<SaccoFeed> {
         actions: [],
       ),
       body: RefreshIndicator(
-        onRefresh: _refreshList,
+        onRefresh: refreshList,
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: saccoGrid(),

@@ -33,7 +33,9 @@ class _MemberDetailsState extends State<MemberDetails> {
             color: Colors.black,
             size: 20,
           ),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
       ),
       body: Stack(

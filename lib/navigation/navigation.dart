@@ -16,7 +16,7 @@ class Navigation extends StatefulWidget {
 class _NavigationState extends State<Navigation> {
   int _selectedIndex = 0;
   final List<Widget> _classNavOptions = [
-    const HomePage(),
+    const UserHomePage(),
     const SaccoFeed(),
     const NewNotifications(),
     const UserSettingsPage()

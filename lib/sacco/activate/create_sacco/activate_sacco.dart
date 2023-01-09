@@ -352,7 +352,8 @@ class _ActivateSaccoState extends State<ActivateSacco> {
           Provider.of<AuthNotifier>(context, listen: false);
       initializeCurrentUser(authNotifier);
 
-      await createSacco(sacco!, widget.isUpdating, authNotifier.user!.uid);
+      await createSacco(
+          sacco!, widget.isUpdating, authNotifier.user!.uid, context);
       // ignore: use_build_context_synchronously
       Navigator.pop(context);
     }

@@ -1,270 +1,432 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:saccofy/sacco/activate/create_sacco/activate_sacco.dart';
-import 'package:saccofy/sacco/details/feed/sacco_feed.dart';
-import 'package:saccofy/user/account/login.dart';
-import 'package:saccofy/user/auth/firebase/api.dart';
-import 'package:saccofy/user/auth/firebase/auth_notifier.dart';
-import 'package:saccofy/user/auth/firebase/user_model_notifier.dart';
-import 'package:saccofy/user/models/user_model.dart';
-import 'package:saccofy/user/settings/profile.dart';
-import 'package:saccofy/user/settings/profile2.dart';
+import 'package:saccofy/home/sampleforgot.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class UserHomePage extends StatefulWidget {
+  const UserHomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<UserHomePage> createState() => _UserHomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  UserModel? currentMember;
-  AuthNotifier? authNotifier;
-  @override
-  void didChangeDependencies() async {
-    super.didChangeDependencies();
-    currentMember = await getLoggedInUser(authNotifier!.user!.uid);
-    setState(() {});
-  }
-
+class _UserHomePageState extends State<UserHomePage> {
   @override
   Widget build(BuildContext context) {
-    //initializeCurrentUser
-    //
-    AuthNotifier? authNotifier =
-        Provider.of<AuthNotifier?>(context, listen: false);
+    Size size = MediaQuery.of(context).size;
 
-    UserModelNotifier? currentUser =
-        Provider.of<UserModelNotifier?>(context, listen: false);
     return Scaffold(
-      appBar: AppBar(
-        // title: const Text("Create Sacco"),
-        // centerTitle: true,
-        backgroundColor: Colors.pink[600],
-      ),
-      drawer: Drawer(
-        child: ListView(
-          // Important: Remove any padding from the ListView.
-          padding: EdgeInsets.zero,
-          children: [
-            const DrawerHeader(
-                decoration: BoxDecoration(
-                  color: Colors.white,
+      body: SingleChildScrollView(
+        child: Container(
+          color: Colors.transparent,
+          height: size.height,
+          child: Stack(
+            children: [
+              Container(
+                height: size.height * 0.25,
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment(-1.066, 1.0),
+                    end: Alignment(2.305, -2.078),
+                    colors: [Color(0xffd69cc8), Color(0xff0e7bdc)],
+                    stops: [0.0, 1.0],
+                  ),
                 ),
-                child: ProfileFeed()),
-            ListTile(
-              leading: Icon(
-                Icons.person,
-                color: Colors.pink[600],
               ),
-              title: const Text('Profile', style: TextStyle(fontSize: 12)),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const UserSettingsPage(),
+              Positioned(
+                top: 70.0,
+                width: size.width,
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 24.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      welcomeMsg(),
+                      SizedBox(
+                        height: 20.0,
+                      ),
+                    ],
                   ),
-                );
-              },
-            ),
-            const Divider(),
-            ListTile(
-              leading: Icon(
-                Icons.change_circle_rounded,
-                color: Colors.pink[400],
+                ),
               ),
-              title: const Text('Sacco', style: TextStyle(fontSize: 12)),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const SaccoFeed(),
+              Positioned(
+                top: 140.0,
+                width: size.width,
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 24.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      numbersCard(),
+                      // RichText(
+                      //   text: TextSpan(
+                      //     children: [
+                      //       TextSpan(
+                      //         text: "Have some\nproblem with",
+                      //         style: TextStyle(
+                      //           height: 1.4,
+                      //           fontSize: 30.0,
+                      //           color: Colors.black,
+                      //         ),
+                      //       ),
+                      //       TextSpan(
+                      //         text: " your Device?",
+                      //         style: TextStyle(
+                      //           fontSize: 30.0,
+                      //           fontWeight: FontWeight.w600,
+                      //           color: Colors.black,
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
+                      SizedBox(
+                        height: 20.0,
+                      ),
+                      // LoginForm(),
+                    ],
                   ),
-                );
-              },
-            ),
-            const Divider(),
-            ListTile(
-              leading: Icon(
-                Icons.payments_sharp,
-                color: Colors.pink[400],
+                ),
               ),
-              title: const Text('Payments', style: TextStyle(fontSize: 12)),
-              onTap: () {
-                // Update the state of the app.
-                // ...
-              },
-            ),
-            const Divider(),
-            ListTile(
-              leading: Icon(
-                Icons.help,
-                color: Colors.pink[400],
+              Positioned(
+                top: 300.0,
+                width: size.width,
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 24.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      totalDeposits(),
+                      // RichText(
+                      //   text: TextSpan(
+                      //     children: [
+                      //       TextSpan(
+                      //         text: "Have some\nproblem with",
+                      //         style: TextStyle(
+                      //           height: 1.4,
+                      //           fontSize: 30.0,
+                      //           color: Colors.black,
+                      //         ),
+                      //       ),
+                      //       TextSpan(
+                      //         text: " your Device?",
+                      //         style: TextStyle(
+                      //           fontSize: 30.0,
+                      //           fontWeight: FontWeight.w600,
+                      //           color: Colors.black,
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
+                      SizedBox(
+                        height: 20.0,
+                      ),
+                      // LoginForm(),
+                    ],
+                  ),
+                ),
               ),
-              title: const Text('Help', style: TextStyle(fontSize: 12)),
-              onTap: () {
-                // Update the state of the app.
-                // ...
-              },
-            ),
-            const Divider(),
-            ListTile(
-              leading: Icon(
-                Icons.logout,
-                color: Colors.pink[400],
+              Positioned(
+                top: 500.0,
+                width: size.width,
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 24.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      personalSavings(),
+                      SizedBox(
+                        height: 20.0,
+                      ),
+                    ],
+                  ),
+                ),
               ),
-              title: const Text('Logout', style: TextStyle(fontSize: 12)),
-              onTap: () {
-                // signOutUser(authNotifier);
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (BuildContext context) {
-                    return const LoginUserForm();
-                  }),
-                );
-              },
-            ),
-          ],
-        ),
-      ),
-      body: Center(
-        child: SingleChildScrollView(
-          child: SizedBox(
-            width: 700,
-            height: 700,
-            child: Stack(
-              children: [
-                Positioned(
-                  right: 0,
-                  top: 0,
-                  child: Column(
-                    children: <Widget>[
-                      GestureDetector(
-                        behavior: HitTestBehavior.translucent,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            Row(
-                              children: const <Widget>[
-                                // userSection(),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Positioned(
-                  left: 10,
-                  top: 50,
-                  child: Column(
-                    children: <Widget>[
-                      GestureDetector(
-                        behavior: HitTestBehavior.translucent,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            Row(
-                              children: const <Widget>[],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Positioned(
-                  left: 10,
-                  top: 125,
-                  child: Column(
-                    children: <Widget>[
-                      GestureDetector(
-                        behavior: HitTestBehavior.translucent,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            Row(
-                              children: const <Widget>[],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Positioned(
-                  left: 10,
-                  top: 200,
-                  child: Column(
-                    children: <Widget>[
-                      GestureDetector(
-                        behavior: HitTestBehavior.translucent,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            Row(
-                              children: const <Widget>[],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Positioned(
-                  left: 10,
-                  top: 275,
-                  child: Column(
-                    children: <Widget>[
-                      GestureDetector(
-                        behavior: HitTestBehavior.translucent,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            Row(
-                              children: const <Widget>[],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Positioned(
-                  left: 10,
-                  top: 350,
-                  child: Column(
-                    children: <Widget>[
-                      GestureDetector(
-                        behavior: HitTestBehavior.translucent,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            Row(
-                              children: const <Widget>[],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 40),
-              ],
-            ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  Widget userSection() {
-    return Card(
-      child: Container(
-        color: Colors.black,
-        height: 200,
-        width: 400,
+  Widget numbersCard() {
+    return Container(
+      // width: 250,
+      // height: 130,
+      decoration: BoxDecoration(
+        // color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.white54,
+            offset: Offset(0, 10),
+            blurRadius: 10,
+          ),
+        ],
+      ),
+      child: Card(
+        elevation: 10,
+        child: Padding(
+          padding: const EdgeInsets.all(35),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Column(
+                children: const [
+                  Text(
+                    'Saccos',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    '4',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                width: 25,
+              ),
+              Column(
+                children: const [
+                  Text(
+                    'Loans',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    '4',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                width: 25,
+              ),
+              Column(
+                children: const [
+                  Text(
+                    'Messages',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    '28',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
+
+  Widget welcomeMsg() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Container(
+          child: const Text(
+            'Welcome ' + 'Brian Luvonga',
+            style: TextStyle(fontSize: 18),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget totalDeposits() {
+    return Container(
+      height: 150,
+      width: 10,
+      decoration: BoxDecoration(
+        color: Colors.teal[100],
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.teal,
+            offset: Offset(0, 10),
+            blurRadius: 10,
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: const <Widget>[
+          Text(
+            'Total Deposits',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Text(
+            '\$1,000',
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget personalSavings() {
+    return Container(
+      height: 150,
+      width: 90,
+      decoration: BoxDecoration(
+        color: Colors.indigo[100],
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.indigo,
+            offset: Offset(0, 10),
+            blurRadius: 10,
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: const <Widget>[
+          Text(
+            'Personal Savings',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Text(
+            '\$500',
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget recordsSection() {
+    var onPressedB;
+    return Center(
+      child: Container(
+        width: 200,
+        height: 50,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: const Color.fromARGB(255, 248, 142, 177),
+            width: 1,
+          ),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(18),
+          child: Row(
+            children: const [
+              Text(
+                'View Your Records',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.black,
+                ),
+              ),
+              SizedBox(
+                width: 20,
+              ),
+              Icon(Icons.arrow_right_alt)
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget saccoMembers() {
+    final List<GroupMember> groupMembers = [
+      GroupMember(name: 'Alice', imageUrl: 'https://example.com/alice.jpg'),
+      GroupMember(name: 'Bob', imageUrl: 'https://example.com/bob.jpg'),
+      GroupMember(name: 'Charlie', imageUrl: 'https://example.com/charlie.jpg'),
+      GroupMember(name: 'Dave', imageUrl: 'https://example.com/dave.jpg'),
+      GroupMember(name: 'Eve', imageUrl: 'https://example.com/eve.jpg'),
+      GroupMember(name: 'Frank', imageUrl: 'https://example.com/frank.jpg'),
+      GroupMember(name: 'Gina', imageUrl: 'https://example.com/gina.jpg'),
+      GroupMember(name: 'Harry', imageUrl: 'https://example.com/harry.jpg'),
+    ];
+
+    return Padding(
+      padding: EdgeInsets.all(16.0),
+      child: Row(
+        children: groupMembers.map((member) {
+          return Container(
+            child: Column(
+              children: [
+                Image.network(member.imageUrl),
+                Text(member.name),
+              ],
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
+}
+
+class GroupMember {
+  String name;
+  String imageUrl;
+
+  GroupMember({required this.name, required this.imageUrl});
 }

@@ -6,7 +6,7 @@ class Sacco {
   String? type;
   String? saccoLink;
   String? termconditions;
-  List<String>? members;
+  List<dynamic>? members;
   String? role;
   String? purpose;
   String? period;
