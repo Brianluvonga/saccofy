@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:saccofy/user/auth/firebase/api.dart';
 import 'package:saccofy/user/auth/firebase/auth_notifier.dart';
 import 'package:saccofy/user/auth/firebase/user_model_notifier.dart';
+import 'package:saccofy/user/auth/firebase/user_notifier.dart';
 import 'package:saccofy/user/settings/profile.dart';
 
 class ProfileFeed extends StatefulWidget {
@@ -25,11 +26,11 @@ class _ProfileFeedState extends State<ProfileFeed> {
   Widget build(BuildContext context) {
     UserModelNotifier authNotifier =
         Provider.of<UserModelNotifier>(context, listen: false);
-    AuthNotifier currentNotifier =
-        Provider.of<AuthNotifier>(context, listen: false);
+    UserNotifier currentNotifier =
+        Provider.of<UserNotifier>(context, listen: false);
 
     Future _refreshList() async {
-      fetchUser(authNotifier, currentNotifier.user!.uid.toString());
+      // fetchUser(authNotifier, currentNotifier.user!.uid.toString());
     }
 
     return Scaffold(

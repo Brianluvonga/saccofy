@@ -1,15 +1,20 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:saccofy/sacco/api/sacco_api.dart';
+import 'package:saccofy/sacco/details/feed/sacco_feed.dart';
 import 'package:saccofy/sacco/models/create_sacco_model.dart';
 import 'package:saccofy/sacco/notifier/sacco_notifier.dart';
+import 'package:saccofy/sacco/pages/home/home.dart';
 import 'package:saccofy/user/account/login.dart';
 import 'package:saccofy/user/auth/firebase/api.dart';
 import 'package:saccofy/user/auth/firebase/auth_notifier.dart';
+import 'package:saccofy/user/auth/firebase/user_model_notifier.dart';
+import 'package:saccofy/user/auth/firebase/user_notifier.dart';
 
 class ActivateSacco extends StatefulWidget {
   final bool isUpdating;
-  ActivateSacco({Key? key, required this.isUpdating}) : super(key: key);
+  const ActivateSacco({Key? key, required this.isUpdating}) : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
@@ -347,17 +352,31 @@ class _ActivateSaccoState extends State<ActivateSacco> {
       return;
     } else {
       _formKey.currentState!.save();
+      setState(() {
+        loadingSacco = true;
+      });
 
-      AuthNotifier authNotifier =
-          Provider.of<AuthNotifier>(context, listen: false);
-      initializeCurrentUser(authNotifier);
+      var currentMember = FirebaseAuth.instance.currentUser;
 
       await createSacco(
-          sacco!, widget.isUpdating, authNotifier.user!.uid, context);
-      // ignore: use_build_context_synchronously
-      Navigator.pop(context);
+          sacco!, widget.isUpdating, currentMember!.uid.toString(), context);
+
+      if (widget.isUpdating) {
+        // ignore: use_build_context_synchronously
+        Navigator.pop(context);
+      } else {
+        // ignore: use_build_context_synchronously
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => const SaccoFeed(),
+          ),
+        );
+      }
     }
   }
+
+  bool loadingSacco = false;
 
   @override
   Widget build(BuildContext context) {
@@ -367,12 +386,19 @@ class _ActivateSaccoState extends State<ActivateSacco> {
         title: Text(
           widget.isUpdating ? "Edit Sacco" : "Activate Sacco",
           textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 16),
+          style: const TextStyle(fontSize: 14, fontFamily: 'times'),
         ),
-        backgroundColor: Colors.pink[300],
+        backgroundColor: const Color(0xff1c3751),
         centerTitle: true,
       ),
-      body: form(),
+      body: loadingSacco
+          ? const Center(
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: Color(0xff1c3751),
+              ),
+            )
+          : form(),
     );
   }
 
@@ -386,7 +412,7 @@ class _ActivateSaccoState extends State<ActivateSacco> {
               width: 360,
               height: 600,
               child: Card(
-                shadowColor: Colors.pinkAccent[100],
+                shadowColor: const Color(0xff1c3751),
                 elevation: 8.0,
                 color: Colors.white,
                 child: Padding(
@@ -533,26 +559,27 @@ class _ActivateSaccoState extends State<ActivateSacco> {
                         ),
                       ),
                       Positioned(
-                        left: 60,
+                        left: 65,
                         top: 380,
                         child: Material(
                           elevation: 5.0,
-                          shadowColor: Colors.pink[200],
+                          shadowColor: const Color(0xff1c3751),
                           borderRadius: BorderRadius.circular(30.0),
-                          color: Colors.white,
+                          color: const Color(0xff1c3751),
                           child: MaterialButton(
                             padding:
                                 const EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10),
-                            minWidth: 200,
+                            minWidth: 150,
                             onPressed: () {
-                              FocusScope.of(context).requestFocus(FocusNode());
                               saveSacco();
-                              Navigator.pop(context);
                             },
                             child: Text(
                               widget.isUpdating ? "Edit Sacco" : "Create Sacco",
                               textAlign: TextAlign.center,
-                              style: const TextStyle(fontSize: 20),
+                              style: const TextStyle(
+                                  fontSize: 14,
+                                  fontFamily: 'times',
+                                  color: Colors.white),
                             ),
                           ),
                         ),

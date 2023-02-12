@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
@@ -7,8 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:saccofy/sacco/details/member/notifier/member_notifier.dart';
 import 'package:saccofy/sacco/models/create_sacco_model.dart';
 import 'package:saccofy/sacco/notifier/sacco_notifier.dart';
-import 'package:saccofy/user/auth/firebase/auth_notifier.dart';
-import 'package:saccofy/user/auth/firebase/user_model_notifier.dart';
+
 import 'package:saccofy/user/models/user_model.dart';
 import 'package:uuid/uuid.dart';
 
@@ -25,28 +22,41 @@ createSacco(
   BuildContext context,
 ) async {
   //
-  bool hasSacco = false;
-  await saccoRef.where('saccoId', isEqualTo: userUID).get().then((snapshot) {
-    if (snapshot.docs.isNotEmpty) {
-      hasSacco = true;
-    }
-  });
+  if (!isUpdating) {
+    bool hasSacco = false;
+    await saccoRef.where('saccoId', isEqualTo: userUID).get().then((snapshot) {
+      if (snapshot.docs.isNotEmpty) {
+        hasSacco = true;
+      }
+    });
 
-  if (hasSacco) {
-    // show message to user
-    // ignore: use_build_context_synchronously
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        duration: Duration(seconds: 2),
-        content: Text('You already have an existing Sacco!'),
-      ),
-    );
-    // prevent user from creating a new Sacco
-    return;
+    if (hasSacco) {
+      // show message to user
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          duration: Duration(seconds: 4),
+          content: Text(
+              'You already have an existing Sacco!, You Cannot Create More Than Two Saccos'),
+        ),
+      );
+      // prevent user from creating a new Sacco
+      return;
+    }
   }
+
   if (isUpdating) {
     sacco.updatedDate = Timestamp.now();
     await saccoRef.doc(userUID).update(sacco.toMap());
+    // ignore: use_build_context_synchronously
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        padding: EdgeInsets.only(left: 130, bottom: 50),
+        backgroundColor: Color(0xff1c3751),
+        duration: Duration(seconds: 4),
+        content: Text('Sacco Updated Successfully!'),
+      ),
+    );
   } else {
     sacco.createdDate = Timestamp.now();
 
@@ -54,14 +64,14 @@ createSacco(
     members.add(userUID);
 
     // generate link to the sacco
-    var inivitationLink = await saccoInviteLink(userUID);
+    // var inivitationLink = await saccoInviteLink(userUID);
 
     await saccoRef.doc(userUID).set({
       'saccoId': userUID,
       'saccoName': sacco.saccoName,
       'admin': userUID,
       'type': sacco.type,
-      'saccoLink': inivitationLink,
+      // 'saccoLink': inivitationLink,
       'termconditions': sacco.termconditions,
       'period': sacco.period,
       'members': members,
@@ -72,13 +82,13 @@ createSacco(
     });
     await FirebaseFirestore.instance.collection('users').doc(userUID).update(
       {
-        'saccoId': userUID,
+        'saccoId': FieldValue.arrayUnion([userUID]),
       },
     );
   }
 }
 
-joinSacco(String userId, String saccoId) async {
+Future<String> joinSacco(String userId, String saccoId) async {
   String? joinMsg = "Unable To Join Sacco, Please Try Again";
   List members = [];
   try {
@@ -86,26 +96,32 @@ joinSacco(String userId, String saccoId) async {
     DocumentSnapshot checkUserRegisteredSnapshot =
         await FirebaseFirestore.instance.collection('users').doc(userId).get();
     if (checkUserRegisteredSnapshot.exists) {
+      print('Already Registered');
       members.add(userId);
 
       // query sacco collection for the document with saccoId
-      QuerySnapshot snap = FirebaseFirestore.instance
+      DocumentSnapshot snap = await FirebaseFirestore.instance
           .collection('saccos')
-          .where('saccoId', isEqualTo: saccoId)
-          .get() as QuerySnapshot<Object?>;
+          .doc(saccoId)
+          .get();
+      print(snap);
 
-      if (snap.docs.isNotEmpty) {
+      if (snap.exists) {
         // fetch the sacco doc and update the members field
-        DocumentSnapshot saccoDoc = snap.docs.first;
-        await saccoDoc.reference
+
+        // print(saccoDoc);
+        await snap.reference
             .update({'members': FieldValue.arrayUnion(members)});
 
         // update the user document with the saccoId
 
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(userId)
-            .update({'saccoId': saccoDoc.reference.id});
+        await FirebaseFirestore.instance.collection('users').doc(userId).update(
+          {
+            'saccoId': FieldValue.arrayUnion(
+              [snap.reference.id],
+            ),
+          },
+        );
 
         joinMsg = "Successfully joined the Sacco";
       }
@@ -115,9 +131,68 @@ joinSacco(String userId, String saccoId) async {
       joinMsg = "Please register to join the Sacco";
     }
   } catch (e) {
-    return e;
+    return e.toString();
   }
   return joinMsg;
+}
+
+// add user to sacco
+Future<String> addUserToSacco(String email, String saccoId) async {
+  String? addUserMessage = "Unable To Add User To Sacco, Please Try Again";
+  List members = [];
+  try {
+    // check if user is registered on the app
+    QuerySnapshot checkUserRegisteredSnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .where('email', isEqualTo: email)
+        .get();
+
+    if (checkUserRegisteredSnapshot.docs.isNotEmpty) {
+      print('User Already Registered');
+      DocumentSnapshot userDoc = checkUserRegisteredSnapshot.docs.first;
+      if ((userDoc.data() as Map<String, dynamic>)['saccoId']
+              ?.contains(saccoId) ==
+          true) {
+        return "User Is Already a Member Of The Sacco";
+      }
+      members.add(checkUserRegisteredSnapshot.docs.first.id);
+
+      // query sacco collection for the document with saccoId
+      DocumentSnapshot snap = await FirebaseFirestore.instance
+          .collection('saccos')
+          .doc(saccoId)
+          .get();
+      print(snap);
+
+      if (snap.exists) {
+        // fetch the sacco doc and update the members field
+
+        // print(saccoDoc);
+        await snap.reference
+            .update({'members': FieldValue.arrayUnion(members)});
+
+        // update the user document with the saccoId
+
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(checkUserRegisteredSnapshot.docs.first.id)
+            .update({
+          'saccoId': FieldValue.arrayUnion(
+            [snap.reference.id],
+          ),
+        });
+
+        addUserMessage = "Successfully added user to the Sacco";
+      }
+    } else {
+      // show error message to indicate user is not registered on the app
+
+      addUserMessage = "User is not registered on the app";
+    }
+  } catch (e) {
+    return e.toString();
+  }
+  return addUserMessage;
 }
 
 Future<Uri> saccoInviteLink(String saccoId) async {
@@ -147,22 +222,96 @@ Future<Uri> saccoInviteLink(String saccoId) async {
   return shortUri;
 }
 
+// remove a member from sacco
+removeMemberFromSacco(
+    String memberId, String saccoId, BuildContext context) async {
+  await saccoRef.doc(saccoId).update({
+    'members': FieldValue.arrayRemove([memberId]),
+  });
+  await FirebaseFirestore.instance.collection('users').doc(memberId).update(
+    {
+      'saccoId': FieldValue.arrayRemove([saccoId]),
+    },
+  );
+  // show message to user
+  // ignore: use_build_context_synchronously
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(
+      duration: Duration(seconds: 2),
+      content: Text('Member removed from Sacco successfully!'),
+    ),
+  );
+}
+
 User? user = FirebaseAuth
     .instance.currentUser; //fetch details of current user thats current
 FirebaseFirestore sRef = FirebaseFirestore.instance;
 
 fetchSacco(SaccoNotifier saccoNotifier, String uid) async {
-  DocumentSnapshot snap = await sRef.collection('saccos').doc(uid).get();
+  try {
+    DocumentSnapshot userSnap = await sRef.collection('users').doc(uid).get();
 
-  List<Sacco> saccoList = [];
+    if (userSnap.exists) {
+      var saccoIds = (userSnap.get('saccoId'));
+      print(saccoIds);
+      if (saccoIds == null) {
+        saccoNotifier.saccoList = [];
+        return false;
+      }
 
-  if (snap.exists) {
-    Sacco sacco = Sacco.fromMap(snap.data() as Map<String, dynamic>);
+      List<Sacco> saccoList = [];
+      for (var id in saccoIds) {
+        DocumentSnapshot saccoSnap =
+            await sRef.collection('saccos').doc(id).get();
 
-    saccoList.add(sacco);
+        print(saccoSnap.exists);
+        if (saccoSnap.exists) {
+          Sacco sacco = Sacco.fromMap(saccoSnap.data() as Map<String, dynamic>);
+          saccoList.add(sacco);
+        }
+      }
+
+      saccoNotifier.saccoList = saccoList;
+      return true;
+    } else {
+      throw Exception("User Document not found");
+    }
+  } catch (e) {
+    print(e);
   }
-  saccoNotifier.saccoList = saccoList;
 }
+
+// fetchSacco(SaccoNotifier saccoNotifier, String uid) async {
+//   try {
+//     DocumentSnapshot userSnap = await sRef.collection('users').doc(uid).get();
+
+//     if (userSnap.exists) {
+//       var saccoId = (userSnap.get('saccoId'));
+//       print(saccoId);
+//       if (saccoId == null) {
+//         saccoNotifier.saccoList = [];
+//         return false;
+//       }
+//       List<Sacco> saccosList = [];
+//       DocumentSnapshot saccoSnap =
+//           await sRef.collection('saccos').doc(saccoId.first).get();
+
+//       print(saccoSnap.exists);
+//       if (saccoSnap.exists) {
+//         Sacco sacco = Sacco.fromMap(saccoSnap.data() as Map<String, dynamic>);
+//         saccoNotifier.saccoList = [sacco];
+//         return true;
+//       } else {
+//         saccoNotifier.saccoList = [];
+//         return false;
+//       }
+//     } else {
+//       throw Exception("User Document not found");
+//     }
+//   } catch (e) {
+//     print(e);
+//   }
+// }
 
 FirebaseAuth auth = FirebaseAuth.instance;
 

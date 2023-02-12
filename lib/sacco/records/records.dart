@@ -1,365 +1,93 @@
 import 'package:flutter/material.dart';
+import 'package:saccofy/sacco/deposit/feed/deposit_feed.dart';
+import 'package:saccofy/sacco/loan/feed/loan_feed.dart';
 
-class Records extends StatefulWidget {
-  const Records({Key? key}) : super(key: key);
+class SaccoRecords extends StatefulWidget {
+  const SaccoRecords({super.key});
 
   @override
-  _RecordsState createState() => _RecordsState();
+  SaccoRecordsState createState() => SaccoRecordsState();
 }
 
-class _RecordsState extends State<Records> {
-  // settings widget cards
+class SaccoRecordsState extends State<SaccoRecords> {
+  int selectedMenuIndex = 0;
 
-  Widget saccoMembers() {
-    return Card(
-      color: Colors.pink[100],
-      elevation: 8.0,
-      shadowColor: Colors.black,
-      child: Container(
-          height: 100,
-          width: 310,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15.0),
-          ),
-          child: Container(
-            alignment: Alignment.center,
-            width: MediaQuery.of(context).size.width,
-            child: Center(
-              child: ListView(
-                children: <Widget>[
-                  ListTile(
-                    leading: const Icon(Icons.supervisor_account_rounded,
-                        color: Colors.white),
-                    title: const Text(
-                      "Sacco Members",
-                      textAlign: TextAlign.center,
-                    ),
-                    subtitle: const Text(
-                      "",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Color(0xff2a0404), fontSize: 15),
-                    ),
-                    onTap: () {},
-                  ),
-                ],
-              ),
-            ),
-          )),
-    );
-  }
-
-  Widget saccoSavings() {
-    return Card(
-      color: Colors.pink[100],
-      elevation: 8.0,
-      shadowColor: Colors.black,
-      child: Container(
-          height: 100,
-          width: 150,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15.0),
-          ),
-          child: Container(
-            alignment: Alignment.center,
-            width: MediaQuery.of(context).size.width,
-            // height: MediaQuery.of(context).size.height * 0.16,
-            child: Center(
-              child: ListView(
-                children: <Widget>[
-                  ListTile(
-                    leading: Icon(Icons.savings_sharp, color: Colors.white),
-                    title: const Text(
-                      "Sacco Savings",
-                      textAlign: TextAlign.center,
-                    ),
-                    subtitle: const Text(
-                      '',
-                      // fetch from database
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Color(0xff2a0404), fontSize: 12),
-                    ),
-                    onTap: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (BuildContext context) =>
-
-                      //   ),
-                      // )
-                    },
-                  ),
-                ],
-              ),
-            ),
-          )),
-    );
-  }
-
-  Widget others() {
-    return Card(
-      color: Colors.pink[100],
-      elevation: 8.0,
-      shadowColor: Colors.black,
-      child: Container(
-          height: 100,
-          width: 150,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15.0),
-          ),
-          child: Container(
-            alignment: Alignment.center,
-            width: MediaQuery.of(context).size.width,
-            // height: MediaQuery.of(context).size.height * 0.16,
-            child: Center(
-              child: ListView(
-                children: <Widget>[
-                  ListTile(
-                    title: const Text(
-                      "Others",
-                      textAlign: TextAlign.center,
-                    ),
-                    subtitle: const Text(
-                      '',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Color(0xff2a0404), fontSize: 12),
-                    ),
-                    onTap: () {},
-                  ),
-                ],
-              ),
-            ),
-          )),
-    );
-  }
-
-  Widget loans() {
-    return Card(
-      color: Colors.pink[100],
-      elevation: 8.0,
-      shadowColor: Colors.black,
-      child: Container(
-          height: 100,
-          width: 150,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15.0),
-          ),
-          child: Container(
-            alignment: Alignment.center,
-            width: MediaQuery.of(context).size.width,
-            // height: MediaQuery.of(context).size.height * 0.16,
-            child: Center(
-              child: ListView(
-                children: <Widget>[
-                  ListTile(
-                    leading: Icon(Icons.money_off_csred_outlined,
-                        color: Colors.white),
-                    title: const Text(
-                      "Loans",
-                      textAlign: TextAlign.center,
-                    ),
-                    subtitle: const Text(
-                      '',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Color(0xff2a0404), fontSize: 12),
-                    ),
-                    onTap: () {},
-                  ),
-                ],
-              ),
-            ),
-          )),
-    );
-  }
-
-  Widget notifications() {
-    return Card(
-      color: Colors.pink[100],
-      elevation: 8.0,
-      shadowColor: Colors.black,
-      child: Container(
-        height: 100,
-        width: 310,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15.0),
-        ),
-        child: Container(
-          alignment: Alignment.center,
-          width: MediaQuery.of(context).size.width,
-          // height: MediaQuery.of(context).size.height * 0.16,
-          child: Center(
-            child: ListView(
-              children: <Widget>[
-                ListTile(
-                  leading: Icon(Icons.notifications, color: Colors.white),
-                  title: const Text(
-                    "Notifications & Messages",
-                    textAlign: TextAlign.center,
-                  ),
-                  subtitle: const Text(
-                    '',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Color(0xff2a0404), fontSize: 12),
-                  ),
-                  onTap: () {},
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget saccoDetails() {
-    return Card(
-      color: Colors.pink[100],
-      elevation: 8.0,
-      shadowColor: Colors.black,
-      child: Container(
-          height: 100,
-          width: 150,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15.0),
-          ),
-          child: Container(
-            alignment: Alignment.center,
-            width: MediaQuery.of(context).size.width,
-            // height: MediaQuery.of(context).size.height * 0.16,
-            child: Center(
-              child: ListView(
-                children: <Widget>[
-                  ListTile(
-                    leading:
-                        Icon(Icons.change_circle_outlined, color: Colors.white),
-                    title: const Text(
-                      "Sacco Details",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.black),
-                    ),
-                    subtitle: const Text(
-                      '',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Color(0xff2a0404), fontSize: 12),
-                    ),
-                    onTap: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (BuildContext context) =>
-
-                      //   ),
-                      // )
-                    },
-                  ),
-                ],
-              ),
-            ),
-          )),
-    );
-  }
+  List<String> loans = ['Deposits', 'Loans'];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: const Color(0xff1c3751),
         title: const Text(
-          'Settings',
-          style: TextStyle(color: Colors.black),
+          'Records',
+          style: TextStyle(fontSize: 14, fontFamily: 'times'),
         ),
-        centerTitle: true,
-        backgroundColor: Colors.white,
-        actions: <Widget>[
+        actions: [
           IconButton(
-            icon: const Icon(Icons.more_vert, color: Colors.black),
-            onPressed: () {
-              // handle the press
-            },
+            icon: const Icon(
+              Icons.search,
+              size: 20,
+            ),
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: const Icon(
+              Icons.more_vert,
+              size: 20,
+            ),
+            onPressed: () {},
           ),
         ],
+        centerTitle: true,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(48.0),
+          child: Container(
+            color: Color.fromARGB(255, 31, 62, 90),
+            height: 48.0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: List.generate(loans.length, (index) {
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      selectedMenuIndex = index;
+                    });
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                    child: Text(
+                      loans[index],
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        color: selectedMenuIndex == index
+                            ? Colors.grey
+                            : Colors.white,
+                      ),
+                    ),
+                  ),
+                );
+              }),
+            ),
+          ),
+        ),
       ),
-      body: Stack(
-        clipBehavior: Clip.none,
-        fit: StackFit.loose,
-        children: <Widget>[
-          Positioned(
-            left: 10,
-            top: 270,
-            right: 2,
-            child: Column(
-              children: <Widget>[
-                GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      Row(children: <Widget>[notifications()]),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Positioned(
-            left: 10,
-            top: 30,
-            right: 2,
-            child: Column(
-              children: <Widget>[
-                GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      Row(children: <Widget>[
-                        saccoMembers(),
-                        // userEmail(),
-                      ]),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Positioned(
-            left: 10,
-            top: 150,
-            right: 2,
-            child: Column(
-              children: <Widget>[
-                GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      Row(children: <Widget>[saccoSavings(), loans()]),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Positioned(
-            left: 52,
-            top: 390,
-            child: Column(
-              children: <Widget>[
-                GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      Row(children: <Widget>[
-                        // saccoDetails(),
-                        others(),
-                      ]),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+      body: _getBody(),
     );
+  }
+
+  Widget _getBody() {
+    switch (selectedMenuIndex) {
+      case 0:
+        return const Center(
+          child: SaccoDepositFeed(),
+        );
+
+      default:
+        return const Center(
+          child: SaccoLoanFeed(),
+        );
+    }
   }
 }

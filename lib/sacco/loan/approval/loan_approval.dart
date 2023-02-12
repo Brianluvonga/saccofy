@@ -16,13 +16,31 @@ class _LoanApprovalSectionState extends State<LoanApprovalSection> {
       borderRadius: BorderRadius.circular(30.0),
       color: Colors.white,
       child: MaterialButton(
-        padding: const EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10),
-        minWidth: 200,
+        padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10),
+        minWidth: 150,
         onPressed: () => saveStartup(),
         child: const Text(
           'Approve',
           textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 20, color: Colors.black),
+          style: TextStyle(fontSize: 16, color: Colors.black),
+        ),
+      ),
+    );
+  }
+
+  Widget declineButton() {
+    return Material(
+      elevation: 5.0,
+      borderRadius: BorderRadius.circular(30.0),
+      color: const Color(0xff1c3751),
+      child: MaterialButton(
+        padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10),
+        minWidth: 150,
+        onPressed: () => saveStartup(),
+        child: const Text(
+          'Reject',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 16, color: Colors.white),
         ),
       ),
     );
@@ -31,6 +49,8 @@ class _LoanApprovalSectionState extends State<LoanApprovalSection> {
   Widget memberContributionCard() {
     return Card(
       color: Colors.white,
+      elevation: 8.0,
+      shadowColor: Colors.black,
       child: Container(
           height: 100,
           width: 380,
@@ -68,18 +88,18 @@ class _LoanApprovalSectionState extends State<LoanApprovalSection> {
               ),
             ),
           )),
-      elevation: 8.0,
-      shadowColor: Colors.black,
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        elevation: 0,
         title: const Text(
-          'Sacco Finances',
-          style: TextStyle(color: Colors.black),
+          'Loan Request Section',
+          style: TextStyle(color: Colors.black, fontSize: 14),
         ),
         centerTitle: true,
         backgroundColor: Colors.white,
@@ -145,7 +165,13 @@ class _LoanApprovalSectionState extends State<LoanApprovalSection> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
-                      Row(children: <Widget>[approveButton()]),
+                      Row(children: <Widget>[
+                        approveButton(),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        declineButton()
+                      ]),
                     ],
                   ),
                 ),

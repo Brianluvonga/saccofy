@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class NewNotifications extends StatelessWidget {
@@ -8,8 +9,50 @@ class NewNotifications extends StatelessWidget {
     // String notifications = '';
     return Scaffold(
       appBar: AppBar(
-        title: const Icon(Icons.notifications),
-        backgroundColor: Colors.pink[400],
+        title: StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance
+              .collection('users')
+              .doc()
+              .collection('notifications')
+              .snapshots(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return const Icon(
+                Icons.notifications,
+                size: 30,
+              );
+            }
+            int count = snapshot.data!.docs.length;
+            return Stack(
+              children: [
+                IconButton(
+                  icon: const Icon(
+                    Icons.notifications,
+                    size: 20,
+                  ),
+                  onPressed: () {
+                    // handle the press
+                  },
+                ),
+                count != ''
+                    ? Positioned(
+                        right: 10,
+                        top: 10,
+                        child: Text(
+                          count.toString(),
+                          style: TextStyle(
+                            color: Colors.pink,
+                            fontSize: 15,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      )
+                    : Container(),
+              ],
+            );
+          },
+        ),
+        backgroundColor: const Color(0xff1c3751),
         elevation: 10,
         centerTitle: true,
         actions: <Widget>[

@@ -2,34 +2,50 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:saccofy/sacco/models/create_sacco_model.dart';
 
 class LoanRequest extends Sacco {
+  String? id;
   String? memberId;
-  String? amount;
+  double? loanAmount;
   String? loanPurpose;
   String? loanType;
   int? interestRate;
+  String? status;
   Timestamp? dateOfRequest;
   Timestamp? dateOfRepayment;
 
   LoanRequest(
-      {this.memberId, this.amount, this.dateOfRequest, this.dateOfRepayment});
+      {this.id,
+      this.memberId,
+      this.loanAmount,
+      this.loanPurpose,
+      this.loanType,
+      this.interestRate,
+      this.status = 'pending',
+      this.dateOfRequest,
+      this.dateOfRepayment});
 
-  LoanRequest.fromMap(Map<String, String> request) {
-    memberId = request["memberId"];
-    amount = request["amount"];
-    loanPurpose = request["loanPurpose"];
-    loanType = request["loanType"];
-    interestRate = request["interestRate"] as int?;
-    dateOfRequest = request["dateOfRequest"] as Timestamp?;
-    dateOfRepayment = request["dateOfRepayment"] as Timestamp;
+  factory LoanRequest.fromMap(Map<String, dynamic> data) {
+    return LoanRequest(
+      id: data['id'],
+      memberId: data['memberId'],
+      loanAmount: data['loanAmount'],
+      loanPurpose: data['loanPurpose'],
+      loanType: data['loanType'],
+      status: data['status'],
+      interestRate: data['interestRate'],
+      dateOfRequest: data['dateOfRequest'],
+      dateOfRepayment: data['dateOfRepayment'],
+    );
   }
 
   Map<String, dynamic> toMap() {
     return {
+      "id": id,
       "memberId": memberId,
-      "amount": amount,
+      "loanAmount": loanAmount,
       "loanPurpose": loanPurpose,
       "loanType": loanType,
       "interestRate": interestRate,
+      "status": status,
       "dateOfRequest": dateOfRequest,
       "dateOfRepayment": dateOfRepayment,
       "saccoId": saccoId,

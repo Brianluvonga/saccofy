@@ -21,12 +21,12 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
   AuthNotifier? currentUser;
 
   UserModel currentMember = UserModel();
-  @override
-  void didChangeDependencies() async {
-    super.didChangeDependencies();
-    currentMember = await getLoggedInUser(currentUser!.user!.uid);
-    setState(() {});
-  }
+  // @override
+  // void didChangeDependencies() async {
+  //   super.didChangeDependencies();
+  //   currentMember = await getLoggedInUser(currentUser!.user!.uid);
+  //   setState(() {});
+  // }
   // settings widget cards
 
   void selectedItem(BuildContext context, item) {
@@ -43,15 +43,49 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
     }
   }
 
+  Widget profilePic() {
+    UserModelNotifier? currentUser =
+        Provider.of<UserModelNotifier?>(context, listen: false);
+    return GestureDetector(
+      child: CircleAvatar(
+        radius: 40,
+        backgroundImage: NetworkImage(
+          currentUser!.currentUser.profilePic!,
+        ),
+        // child: IconButton(
+        //   icon: Icon(Icons.edit),
+        //   onPressed: () {},
+        // ),
+      ),
+      onTap: () {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return Dialog(
+              child: Container(
+                width: 400,
+                height: 400,
+                child: Image.network(
+                  currentUser.currentUser.profilePic.toString(),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
   Widget firstname() {
     UserModelNotifier? currentUser =
         Provider.of<UserModelNotifier?>(context, listen: false);
     return Card(
-      color: Colors.pink[100],
+      color: const Color.fromARGB(255, 25, 48, 71),
       elevation: 8.0,
-      shadowColor: Colors.black,
+      // shadowColor: Colors.grey,
       child: Container(
-          height: 120,
+          height: 100,
           width: 150,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15.0),
@@ -63,18 +97,17 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
               child: ListView(
                 children: <Widget>[
                   ListTile(
-                    leading: const Icon(Icons.person),
+                    leading: const Icon(Icons.person, color: Colors.grey),
                     title: const Text(
                       "Username",
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 12),
+                      style: TextStyle(fontSize: 12, color: Colors.grey),
                     ),
                     subtitle: Text(
                       "${currentUser!.currentUser.firstname!} ${currentUser.currentUser.lastname!}",
                       // '',
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
-                          color: Color.fromARGB(255, 7, 2, 7), fontSize: 10),
+                      style: const TextStyle(color: Colors.white, fontSize: 10),
                     ),
                     onTap: () {
                       // Navigator.push(
@@ -97,11 +130,11 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
     UserModelNotifier? currentUser =
         Provider.of<UserModelNotifier?>(context, listen: false);
     return Card(
-      color: Colors.pink[100],
+      color: const Color.fromARGB(255, 25, 48, 71),
       elevation: 8.0,
-      shadowColor: Colors.black,
+      // shadowColor: Colors.grey,
       child: Container(
-          height: 120,
+          height: 100,
           width: 175,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15.0),
@@ -114,19 +147,19 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
               child: ListView(
                 children: <Widget>[
                   ListTile(
-                    leading: const Icon(Icons.email_rounded),
+                    leading:
+                        const Icon(Icons.email_rounded, color: Colors.grey),
                     title: const Text(
                       "Email",
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 12),
+                      style: TextStyle(fontSize: 12, color: Colors.grey),
                     ),
                     subtitle: Text(
                       currentUser!.currentUser.email!,
 
                       // fetch from database
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
-                          color: Color(0xff2a0404), fontSize: 10),
+                      style: const TextStyle(color: Colors.white, fontSize: 10),
                     ),
                     onTap: () {
                       // Navigator.push(
@@ -149,12 +182,12 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
     UserModelNotifier? currentUser =
         Provider.of<UserModelNotifier?>(context, listen: false);
     return Card(
-      color: Colors.pink[100],
+      color: const Color.fromARGB(255, 25, 48, 71),
       elevation: 8.0,
-      shadowColor: Colors.black,
+      // shadowColor: Colors.grey,
       child: Container(
-        height: 120,
-        width: 325,
+        height: 100,
+        width: 175,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15.0),
         ),
@@ -166,29 +199,19 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
             child: ListView(
               children: <Widget>[
                 ListTile(
-                  leading: const Icon(Icons.card_membership),
+                  leading:
+                      const Icon(Icons.card_membership, color: Colors.grey),
                   title: const Text(
                     "ID NO",
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 12),
+                    style: TextStyle(fontSize: 12, color: Colors.grey),
                   ),
                   subtitle: Text(
                     currentUser!.currentUser.idno.toString(),
-
-                    // '',
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                        color: const Color(0xff2a0404), fontSize: 12),
+                    style: const TextStyle(color: Colors.white, fontSize: 10),
                   ),
-                  onTap: () {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (BuildContext context) =>
-
-                    //   ),
-                    // )
-                  },
+                  onTap: () {},
                 ),
               ],
             ),
@@ -202,11 +225,11 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
     UserModelNotifier? currentUser =
         Provider.of<UserModelNotifier?>(context, listen: false);
     return Card(
-      color: Colors.pink[100],
+      color: const Color.fromARGB(255, 25, 48, 71),
       elevation: 8.0,
-      shadowColor: Colors.black,
+      // shadowColor: Colors.grey,
       child: Container(
-        height: 120,
+        height: 100,
         width: 150,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15.0),
@@ -219,17 +242,17 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
             child: ListView(
               children: <Widget>[
                 ListTile(
-                  leading: const Icon(Icons.supervisor_account_rounded),
+                  leading: const Icon(Icons.supervisor_account_rounded,
+                      color: Colors.grey),
                   title: const Text(
                     "Gender",
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 12),
+                    style: TextStyle(fontSize: 12, color: Colors.grey),
                   ),
                   subtitle: Text(
                     currentUser!.currentUser.gender!,
                     textAlign: TextAlign.center,
-                    style:
-                        const TextStyle(color: Color(0xff2a0404), fontSize: 12),
+                    style: const TextStyle(color: Colors.white, fontSize: 10),
                   ),
                   onTap: () {
                     // Navigator.push(
@@ -253,63 +276,63 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
     UserModelNotifier? currentUser =
         Provider.of<UserModelNotifier?>(context, listen: false);
     return Card(
-      color: Colors.pink[100],
+      color: const Color.fromARGB(255, 25, 48, 71),
       elevation: 8.0,
-      shadowColor: Colors.black,
+      // shadowColor: Colors.grey,
       child: Container(
-          height: 120,
-          width: 170,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15.0),
-          ),
-          child: Container(
-            alignment: Alignment.center,
-            width: MediaQuery.of(context).size.width,
-            // height: MediaQuery.of(context).size.height * 0.16,
-            child: Center(
-              child: ListView(
-                children: <Widget>[
-                  ListTile(
-                    leading: const Icon(Icons.phone),
-                    title: const Text(
-                      "Phone No",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 12),
-                    ),
-                    subtitle: Text(
-                      currentUser!.currentUser.phonenumber!,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                          color: Color(0xff2a0404), fontSize: 12),
-                    ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (BuildContext context) => const RegisterUser(
-                            isUpdating: true,
-                          ),
-                        ),
-                      );
-                    },
+        height: 100,
+        width: 170,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        child: Container(
+          alignment: Alignment.center,
+          width: MediaQuery.of(context).size.width,
+          // height: MediaQuery.of(context).size.height * 0.16,
+          child: Center(
+            child: ListView(
+              children: <Widget>[
+                ListTile(
+                  leading: const Icon(Icons.phone, color: Colors.grey),
+                  title: const Text(
+                    "Phone No",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 12, color: Colors.grey),
                   ),
-                ],
-              ),
+                  subtitle: Text(
+                    currentUser!.currentUser.phonenumber!,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(color: Colors.white, fontSize: 10),
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => const RegisterUser(
+                          isUpdating: true,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ],
             ),
-          )),
+          ),
+        ),
+      ),
     );
   }
 
-  Widget about() {
+  Widget yob() {
     UserModelNotifier? currentUser =
         Provider.of<UserModelNotifier?>(context, listen: false);
     return Card(
-      color: Colors.pink[100],
+      color: const Color.fromARGB(255, 25, 48, 71),
       elevation: 8.0,
-      shadowColor: Colors.black,
+      // shadowColor: Colors.grey,
       child: Container(
-          height: 120,
-          width: 325,
+          height: 100,
+          width: 150,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15.0),
           ),
@@ -321,18 +344,16 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
               child: ListView(
                 children: <Widget>[
                   ListTile(
-                    leading: const Icon(Icons.info_outline),
+                    leading: const Icon(Icons.info_outline, color: Colors.grey),
                     title: const Text(
-                      "About",
+                      "Year Of Birth",
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 12),
+                      style: TextStyle(fontSize: 12, color: Colors.grey),
                     ),
-                    subtitle: const Text(
-                      // currentUser!.currentUser.!,
-                      '',
+                    subtitle: Text(
+                      currentUser!.currentUser.yob.toString(),
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
-                          color: const Color(0xff2a0404), fontSize: 12),
+                      style: const TextStyle(color: Colors.white, fontSize: 12),
                     ),
                     onTap: () {
                       // Navigator.push(
@@ -354,15 +375,17 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xff1c3751),
       appBar: AppBar(
+        elevation: 0,
         title: const Text(
-          'Settings',
-          style: TextStyle(color: Colors.black),
+          'Profile',
+          style:
+              TextStyle(color: Colors.white, fontFamily: 'times', fontSize: 14),
         ),
         centerTitle: true,
-        backgroundColor: Colors.white,
+        backgroundColor: const Color(0xff1c3751),
         actions: [
-          const Icon(Icons.more_vert, color: Colors.black),
           Theme(
             data: Theme.of(context).copyWith(
                 textTheme: const TextTheme().apply(bodyColor: Colors.black),
@@ -375,24 +398,42 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                   minHeight: 10,
                   maxHeight: 250,
                 ),
-                color: Colors.pink[200],
+                color: const Color.fromARGB(255, 25, 48, 71),
                 itemBuilder: (context) => [
                   PopupMenuItem<int>(
-                      height: 25.0,
-                      value: 0,
-                      child: Row(
-                        children: const [
-                          Icon(
-                            Icons.edit,
-                            color: Colors.red,
-                            size: 15,
-                          ),
-                          SizedBox(
-                            width: 7,
-                          ),
-                          Text("Edit Profile", style: TextStyle(fontSize: 10))
-                        ],
-                      )),
+                    height: 25.0,
+                    value: 0,
+                    child: Row(
+                      children: const [
+                        Icon(
+                          Icons.edit,
+                          color: Colors.grey,
+                          size: 15,
+                        ),
+                        SizedBox(
+                          width: 7,
+                        ),
+                        Text("Edit Profile", style: TextStyle(fontSize: 10))
+                      ],
+                    ),
+                  ),
+                  // PopupMenuItem<int>(
+                  //   height: 25.0,
+                  //   value: 0,
+                  //   child: Row(
+                  //     children: const [
+                  //       Icon(
+                  //         Icons.edit,
+                  //         color: Colors.red,
+                  //         size: 15,
+                  //       ),
+                  //       SizedBox(
+                  //         width: 7,
+                  //       ),
+                  //       Text("Log Out", style: TextStyle(fontSize: 10))
+                  //     ],
+                  //   ),
+                  // ),
                 ],
                 onSelected: (item) => selectedItem(context, item),
               ),
@@ -406,7 +447,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
         children: <Widget>[
           Positioned(
             left: 10,
-            top: 330,
+            top: 400,
             right: 2,
             child: Column(
               children: <Widget>[
@@ -417,7 +458,8 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                     children: <Widget>[
                       Row(
                         children: <Widget>[
-                          about(),
+                          yob(),
+                          idno(),
                         ],
                       ),
                     ],
@@ -428,7 +470,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
           ),
           Positioned(
             left: 10,
-            top: 30,
+            top: 140,
             right: 2,
             child: Column(
               children: <Widget>[
@@ -449,25 +491,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
           ),
           Positioned(
             left: 10,
-            top: 180,
-            right: 2,
-            child: Column(
-              children: <Widget>[
-                GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      Row(children: <Widget>[gender(), phoneNumber()]),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Positioned(
-            left: 0,
-            top: 480,
+            top: 270,
             right: 2,
             child: Column(
               children: <Widget>[
@@ -477,7 +501,28 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
                       Row(children: <Widget>[
-                        idno(),
+                        gender(),
+                        phoneNumber(),
+                      ]),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+            left: 0,
+            top: 20,
+            right: 2,
+            child: Column(
+              children: <Widget>[
+                GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Row(children: <Widget>[
+                        profilePic(),
                       ]),
                     ],
                   ),
@@ -492,5 +537,23 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
 
   Widget editProfileElement() {
     return Container();
+  }
+}
+
+class FullScreenImage extends StatelessWidget {
+  final String imageUrl;
+
+  FullScreenImage({Key? key, required this.imageUrl}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Image.network(
+          imageUrl,
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
   }
 }

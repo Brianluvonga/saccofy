@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:mpesa/mpesa.dart';
 import 'package:saccofy/payment/mpesa/functions/mpesa.dart';
+import 'package:saccofy/sacco/deposit/functions/functions.dart';
+import 'package:saccofy/sacco/deposit/model/member_contributions.dart';
+import 'package:saccofy/sacco/models/create_sacco_model.dart';
 import 'package:saccofy/user/auth/firebase/auth_notifier.dart';
+import 'package:saccofy/user/models/user_model.dart';
 
 class DepositToSacco extends StatefulWidget {
   const DepositToSacco({Key? key}) : super(key: key);
@@ -11,12 +16,20 @@ class DepositToSacco extends StatefulWidget {
 
 class _DepositToSaccoState extends State<DepositToSacco> {
   TextEditingController selectpaymentController = TextEditingController();
+  DepositService depositService =
+      DepositService(); //initialization of deposit service to sacco
+
+  Deposit? deposit;
+  Sacco sacco = Sacco();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Deposit'),
+        title: const Text(
+          'Deposit To Sacco',
+          style: TextStyle(fontSize: 16),
+        ),
         centerTitle: true,
         backgroundColor: Colors.pink,
         actions: <Widget>[
@@ -145,68 +158,6 @@ class _DepositToSaccoState extends State<DepositToSacco> {
     );
   }
 
-  String? dropdownValue;
-// business type widget
-  Widget selectPaymentMethod() {
-    return SizedBox(
-        width: 310,
-        height: 50,
-        child: DropdownButtonFormField<String>(
-          elevation: 10,
-          decoration: const InputDecoration(
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(32.0)),
-                borderSide: BorderSide(width: 1, color: Colors.black),
-              ),
-              focusedBorder: OutlineInputBorder(
-                // borderRadius: BorderRadius.all(Radius.circular(32.0)),
-                borderSide: BorderSide(width: 1, color: Colors.black),
-              ),
-              filled: true,
-              fillColor: Colors.white,
-              hintStyle: TextStyle(color: Colors.black),
-              hintText: "Select Deposit Method",
-              labelStyle: TextStyle(color: Colors.black)),
-          // itemHeight: 20.0,
-          value: dropdownValue,
-          icon: const Icon(Icons.arrow_drop_down_outlined, color: Colors.black),
-          style: const TextStyle(
-              fontSize: 12, color: Colors.black, fontFamily: 'times'),
-          // validator: (String? value) {
-          //   if (value!.isEmpty) {
-          //     return 'This field is required';
-          //   }
-          //   return null;
-          // },
-          // onSaved: (String? value) {
-          //   _startup.category = value!;
-          // },
-          // elevation: 12,
-
-          onChanged: (String? newValue) {
-            setState(() {
-              dropdownValue = newValue!;
-              selectpaymentController.text = dropdownValue!;
-            });
-          },
-          items: <String>[
-            'Mpesa',
-            'Bank',
-            // '15',
-          ].map<DropdownMenuItem<String>>(
-            (String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(
-                  value,
-                  style: const TextStyle(color: Colors.black),
-                ),
-              );
-            },
-          ).toList(),
-        ));
-  }
-
   Widget depositDetails() {
     return Row(
       children: const [
@@ -227,5 +178,30 @@ class _DepositToSaccoState extends State<DepositToSacco> {
         ),
       ],
     );
+  }
+
+  UserModel user = UserModel();
+
+// How It Should Look Lile
+// MPESA SECTION
+  Future<void> performMpesaTransaction() async {
+    // Perform the MPESA transaction here and retrieve the transaction ID
+    Mpesa pesa = Mpesa(
+        clientKey: 'clientKey',
+        clientSecret: 'clientSecret',
+        environment: 'environment',
+        passKey: 'passKey');
+
+    // Assign the transaction ID as the reference number for the deposit
+    pesa.lipaNaMpesa(
+        phoneNumber: user.phonenumber.toString(),
+        amount: deposit!.depositAmount!.toDouble(),
+        accountReference: deposit!.referenceNumber.toString(),
+        callbackUrl: 'callbackUrl') as String?;
+
+    // Add the deposit to the Firestore
+    // await depositService.addDeposit(sacco.saccoId, deposit!);
+    // ignore: use_build_context_synchronously
+    Navigator.pop(context);
   }
 }

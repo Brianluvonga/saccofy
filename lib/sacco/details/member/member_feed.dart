@@ -9,6 +9,8 @@ import 'package:saccofy/sacco/details/sacco_details.dart';
 import 'package:saccofy/sacco/details/sacco_infomation.dart';
 import 'package:saccofy/sacco/notifier/sacco_notifier.dart';
 import 'package:saccofy/user/auth/firebase/auth_notifier.dart';
+import 'package:saccofy/user/auth/firebase/user_model_notifier.dart';
+import 'package:saccofy/user/auth/firebase/user_notifier.dart';
 
 class MemberFeed extends StatefulWidget {
   const MemberFeed({Key? key, this.callBack}) : super(key: key);
@@ -24,9 +26,10 @@ class _MemberFeedState extends State<MemberFeed> {
   void initState() {
     SaccoNotifier saccoNotifier =
         Provider.of<SaccoNotifier>(context, listen: false);
-    AuthNotifier authNotifier =
-        Provider.of<AuthNotifier>(context, listen: false);
-    fetchSacco(saccoNotifier, authNotifier.user!.uid);
+    MemberNotifier memberNotifier =
+        Provider.of<MemberNotifier>(context, listen: false);
+    getSaccoMembers(
+        memberNotifier, saccoNotifier.currentSacco.saccoId.toString());
     super.initState();
   }
 
@@ -34,19 +37,23 @@ class _MemberFeedState extends State<MemberFeed> {
   Widget build(BuildContext context) {
     MemberNotifier memberNotifier =
         Provider.of<MemberNotifier>(context, listen: false);
-    AuthNotifier authNotifier =
-        Provider.of<AuthNotifier>(context, listen: false);
+    SaccoNotifier saccoNotifier =
+        Provider.of<SaccoNotifier>(context, listen: false);
 
     Future refreshList() async {
-      getSaccoMembers(memberNotifier, authNotifier.user!.uid);
+      getSaccoMembers(
+          memberNotifier, saccoNotifier.currentSacco.saccoId.toString());
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Member Feed'),
+        title: const Text(
+          'Member Feed',
+          style: TextStyle(fontFamily: 'times', fontSize: 12),
+        ),
         centerTitle: true,
-        backgroundColor: Colors.pink,
-        actions: [],
+        backgroundColor: const Color(0xff1c3751),
+        actions: const [],
       ),
       body: RefreshIndicator(
         onRefresh: refreshList,
@@ -62,11 +69,67 @@ class _MemberFeedState extends State<MemberFeed> {
     MemberNotifier memberNotifier =
         Provider.of<MemberNotifier>(context, listen: false);
 
+    return SingleChildScrollView(
+      // scrollDirection: Axis.horizontal,
+      child: Row(
+        children: List.generate(
+          memberNotifier.memberList.length,
+          (index) {
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: GestureDetector(
+                onTap: () {
+                  memberNotifier.currentMember =
+                      memberNotifier.memberList[index];
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (BuildContext context) {
+                        return const MemberDetails();
+                      },
+                    ),
+                  );
+                },
+                child: Column(
+                  children: <Widget>[
+                    SizedBox(
+                      width: 50,
+                      height: 50,
+                      child: ClipOval(
+                        child: Image.network(
+                          memberNotifier.memberList[index].profilePic
+                              .toString(),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      memberNotifier.memberList[index].firstname.toString(),
+                      style: const TextStyle(
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget memberFeedCard2() {
+    MemberNotifier memberNotifier =
+        Provider.of<MemberNotifier>(context, listen: false);
+
     return GridView.builder(
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
           maxCrossAxisExtent: 200,
           childAspectRatio: 3 / 2,
-          crossAxisSpacing: 75,
+          crossAxisSpacing: 65,
           mainAxisSpacing: 75),
       itemCount: memberNotifier.memberList.length,
       itemBuilder: (BuildContext ctx, index) {
@@ -116,9 +179,15 @@ class _MemberFeedState extends State<MemberFeed> {
 
             // subtitle:
             //     Text(memberNotifier.memberList[index].lastname.toString()),
-            leading: const Icon(
-              Icons.image_rounded,
-              size: 35,
+            leading: Container(
+              width: 40,
+              height: 40,
+              child: ClipOval(
+                child: Image.network(
+                  memberNotifier.memberList[index].profilePic.toString(),
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
             // trailing: Text(memberNotifier.memberList[index].email.toString()),
             onTap: () {

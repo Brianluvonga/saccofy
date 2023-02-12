@@ -1,9 +1,14 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:saccofy/home/homepage.dart';
 import 'package:saccofy/sacco/activate/create_sacco/add_sacco.dart';
 import 'package:saccofy/sacco/details/feed/sacco_feed.dart';
 import 'package:saccofy/sacco/notifications/new_notifications.dart';
+import 'package:saccofy/user/auth/firebase/auth_notifier.dart';
+import 'package:saccofy/user/auth/firebase/user_model_notifier.dart';
 import 'package:saccofy/user/settings/profile.dart';
+import 'package:saccofy/user/settings/setting_screen.dart';
 
 class Navigation extends StatefulWidget {
   const Navigation({Key? key}) : super(key: key);
@@ -19,7 +24,7 @@ class _NavigationState extends State<Navigation> {
     const UserHomePage(),
     const SaccoFeed(),
     const NewNotifications(),
-    const UserSettingsPage()
+    const SettingsScreen()
   ];
   void _onItemTapped(int index) {
     setState(() {
@@ -34,27 +39,30 @@ class _NavigationState extends State<Navigation> {
     return Scaffold(
       body: _classNavOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
+        iconSize: 20,
+        selectedFontSize: 12,
+        unselectedFontSize: 12,
         type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            label: '',
+            label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.change_circle_outlined),
-            label: '',
+            label: 'Saccos',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.notifications_none_sharp),
-            label: '',
+            label: 'Notifications',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
-            label: '',
+            label: 'Settings',
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.pink,
+        selectedItemColor: Color(0xff1c3751),
         onTap: _onItemTapped,
       ),
     );

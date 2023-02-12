@@ -1,10 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:saccofy/home/homepage.dart';
 import 'package:saccofy/navigation/navigation.dart';
 import 'package:saccofy/user/account/login.dart';
 import 'package:saccofy/user/account/register.dart';
 import 'package:saccofy/user/auth/firebase/auth_notifier.dart';
+import 'package:saccofy/user/auth/firebase/user_notifier.dart';
+import 'package:saccofy/user/models/user_model.dart';
 
 enum AuthState {
   loggedIn,
@@ -26,9 +29,9 @@ class _AuthStateScreenState extends State<AuthStateScreen> {
   void didChangeDependencies() async {
     super.didChangeDependencies();
 
-    AuthNotifier auth = Provider.of<AuthNotifier>(context, listen: false);
+    UserNotifier auth = Provider.of<UserNotifier>(context, listen: false);
 
-    User? backString = auth.user;
+    String backString = auth.user.id.toString();
 
     if (backString == 'sucess') {
       setState(() {

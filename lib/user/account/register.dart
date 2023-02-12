@@ -1,14 +1,16 @@
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:saccofy/builders/providers/user/user_provider.dart';
 import 'package:saccofy/user/account/login.dart';
 import 'package:saccofy/user/auth/firebase/api.dart';
 import 'package:saccofy/user/auth/firebase/auth_notifier.dart';
 import 'package:saccofy/user/auth/firebase/user_model_notifier.dart';
+import 'package:saccofy/user/auth/firebase/user_notifier.dart';
 import 'package:saccofy/user/models/user_model.dart';
+import 'package:image_picker/image_picker.dart';
 
 class RegisterUser extends StatefulWidget {
   final bool isUpdating;
@@ -30,17 +32,40 @@ class _RegisterUserState extends State<RegisterUser> {
   TextEditingController yobController = TextEditingController();
 
   TextEditingController genderController = TextEditingController();
+  TextEditingController profileController = TextEditingController();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   // ignore: prefer_final_fields
   UserModel _user = UserModel();
+  bool isUpdating = false;
+
+  //
+  File? _image;
+  // String? profileImageUrl;
+  // Future<void> fetchImage(String userId) async {
+  //   final ref = FirebaseStorage.instance.ref().child('profilePics/$userId.jpg');
+  //   try {
+  //     final url = await ref.getDownloadURL();
+  //     setState(() {
+  //       _image = url as File?;
+  //     });
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   void initState() {
     super.initState();
     UserModelNotifier authNotifier =
         Provider.of<UserModelNotifier>(context, listen: false);
+    // fetchImage(authNotifier.currentUser.id.toString());
 
     // ignore: unrelated_type_equality_checks
     if (authNotifier.currentUser != false) {
@@ -50,7 +75,64 @@ class _RegisterUserState extends State<RegisterUser> {
     }
   }
 
-  // final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final picker = ImagePicker();
+
+  Future pickImage() async {
+    var pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      _image = File(pickedFile!.path);
+    });
+  }
+
+  Widget profilePic() {
+    if (widget.isUpdating) {
+      _image = File(_user.profilePic!.toString());
+    }
+
+    return CircleAvatar(
+      radius: 30,
+      backgroundColor: const Color(0xff1c3751),
+      child: Container(
+        height: 200,
+        width: 200,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          image: DecorationImage(
+            image: _image != null
+                ? FileImage(_image!, scale: 2)
+                : const NetworkImage(
+                    "https://via.placeholder.com/150",
+                  ) as ImageProvider<Object>,
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: GestureDetector(
+          onTap: () async {
+            await pickImage();
+          },
+          child: _image == null
+              ? const Icon(
+                  Icons.add_a_photo,
+                  color: Colors.white,
+                  size: 20.0,
+                )
+              : Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      image: _image != null
+                          ? NetworkImage(
+                              _user.profilePic.toString(),
+                            ) as ImageProvider<Object>
+                          : FileImage(_image!, scale: 2),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+        ),
+      ),
+    );
+  }
 
   // ignore: non_constant_identifier_names
   Widget firstname() {
@@ -62,11 +144,11 @@ class _RegisterUserState extends State<RegisterUser> {
             labelText: 'Firstname',
             enabledBorder: OutlineInputBorder(
               // borderRadius: BorderRadius.all(Radius.circular(32.0)),
-              borderSide: BorderSide(width: 1, color: Colors.pink),
+              borderSide: BorderSide(width: 1, color: Color(0xff1c3751)),
             ),
             focusedBorder: OutlineInputBorder(
               // borderRadius: BorderRadius.all(Radius.circular(32.0)),
-              borderSide: BorderSide(width: 1, color: Colors.pink),
+              borderSide: BorderSide(width: 1, color: Color(0xff1c3751)),
             ),
             fillColor: Colors.white,
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
@@ -102,11 +184,11 @@ class _RegisterUserState extends State<RegisterUser> {
             labelText: 'Lastname',
             enabledBorder: OutlineInputBorder(
               // borderRadius: BorderRadius.all(Radius.circular(32.0)),
-              borderSide: BorderSide(width: 1, color: Colors.pink),
+              borderSide: BorderSide(width: 1, color: Color(0xff1c3751)),
             ),
             focusedBorder: OutlineInputBorder(
               // borderRadius: BorderRadius.all(Radius.circular(32.0)),
-              borderSide: BorderSide(width: 1, color: Colors.pink),
+              borderSide: BorderSide(width: 1, color: Color(0xff1c3751)),
             ),
             fillColor: Colors.white,
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
@@ -145,11 +227,11 @@ class _RegisterUserState extends State<RegisterUser> {
           labelText: 'Password',
           enabledBorder: const OutlineInputBorder(
             // borderRadius: BorderRadius.all(Radius.circular(32.0)),
-            borderSide: BorderSide(width: 1, color: Colors.pink),
+            borderSide: BorderSide(width: 1, color: Color(0xff1c3751)),
           ),
           focusedBorder: const OutlineInputBorder(
             // borderRadius: BorderRadius.all(Radius.circular(32.0)),
-            borderSide: BorderSide(width: 1, color: Colors.pink),
+            borderSide: BorderSide(width: 1, color: Color(0xff1c3751)),
           ),
           fillColor: Colors.white,
           contentPadding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
@@ -196,11 +278,11 @@ class _RegisterUserState extends State<RegisterUser> {
             labelText: 'Email Address',
             enabledBorder: OutlineInputBorder(
               // borderRadius: BorderRadius.all(Radius.circular(32.0)),
-              borderSide: BorderSide(width: 1, color: Colors.pink),
+              borderSide: BorderSide(width: 1, color: Color(0xff1c3751)),
             ),
             focusedBorder: OutlineInputBorder(
               // borderRadius: BorderRadius.all(Radius.circular(32.0)),
-              borderSide: BorderSide(width: 1, color: Colors.pink),
+              borderSide: BorderSide(width: 1, color: Color(0xff1c3751)),
             ),
             fillColor: Colors.white,
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
@@ -235,11 +317,11 @@ class _RegisterUserState extends State<RegisterUser> {
             labelText: 'Year Of Birth',
             enabledBorder: OutlineInputBorder(
               // borderRadius: BorderRadius.all(Radius.circular(32.0)),
-              borderSide: BorderSide(width: 1, color: Colors.pink),
+              borderSide: BorderSide(width: 1, color: Color(0xff1c3751)),
             ),
             focusedBorder: OutlineInputBorder(
               // borderRadius: BorderRadius.all(Radius.circular(32.0)),
-              borderSide: BorderSide(width: 1, color: Colors.pink),
+              borderSide: BorderSide(width: 1, color: Color(0xff1c3751)),
             ),
             fillColor: Colors.white,
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
@@ -274,11 +356,11 @@ class _RegisterUserState extends State<RegisterUser> {
             labelText: 'ID No',
             enabledBorder: OutlineInputBorder(
               // borderRadius: BorderRadius.all(Radius.circular(32.0)),
-              borderSide: BorderSide(width: 1, color: Colors.pink),
+              borderSide: BorderSide(width: 1, color: Color(0xff1c3751)),
             ),
             focusedBorder: OutlineInputBorder(
               // borderRadius: BorderRadius.all(Radius.circular(32.0)),
-              borderSide: BorderSide(width: 1, color: Colors.pink),
+              borderSide: BorderSide(width: 1, color: Color(0xff1c3751)),
             ),
             fillColor: Colors.white,
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
@@ -315,11 +397,11 @@ class _RegisterUserState extends State<RegisterUser> {
             labelText: 'Phone No',
             enabledBorder: OutlineInputBorder(
               // borderRadius: BorderRadius.all(Radius.circular(32.0)),
-              borderSide: BorderSide(width: 1, color: Colors.pink),
+              borderSide: BorderSide(width: 1, color: Color(0xff1c3751)),
             ),
             focusedBorder: OutlineInputBorder(
               // borderRadius: BorderRadius.all(Radius.circular(32.0)),
-              borderSide: BorderSide(width: 1, color: Colors.pink),
+              borderSide: BorderSide(width: 1, color: Color(0xff1c3751)),
             ),
             fillColor: Colors.white,
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
@@ -349,6 +431,9 @@ class _RegisterUserState extends State<RegisterUser> {
   String? dropdownValue;
 // business type widget
   Widget genderField() {
+    if (widget.isUpdating) {
+      dropdownValue = _user.gender;
+    }
     return SizedBox(
       width: 270,
       height: 55,
@@ -356,11 +441,11 @@ class _RegisterUserState extends State<RegisterUser> {
         decoration: const InputDecoration(
           enabledBorder: OutlineInputBorder(
             // borderRadius: BorderRadius.all(Radius.circular(32.0)),
-            borderSide: BorderSide(width: 1, color: Colors.pink),
+            borderSide: BorderSide(width: 1, color: Color(0xff1c3751)),
           ),
           focusedBorder: OutlineInputBorder(
             // borderRadius: BorderRadius.all(Radius.circular(32.0)),
-            borderSide: BorderSide(width: 1, color: Colors.pink),
+            borderSide: BorderSide(width: 1, color: Color(0xff1c3751)),
           ),
           filled: true,
           fillColor: Colors.white,
@@ -409,20 +494,61 @@ class _RegisterUserState extends State<RegisterUser> {
     );
   }
 
+  bool isLoading = false;
+
   Future<void> registerUserToApp() async {
     if (!_formKey.currentState!.validate()) {
       return;
     } else {
+      setState(() {
+        isLoading = true;
+      });
       _formKey.currentState!.save();
-      AuthNotifier authNotifier =
-          Provider.of<AuthNotifier>(context, listen: false);
-      registerUser(_user, widget.isUpdating, authNotifier);
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const LoginUserForm(),
-        ),
-      );
+      UserNotifier authNotifier =
+          Provider.of<UserNotifier>(context, listen: false);
+      try {
+        await registerUserTwo(
+            _user, widget.isUpdating, _image!, context, authNotifier);
+        setState(() {
+          isLoading = false;
+        });
+        if (!widget.isUpdating) {
+          // ignore: use_build_context_synchronously
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              duration: Duration(seconds: 3),
+              backgroundColor: Colors.green,
+              content: Text("Registration Successful", style: TextStyle()),
+            ),
+          );
+          // ignore: use_build_context_synchronously
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              // ignore: prefer_const_constructors
+              builder: (context) => LoginUserForm(),
+            ),
+          );
+        } else {
+          // ignore: use_build_context_synchronously
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Updated Personal Details Successfully '),
+              backgroundColor: Colors.black,
+            ),
+          );
+        }
+      } catch (e) {
+        setState(() {
+          isLoading = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Registration Not Successful: $e'),
+            backgroundColor: Colors.black,
+          ),
+        );
+      }
     }
   }
 
@@ -433,12 +559,19 @@ class _RegisterUserState extends State<RegisterUser> {
         title: Text(
           widget.isUpdating ? "Edit Profile" : "Sign Up",
           textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 20),
+          style: const TextStyle(fontSize: 14),
         ),
         centerTitle: true,
-        backgroundColor: Colors.pink[300],
+        backgroundColor: const Color(0xff1c3751),
       ),
-      body: form(),
+      body: isLoading
+          ? const Center(
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: Color(0xff1c3751),
+              ),
+            )
+          : form(),
     );
   }
 
@@ -450,39 +583,28 @@ class _RegisterUserState extends State<RegisterUser> {
         child: SingleChildScrollView(
           child: SizedBox(
             width: 350,
-            height: 600,
+            height: 650,
             child: Card(
-              shadowColor: Colors.pink[300],
+              shadowColor: const Color(0xff1c3751),
               elevation: 8.0,
-              // color: Colors.pink[100],
+              // color: Color(0xff1c3751)[100],
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(25, 20, 32, 0),
                 child: Stack(
                   children: [
                     Positioned(
-                      left: 120,
+                      left: 115,
                       top: 0,
-                      child: Column(
+                      child: Row(
+                        // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: <Widget>[
-                          GestureDetector(
-                            behavior: HitTestBehavior.translucent,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: <Widget>[
-                                Row(
-                                  children: <Widget>[
-                                    // profileImage(),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
+                          profilePic(),
                         ],
                       ),
                     ),
                     Positioned(
                       left: 10,
-                      top: 10,
+                      top: 70,
                       child: Column(
                         children: <Widget>[
                           GestureDetector(
@@ -507,7 +629,7 @@ class _RegisterUserState extends State<RegisterUser> {
                     ),
                     Positioned(
                       left: 10,
-                      top: 80,
+                      top: 140,
                       child: Column(
                         children: <Widget>[
                           GestureDetector(
@@ -528,7 +650,7 @@ class _RegisterUserState extends State<RegisterUser> {
                     ),
                     Positioned(
                       left: 10,
-                      top: 160,
+                      top: 220,
                       child: Column(
                         children: <Widget>[
                           GestureDetector(
@@ -551,7 +673,7 @@ class _RegisterUserState extends State<RegisterUser> {
                     ),
                     Positioned(
                       left: 10,
-                      top: 230,
+                      top: 290,
                       child: Column(
                         children: <Widget>[
                           GestureDetector(
@@ -572,7 +694,7 @@ class _RegisterUserState extends State<RegisterUser> {
                     ),
                     Positioned(
                       left: 10,
-                      top: 300,
+                      top: 360,
                       child: Column(
                         children: <Widget>[
                           GestureDetector(
@@ -593,7 +715,7 @@ class _RegisterUserState extends State<RegisterUser> {
                     ),
                     Positioned(
                       left: 10,
-                      top: 370,
+                      top: 430,
                       child: Column(
                         children: <Widget>[
                           GestureDetector(
@@ -603,7 +725,10 @@ class _RegisterUserState extends State<RegisterUser> {
                               children: <Widget>[
                                 Row(
                                   children: <Widget>[
-                                    password(),
+                                    Visibility(
+                                      visible: !widget.isUpdating,
+                                      child: password(),
+                                    )
                                   ],
                                 ),
                               ],
@@ -613,16 +738,16 @@ class _RegisterUserState extends State<RegisterUser> {
                       ),
                     ),
                     Positioned(
-                      left: 40,
-                      top: 440,
+                      left: 70,
+                      top: 510,
                       child: Material(
                         elevation: 5.0,
                         borderRadius: BorderRadius.circular(30.0),
-                        color: Colors.white,
+                        color: const Color(0xff1c3751),
                         child: MaterialButton(
                           padding:
                               const EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10),
-                          minWidth: 200,
+                          minWidth: 150,
                           onPressed: () {
                             registerUserToApp();
                           },
@@ -630,7 +755,7 @@ class _RegisterUserState extends State<RegisterUser> {
                             widget.isUpdating ? "Edit" : "Sign Up",
                             textAlign: TextAlign.center,
                             style: const TextStyle(
-                                fontSize: 20, color: Colors.black),
+                                fontSize: 14, color: Colors.white),
                           ),
                         ),
                       ),
@@ -638,7 +763,7 @@ class _RegisterUserState extends State<RegisterUser> {
                     const SizedBox(height: 40),
                     Positioned(
                       left: 30,
-                      top: 490,
+                      top: 540,
                       child: Column(
                         children: <Widget>[
                           GestureDetector(
@@ -688,7 +813,7 @@ class _RegisterUserState extends State<RegisterUser> {
           children: const <Widget>[
             Text(
               'Already have an account ?',
-              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
             ),
             SizedBox(
               width: 20,

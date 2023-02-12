@@ -10,12 +10,19 @@ class DisburseFundsToMember extends StatefulWidget {
 class _DisburseFundsToMemberState extends State<DisburseFundsToMember> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      body: Center(
+        child: Stack(),
+      ),
+    );
   }
 
   Widget disburseFunds() {
-    return Expanded(
-      child: Container(),
+    return Card(
+      elevation: 10,
+      child: Expanded(
+        child: Container(),
+      ),
     );
   }
 }

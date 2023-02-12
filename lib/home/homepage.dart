@@ -1,5 +1,24 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:saccofy/sacco/api/sacco_api.dart';
+import 'package:saccofy/sacco/deposit/functions/functions.dart';
+import 'package:saccofy/sacco/details/feed/sacco_feed.dart';
+import 'package:saccofy/sacco/details/member/notifier/member_notifier.dart';
+import 'package:saccofy/sacco/details/member/records/member_records.dart';
+import 'package:saccofy/sacco/notifier/sacco_notifier.dart';
+import 'package:saccofy/sacco/pages/loan/loans_section.dart';
+import 'package:saccofy/sacco/records/records.dart';
+import 'package:saccofy/user/account/register.dart';
+import 'package:saccofy/user/auth/firebase/api.dart';
+import 'package:saccofy/user/auth/firebase/auth_notifier.dart';
+
+import 'package:saccofy/user/auth/firebase/user_model_notifier.dart';
+import 'package:saccofy/user/auth/firebase/user_notifier.dart';
+import 'package:saccofy/user/models/user_model.dart';
 import 'package:saccofy/home/sampleforgot.dart';
+import 'package:saccofy/user/settings/profile.dart';
 
 class UserHomePage extends StatefulWidget {
   const UserHomePage({super.key});
@@ -9,424 +28,844 @@ class UserHomePage extends StatefulWidget {
 }
 
 class _UserHomePageState extends State<UserHomePage> {
+  UserModel currentMember = UserModel();
+  NumbersService totalDeposit = NumbersService();
+
+  @override
+  void initState() {
+    UserModelNotifier currentUser =
+        Provider.of<UserModelNotifier>(context, listen: false);
+    User? auth = FirebaseAuth.instance.currentUser;
+
+    fetchUser(currentUser, auth!.uid);
+
+    super.initState();
+  }
+
+  void selectedItem(BuildContext context, item) {
+    switch (item) {
+      case 0:
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => const MemberRecords(),
+          ),
+        );
+        break;
+      case 1:
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => const SaccoFeed(),
+          ),
+        );
+        break;
+      case 2:
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => const RegisterUser(
+              isUpdating: true,
+            ),
+          ),
+        );
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    UserModelNotifier user =
+        Provider.of<UserModelNotifier>(context, listen: false);
+    AuthNotifier currentUser =
+        Provider.of<AuthNotifier>(context, listen: false);
+    var currentMember = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(
-          color: Colors.transparent,
-          height: size.height,
-          child: Stack(
-            children: [
-              Container(
-                height: size.height * 0.25,
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment(-1.066, 1.0),
-                    end: Alignment(2.305, -2.078),
-                    colors: [Color(0xffd69cc8), Color(0xff0e7bdc)],
-                    stops: [0.0, 1.0],
-                  ),
+      backgroundColor: const Color(0xff1c3751),
+      appBar: AppBar(
+        title: const Text(
+          'Home',
+          style: TextStyle(fontSize: 14, fontFamily: 'times'),
+        ),
+        centerTitle: true,
+        backgroundColor: const Color(0xff1c3751),
+        elevation: 0,
+        actions: [
+          Theme(
+            data: Theme.of(context).copyWith(
+                textTheme: const TextTheme().apply(bodyColor: Colors.black),
+                dividerColor: const Color.fromARGB(255, 221, 219, 219),
+                iconTheme: const IconThemeData(color: Colors.white)),
+            child: Container(
+              height: 5,
+              child: PopupMenuButton<int>(
+                color: const Color.fromARGB(255, 25, 48, 71),
+                constraints: const BoxConstraints(
+                  minWidth: 50,
+                  minHeight: 10,
+                  maxHeight: 250,
                 ),
+                itemBuilder: (context) => [
+                  PopupMenuItem<int>(
+                    height: 25.0,
+                    value: 0,
+                    child: Row(
+                      children: const [
+                        Icon(
+                          Icons.history_sharp,
+                          color: Colors.grey,
+                          size: 15,
+                        ),
+                        SizedBox(
+                          width: 7,
+                        ),
+                        Text(
+                          "Records",
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: Colors.white,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  const PopupMenuDivider(
+                    height: 15,
+                  ),
+                  PopupMenuItem<int>(
+                    height: 25.0,
+                    value: 2,
+                    child: Row(
+                      children: const [
+                        Icon(
+                          Icons.account_balance,
+                          color: Colors.grey,
+                          size: 15,
+                        ),
+                        SizedBox(
+                          width: 7,
+                        ),
+                        Text(
+                          "Savings",
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: Colors.white,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+                onSelected: (item) => selectedItem(context, item),
               ),
-              Positioned(
-                top: 70.0,
-                width: size.width,
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      welcomeMsg(),
-                      SizedBox(
-                        height: 20.0,
+            ),
+          )
+        ],
+      ),
+      drawer: Drawer(
+          // backgroundColor: const Color(0xff1c3751),
+          child: ListView(
+        children: <Widget>[
+          Container(
+            height: 130,
+            child: Padding(
+              padding: const EdgeInsets.all(2),
+              child: Center(
+                child: DrawerHeader(
+                    // margin: EdgeInsets.only(top: 10, bottom: 0),
+                    decoration: const BoxDecoration(
+                        // color: Colors.white,
+                        ),
+                    child: FutureBuilder(
+                        future: fetchUser(user, currentMember!.uid),
+                        builder: ((context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Color(0xff1c3751),
+                              ),
+                            );
+                          } else {
+                            if (snapshot.hasError) {
+                              return const Center(child: Text('Error'));
+                            } else {
+                              return userDetails();
+                            }
+                          }
+                        }))),
+              ),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(
+              Icons.payments,
+              size: 20,
+              color: Color(0xff1c3751),
+            ),
+            title: const Text(
+              'Payment',
+              style: TextStyle(
+                  fontFamily: 'times',
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600),
+            ),
+            onTap: () {
+              // Perform some action when item 1 is tapped
+            },
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(
+              Icons.credit_score,
+              size: 20,
+              color: Color(0xff1c3751),
+            ),
+            title: const Text(
+              'Saccos',
+              style: TextStyle(
+                  fontFamily: 'times',
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600),
+            ),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (BuildContext context) {
+                    return const SaccoFeed();
+                  },
+                ),
+              );
+            },
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(
+              Icons.help_rounded,
+              size: 20,
+              color: Color(0xff1c3751),
+            ),
+            title: const Text(
+              'Help',
+              style: TextStyle(
+                  fontFamily: 'times',
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600),
+            ),
+            onTap: () {
+              // Perform some action when item 2 is tapped
+            },
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(
+              Icons.info_outline_rounded,
+              size: 20,
+              color: Color(0xff1c3751),
+            ),
+            title: const Text(
+              'About',
+              style: TextStyle(
+                  fontFamily: 'times',
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600),
+            ),
+            onTap: () {
+              // Perform some action when item 2 is tapped
+            },
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(
+              Icons.logout,
+              size: 20,
+              color: Color(0xff1c3751),
+            ),
+            title: const Text(
+              'Log Out',
+              style: TextStyle(
+                  fontFamily: 'times',
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600),
+            ),
+            onTap: () {
+              signOutUser(currentUser, context, currentMember.uid);
+            },
+          ),
+        ],
+      )),
+      body: Stack(
+        children: <Widget>[
+          Positioned(
+            left: 30,
+            top: 20,
+            // right: 2,
+            child: Column(
+              children: <Widget>[
+                GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          welcomeMsg(),
+                        ],
                       ),
                     ],
                   ),
                 ),
-              ),
-              Positioned(
-                top: 140.0,
-                width: size.width,
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      numbersCard(),
-                      // RichText(
-                      //   text: TextSpan(
-                      //     children: [
-                      //       TextSpan(
-                      //         text: "Have some\nproblem with",
-                      //         style: TextStyle(
-                      //           height: 1.4,
-                      //           fontSize: 30.0,
-                      //           color: Colors.black,
-                      //         ),
-                      //       ),
-                      //       TextSpan(
-                      //         text: " your Device?",
-                      //         style: TextStyle(
-                      //           fontSize: 30.0,
-                      //           fontWeight: FontWeight.w600,
-                      //           color: Colors.black,
-                      //         ),
-                      //       ),
-                      //     ],
-                      //   ),
-                      // ),
-                      SizedBox(
-                        height: 20.0,
+              ],
+            ),
+          ),
+          Positioned(
+            left: 0,
+            top: 230,
+            right: 2,
+            child: Column(
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Row(children: <Widget>[
+                      saccos(),
+                      const SizedBox(
+                        width: 10,
                       ),
-                      // LoginForm(),
+                      loans(),
+                    ]),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+            left: 10,
+            top: 60,
+            right: 10,
+            child: totalContributionsCard(),
+          ),
+          Positioned(
+            left: 0,
+            top: 400,
+            right: 2,
+            child: Column(
+              children: <Widget>[
+                GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Row(children: <Widget>[
+                        // userTotalDeposits(),
+
+                        personalUserSavings(),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        notifications()
+                      ]),
                     ],
                   ),
                 ),
-              ),
-              Positioned(
-                top: 300.0,
-                width: size.width,
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      totalDeposits(),
-                      // RichText(
-                      //   text: TextSpan(
-                      //     children: [
-                      //       TextSpan(
-                      //         text: "Have some\nproblem with",
-                      //         style: TextStyle(
-                      //           height: 1.4,
-                      //           fontSize: 30.0,
-                      //           color: Colors.black,
-                      //         ),
-                      //       ),
-                      //       TextSpan(
-                      //         text: " your Device?",
-                      //         style: TextStyle(
-                      //           fontSize: 30.0,
-                      //           fontWeight: FontWeight.w600,
-                      //           color: Colors.black,
-                      //         ),
-                      //       ),
-                      //     ],
-                      //   ),
-                      // ),
-                      SizedBox(
-                        height: 20.0,
-                      ),
-                      // LoginForm(),
-                    ],
-                  ),
-                ),
-              ),
-              Positioned(
-                top: 500.0,
-                width: size.width,
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      personalSavings(),
-                      SizedBox(
-                        height: 20.0,
-                      ),
-                    ],
-                  ),
-                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget saccos() {
+    var currentMember = FirebaseAuth.instance.currentUser;
+
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Container(
+          height: 150,
+          width: 150,
+          decoration: BoxDecoration(
+            color: const Color.fromARGB(255, 1, 18, 32),
+            borderRadius: BorderRadius.circular(30),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                spreadRadius: 1,
+                blurRadius: 1,
+                offset: const Offset(1, 1), // changes position of shadow
               ),
             ],
           ),
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 25,
+              ),
+              const Text(
+                "Saccos",
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 14,
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              FutureBuilder<int>(
+                future: getUserNumberOfSaccos(currentMember!.uid),
+                builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+                  if (snapshot.hasData) {
+                    return Text(
+                      "${snapshot.data}",
+                      style: const TextStyle(color: Colors.white, fontSize: 20),
+                    );
+                  } else if (snapshot.data == null) {
+                    return const Text("0",
+                        style: TextStyle(color: Colors.white));
+                  } else {
+                    return const CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2,
+                    );
+                  }
+                },
+              )
+            ],
+          ),
+        ),
+        Positioned(
+          top: 110,
+          left: 20,
+          right: 20,
+          child: Container(
+            padding: const EdgeInsets.all(5),
+            decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+                border: Border.all()),
+            child: const Icon(
+              Icons.keyboard_arrow_down,
+              // color: Colors.white,
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget loanWid() {
+    return Card(
+      elevation: 5,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(30),
+      ),
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) {
+                return const LoanScreenSection();
+              },
+            ),
+          );
+        },
+        child: Column(
+          children: const [
+            SizedBox(
+              height: 25,
+            ),
+            Text(
+              "Loans Section",
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 14,
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget numbersCard() {
-    return Container(
-      // width: 250,
-      // height: 130,
-      decoration: BoxDecoration(
-        // color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.white54,
-            offset: Offset(0, 10),
-            blurRadius: 10,
+  Widget loans() {
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Container(
+          height: 150,
+          width: 150,
+          decoration: BoxDecoration(
+            color: const Color.fromARGB(255, 1, 18, 32),
+            borderRadius: BorderRadius.circular(30),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                spreadRadius: 1,
+                blurRadius: 1,
+                offset: const Offset(1, 1), // changes position of shadow
+              ),
+            ],
           ),
-        ],
-      ),
-      child: Card(
-        elevation: 10,
-        child: Padding(
-          padding: const EdgeInsets.all(35),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+          child: InkWell(
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (BuildContext context) {
+                    return const LoanScreenSection();
+                  },
+                ),
+              );
+            },
+            child: Column(
+              children: [
+                const SizedBox(
+                  height: 25,
+                ),
+                const Text(
+                  "Loans Section",
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 14,
+                  ),
+                ),
+                const SizedBox(
+                  height: 25,
+                ),
+                Image.asset(
+                  'images/file2.png',
+                  width: 45,
+                  color: Colors.white,
+                )
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget notifications() {
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Container(
+          height: 150,
+          width: 150,
+          decoration: BoxDecoration(
+            color: const Color.fromARGB(255, 1, 18, 32),
+            borderRadius: BorderRadius.circular(30),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                spreadRadius: 4,
+                blurRadius: 1,
+                offset: const Offset(1, 1), // changes position of shadow
+              ),
+            ],
+          ),
+          child: Column(
             children: [
-              Column(
-                children: const [
-                  Text(
-                    'Saccos',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Text(
-                    '4',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                ],
+              SizedBox(
+                height: 25,
+              ),
+              const Text(
+                "Notifications",
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 14,
+                ),
               ),
               SizedBox(
-                width: 25,
+                height: 5,
               ),
-              Column(
-                children: const [
-                  Text(
-                    'Loans',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Text(
-                    '4',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                width: 25,
-              ),
-              Column(
-                children: const [
-                  Text(
-                    'Messages',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Text(
-                    '28',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                ],
+              StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('users')
+                    .doc()
+                    .collection('notifications')
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Icon(
+                      Icons.notifications,
+                      size: 30,
+                    );
+                  }
+                  int count = snapshot.data!.docs.length;
+                  return Stack(
+                    children: [
+                      IconButton(
+                        icon: const Icon(
+                          Icons.notifications,
+                          size: 30,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
+                          // handle the press
+                        },
+                      ),
+                      count != ''
+                          ? Positioned(
+                              right: 0,
+                              top: 10,
+                              child: Text(
+                                count.toString(),
+                                style: TextStyle(
+                                  color: Colors.pink,
+                                  fontSize: 15,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            )
+                          : Container(),
+                    ],
+                  );
+                },
               ),
             ],
           ),
         ),
-      ),
+      ],
+    );
+  }
+
+  Widget personalUserSavings() {
+    var currentMember = FirebaseAuth.instance.currentUser;
+
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Container(
+          height: 150,
+          width: 150,
+          decoration: BoxDecoration(
+            color: const Color.fromARGB(255, 1, 18, 32),
+            borderRadius: BorderRadius.circular(30),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                spreadRadius: 1,
+                blurRadius: 1,
+                offset: const Offset(1, 1), // changes position of shadow
+              ),
+            ],
+          ),
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 25,
+              ),
+              const Text(
+                "Personal Savings",
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 14,
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              FutureBuilder<double>(
+                future: checkPersonalSavings(currentMember!.uid),
+                builder:
+                    (BuildContext context, AsyncSnapshot<double> snapshot) {
+                  if (snapshot.hasData) {
+                    return Text(
+                      "${snapshot.data}",
+                      style: const TextStyle(color: Colors.white, fontSize: 20),
+                    );
+                  } else if (snapshot.data == null) {
+                    return const Text("0",
+                        style: TextStyle(color: Colors.white));
+                  } else {
+                    return const CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2,
+                    );
+                  }
+                },
+              )
+            ],
+          ),
+        ),
+        Positioned(
+          top: 110,
+          left: 20,
+          right: 20,
+          child: Container(
+            padding: const EdgeInsets.all(5),
+            decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+                border: Border.all()),
+            child: const Icon(
+              Icons.keyboard_arrow_down,
+              // color: Colors.white,
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget totalContributionsCard() {
+    var currentMember = FirebaseAuth.instance.currentUser;
+
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Container(
+          height: 150,
+          width: double.maxFinite,
+          decoration: BoxDecoration(
+            color: const Color.fromARGB(255, 1, 18, 32),
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                spreadRadius: 1,
+                blurRadius: 1,
+                offset: const Offset(1, 1), // changes position of shadow
+              ),
+            ],
+          ),
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 25,
+              ),
+              const Text(
+                "Total Sacco Deposits",
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 14,
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              FutureBuilder<double>(
+                future: totalDeposit.getUserTotalDeposit(currentMember!.uid),
+                builder:
+                    (BuildContext context, AsyncSnapshot<double> snapshot) {
+                  if (snapshot.hasData) {
+                    return Text(
+                      "${snapshot.data}",
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600),
+                    );
+                  } else if (snapshot.data == null) {
+                    return const Text("0",
+                        style: TextStyle(color: Colors.white));
+                  } else {
+                    return const CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2,
+                    );
+                  }
+                },
+              )
+            ],
+          ),
+        ),
+        Positioned(
+          top: 20,
+          // left: 20,
+          right: 25,
+          child: Container(
+            padding: const EdgeInsets.all(5),
+            // decoration: BoxDecoration(
+            //     color: Colors.white,
+            //     shape: BoxShape.circle,
+            //     border: Border.all()),
+            child: const Icon(
+              Icons.visibility,
+              color: Colors.white,
+            ),
+          ),
+        ),
+        Positioned(
+          top: 110,
+          left: 20,
+          right: 25,
+          child: Container(
+            padding: const EdgeInsets.all(5),
+            decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+                border: Border.all()),
+            child: const Icon(
+              Icons.keyboard_arrow_down,
+              // color: Colors.white,
+            ),
+          ),
+        )
+      ],
     );
   }
 
   Widget welcomeMsg() {
+    UserModelNotifier currentUser =
+        Provider.of<UserModelNotifier>(context, listen: false);
+    var currentMember = FirebaseAuth.instance.currentUser;
+
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Container(
-          child: const Text(
-            'Welcome ' + 'Brian Luvonga',
-            style: TextStyle(fontSize: 18),
-          ),
-        ),
-      ),
-    );
+        child: Text(
+      'Welcome ${currentMember!.displayName}',
+      style: const TextStyle(color: Colors.white),
+    ));
   }
 
-  Widget totalDeposits() {
-    return Container(
-      height: 150,
-      width: 10,
-      decoration: BoxDecoration(
-        color: Colors.teal[100],
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.teal,
-            offset: Offset(0, 10),
-            blurRadius: 10,
-          ),
-        ],
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: const <Widget>[
-          Text(
-            'Total Deposits',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Text(
-            '\$1,000',
-            style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  Widget userDetails() {
+    UserModelNotifier currentUser =
+        Provider.of<UserModelNotifier>(context, listen: false);
+    Future<void> refreshProfile() async {
+      fetchUser(currentUser, currentUser.currentUser.id.toString());
+    }
 
-  Widget personalSavings() {
-    return Container(
-      height: 150,
-      width: 90,
-      decoration: BoxDecoration(
-        color: Colors.indigo[100],
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.indigo,
-            offset: Offset(0, 10),
-            blurRadius: 10,
-          ),
-        ],
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: const <Widget>[
-          Text(
-            'Personal Savings',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
+    return RefreshIndicator(
+      onRefresh: refreshProfile,
+      child: ListView.separated(
+        itemBuilder: (BuildContext context, int index) {
+          return ListTile(
+            title: Text(
+              style: const TextStyle(
+                fontFamily: 'times',
+              ),
+              '${currentUser.userList[index].firstname} ${currentUser.userList[index].lastname}',
             ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Text(
-            '\$500',
-            style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
+            subtitle: Text(
+              currentUser.userList[index].email.toString(),
+              style: const TextStyle(fontFamily: 'times', fontSize: 12),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget recordsSection() {
-    var onPressedB;
-    return Center(
-      child: Container(
-        width: 200,
-        height: 50,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(
-            color: const Color.fromARGB(255, 248, 142, 177),
-            width: 1,
-          ),
-        ),
-        child: Padding(
-          padding: EdgeInsets.all(18),
-          child: Row(
-            children: const [
-              Text(
-                'View Your Records',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.black,
+            leading: CircleAvatar(
+              radius: 30,
+              backgroundImage:
+                  NetworkImage(currentUser.userList[0].profilePic.toString()),
+            ),
+            onTap: () {
+              currentUser.currentUser = currentUser.userList[index];
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (BuildContext context) {
+                    return const UserSettingsPage();
+                  },
                 ),
-              ),
-              SizedBox(
-                width: 20,
-              ),
-              Icon(Icons.arrow_right_alt)
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget saccoMembers() {
-    final List<GroupMember> groupMembers = [
-      GroupMember(name: 'Alice', imageUrl: 'https://example.com/alice.jpg'),
-      GroupMember(name: 'Bob', imageUrl: 'https://example.com/bob.jpg'),
-      GroupMember(name: 'Charlie', imageUrl: 'https://example.com/charlie.jpg'),
-      GroupMember(name: 'Dave', imageUrl: 'https://example.com/dave.jpg'),
-      GroupMember(name: 'Eve', imageUrl: 'https://example.com/eve.jpg'),
-      GroupMember(name: 'Frank', imageUrl: 'https://example.com/frank.jpg'),
-      GroupMember(name: 'Gina', imageUrl: 'https://example.com/gina.jpg'),
-      GroupMember(name: 'Harry', imageUrl: 'https://example.com/harry.jpg'),
-    ];
-
-    return Padding(
-      padding: EdgeInsets.all(16.0),
-      child: Row(
-        children: groupMembers.map((member) {
-          return Container(
-            child: Column(
-              children: [
-                Image.network(member.imageUrl),
-                Text(member.name),
-              ],
-            ),
+              );
+            },
           );
-        }).toList(),
+        },
+        itemCount: currentUser.userList.length,
+        separatorBuilder: (BuildContext context, int index) {
+          return const Divider(
+            color: Colors.black,
+          );
+        },
       ),
     );
   }
-}
-
-class GroupMember {
-  String name;
-  String imageUrl;
-
-  GroupMember({required this.name, required this.imageUrl});
 }

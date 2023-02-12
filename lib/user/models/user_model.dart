@@ -4,11 +4,12 @@ class UserModel {
   String? id;
   String? firstname;
   String? lastname;
+  String? profilePic;
   String? email;
   String? idno;
   String? yob;
   String? gender;
-  String? saccoId;
+  List saccoId = [];
   String? phonenumber;
   String? password;
   Timestamp? updatedAt;
@@ -19,6 +20,7 @@ class UserModel {
     id = user['id'];
     firstname = user['firstname'];
     lastname = user['lastname'];
+    profilePic = user['profilePic'];
     email = user['email'];
     idno = user['idno'];
     yob = user['yob'];
@@ -34,6 +36,7 @@ class UserModel {
       'id': id,
       'firstname': firstname,
       'lastname': lastname,
+      'profilePic': profilePic,
       'email': email,
       'idno': idno,
       'yob': yob,

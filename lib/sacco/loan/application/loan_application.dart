@@ -6,6 +6,7 @@ import 'package:saccofy/sacco/loan/models/loan_request_model.dart';
 import 'package:saccofy/sacco/loan/notifier/loan_notifier.dart';
 import 'package:saccofy/user/account/login.dart';
 import 'package:saccofy/user/auth/firebase/auth_notifier.dart';
+import 'package:saccofy/user/auth/firebase/user_notifier.dart';
 
 class LoanApplicationForm extends StatefulWidget {
   const LoanApplicationForm({Key? key}) : super(key: key);
@@ -29,8 +30,8 @@ class _LoanApplicationFormState extends State<LoanApplicationForm> {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: selectDate,
-      firstDate: DateTime(2022),
-      lastDate: DateTime(2023),
+      firstDate: DateTime(2023),
+      lastDate: DateTime(2030),
     );
 
     if (picked != null && picked != selectDate) {
@@ -50,8 +51,8 @@ class _LoanApplicationFormState extends State<LoanApplicationForm> {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: selectDate,
-      firstDate: DateTime(2022),
-      lastDate: DateTime(2023),
+      firstDate: DateTime(2023),
+      lastDate: DateTime(2030),
     );
     if (picked != null && picked != selectDate) {
       setState(
@@ -69,7 +70,7 @@ class _LoanApplicationFormState extends State<LoanApplicationForm> {
   Widget dateOfLoanApplication() {
     return SizedBox(
       width: 130,
-      height: 45,
+      height: 50,
       child: TextFormField(
         textCapitalization: TextCapitalization.words,
         decoration: InputDecoration(
@@ -118,7 +119,7 @@ class _LoanApplicationFormState extends State<LoanApplicationForm> {
   Widget loanType() {
     return SizedBox(
       width: 130,
-      height: 45,
+      height: 50,
       child: TextFormField(
         textCapitalization: TextCapitalization.words,
         decoration: InputDecoration(
@@ -162,7 +163,7 @@ class _LoanApplicationFormState extends State<LoanApplicationForm> {
   Widget repaymentDate() {
     return SizedBox(
       width: 270,
-      height: 45,
+      height: 50,
       child: TextFormField(
         textCapitalization: TextCapitalization.words,
         decoration: InputDecoration(
@@ -211,7 +212,7 @@ class _LoanApplicationFormState extends State<LoanApplicationForm> {
   Widget purpose() {
     return SizedBox(
       width: 270,
-      height: 45,
+      height: 50,
       child: TextFormField(
         textCapitalization: TextCapitalization.words,
         decoration: InputDecoration(
@@ -255,7 +256,7 @@ class _LoanApplicationFormState extends State<LoanApplicationForm> {
   Widget amountRequesting() {
     return SizedBox(
         width: 130,
-        height: 45,
+        height: 50,
         child: TextFormField(
           decoration: InputDecoration(
               suffixIcon: Icon(
@@ -289,7 +290,7 @@ class _LoanApplicationFormState extends State<LoanApplicationForm> {
             return null;
           },
           onSaved: (String? value) {
-            request.amount = value!;
+            request.loanAmount = value! as double?;
           },
         ));
   }
@@ -299,7 +300,7 @@ class _LoanApplicationFormState extends State<LoanApplicationForm> {
   Widget interestRate() {
     return SizedBox(
         width: 130,
-        height: 45,
+        height: 50,
         child: DropdownButtonFormField<String>(
           decoration: const InputDecoration(
               enabledBorder: OutlineInputBorder(
@@ -317,23 +318,24 @@ class _LoanApplicationFormState extends State<LoanApplicationForm> {
               labelStyle: TextStyle(color: Colors.black)),
           // itemHeight: 20.0,
           value: dropdownValue,
-          icon: const Icon(Icons.arrow_drop_down_outlined, color: Colors.black),
+          icon: Icon(Icons.arrow_drop_down_outlined, color: Colors.black),
+
           style: const TextStyle(
               fontSize: 10, color: Colors.black, fontFamily: 'times'),
-          validator: (String? value) {
-            if (value!.isEmpty) {
-              return 'This field is required';
-            }
-            return null;
-          },
-          onSaved: (String? value) {
-            request.interestRate = value! as int;
+          // validator: (value) {
+          //   if (value!.isEmpty) {
+          //     return 'This field is required';
+          //   }
+          //   return null;
+          // },
+          onSaved: (value) {
+            request.interestRate = value as int?;
           },
           elevation: 12,
 
-          onChanged: (String? newValue) {
+          onChanged: (newValue) {
             setState(() {
-              dropdownValue = newValue!;
+              dropdownValue = newValue;
               businessCategoryController.text = dropdownValue!;
             });
           },
@@ -355,26 +357,7 @@ class _LoanApplicationFormState extends State<LoanApplicationForm> {
         ));
   }
 
-  _onLoanRequest(LoanRequest request) {
-    LoanNotifier loanNotifier =
-        Provider.of<LoanNotifier>(context, listen: false);
-
-    loanNotifier.addLoan(request);
-    Navigator.pop(context);
-  }
-
   PaymentFunctions pay = PaymentFunctions();
-
-  Future<void> requestLoanFunc() async {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    } else {
-      _formKey.currentState!.save();
-      AuthNotifier authNotifier =
-          Provider.of<AuthNotifier>(context, listen: false);
-      pay.requestLoan(authNotifier.user!.uid, request, _onLoanRequest);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -382,10 +365,21 @@ class _LoanApplicationFormState extends State<LoanApplicationForm> {
       appBar: AppBar(
         title: const Text(
           "Loan Application",
-          // style: TextStyle(color: Colors.pink),
+          style: TextStyle(fontFamily: 'times', fontSize: 12),
         ),
         centerTitle: true,
-        backgroundColor: Colors.pink[300],
+        backgroundColor: const Color(0xff1c3751),
+        actions: [],
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back_ios_new,
+            color: Colors.white,
+            size: 15,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: form(),
     );
@@ -401,9 +395,9 @@ class _LoanApplicationFormState extends State<LoanApplicationForm> {
               width: 350,
               height: 600,
               child: Card(
-                shadowColor: Colors.pink[100],
+                shadowColor: const Color(0xff1c3751),
                 elevation: 8.0,
-                color: Colors.white,
+                // color: const Color(0xff1c3751),
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(25, 20, 32, 0),
                   child: Stack(
@@ -551,17 +545,17 @@ class _LoanApplicationFormState extends State<LoanApplicationForm> {
                         child: Material(
                           elevation: 5.0,
                           borderRadius: BorderRadius.circular(30.0),
-                          color: Colors.pink[300],
+                          color: Colors.white,
                           child: MaterialButton(
                             padding:
                                 const EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10),
                             minWidth: 150,
-                            onPressed: () => requestLoanFunc(),
+                            onPressed: () {},
                             child: const Text(
                               'Request Loan',
                               textAlign: TextAlign.center,
                               style:
-                                  TextStyle(fontSize: 15, color: Colors.white),
+                                  TextStyle(fontSize: 15, color: Colors.black),
                             ),
                           ),
                         ),

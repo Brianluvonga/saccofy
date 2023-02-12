@@ -82,7 +82,7 @@ class PaymentFunctions extends LoanApprovalModel {
   getMemberApprovalPercentage(Sacco sacco, int count) {
     int? percent = 100;
     String? totalPercentage = '%';
-    int? totalMembers = sacco.members!.length;
+    int? totalMembers = sacco.members.length;
   }
 
   //funds to be deposited after approval

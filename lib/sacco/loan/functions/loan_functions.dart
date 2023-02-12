@@ -1,59 +1,139 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:saccofy/payment/models/deposit_funds_model.dart';
-import 'package:saccofy/sacco/models/create_sacco_model.dart';
-import 'package:saccofy/sacco/models/loan_approval_model.dart';
-import 'package:saccofy/user/auth/firebase/auth_notifier.dart';
-import 'package:saccofy/user/models/user_model.dart';
+import 'package:saccofy/sacco/loan/models/loan_request_model.dart';
 
-CollectionReference funds = FirebaseFirestore.instance.collection('sacco');
+class LoanService {
+  final FirebaseFirestore _firestore;
+  // Add a threshold for the number of member approvals required
+  final double _approvalThreshold = 0.75;
 
-requestLoanFromSaccoMembers(AuthNotifier loanee, Sacco sacco) {
-  //request for a loan send to members in the sacco
-}
+  LoanService(this._firestore);
 
-depositFundsToSacco(
-    DepositFundsToSacco deposit, String? paymentType, String? userId) async {
-  var ans = funds.doc(userId).collection('collection');
+  Future<void> submitLoanRequest(
+      String saccoId, LoanRequest loanRequest) async {
+    // Create a new loan request document
+    CollectionReference loanRequestRef =
+        _firestore.collection("saccos").doc(saccoId).collection('loanRequests');
 
-  //make request to payment server
+    // Add the loan request ID to the loan request object
+    loanRequest.id = loanRequestRef.id;
 
-  //request granted
+    // Convert the loan request object to a map
+    Map<String, dynamic> loanRequestMap = loanRequest.toMap();
 
-  // deposit and update details to firebase collection
-  List<String>? memberDeposits = [];
-}
+    // Add the loan request map to the new loan request document
+    await loanRequestRef.add(loanRequestMap);
 
-withdrawAmountFromSacco(UserModel member, String payment) {
-  //make request to payment server
+    // Create a reference to the new loan request in the user's collection
+    DocumentReference userLoanRequestRef = _firestore
+        .collection("users")
+        .doc(loanRequest.memberId)
+        .collection("loanRequests")
+        .doc(loanRequestRef.id);
 
-  //request granted
+    // Add the loan request map to the user's loan request collection
+    await userLoanRequestRef.set(loanRequestMap);
+  }
 
-  //
-}
+  // fetch loan requests from sacco
+  Future<List<LoanRequest>> fetchLoanRequests(String saccoId) async {
+    // Get all loan requests for a user in a sacco from Firestore
+    QuerySnapshot snapshot = await _firestore
+        .collection("saccos")
+        .doc(saccoId)
+        .collection("loanRequests")
+        .get();
 
-getAmountMemberRequests(String? amount) {}
+    // Convert the snapshot data to a list of loan request objects
+    return snapshot.docs
+        .map((doc) => LoanRequest.fromMap(doc.data() as Map<String, dynamic>))
+        .toList();
+    // will store in a model
+  }
 
-sendLoanFundsToMember(UserModel member, String payment) {
-  //after members approve
+  Future<void> approveLoanRequest(
+      String saccoId, String loanRequestId, String memberId) async {
+    // Retrieve the loan request data
+    DocumentSnapshot loanRequestSnapshot = await _firestore
+        .collection("saccos")
+        .doc(saccoId)
+        .collection('loanRequests')
+        .doc(loanRequestId)
+        .get();
+    LoanRequest loanRequest =
+        LoanRequest.fromMap(loanRequestSnapshot.data() as Map<String, dynamic>);
 
-  //funds send to memmber
-}
+    // Get all member approvals for the loan request
+    QuerySnapshot snapshot = await _firestore
+        .collection("saccos")
+        .doc(saccoId)
+        .collection("loanRequests")
+        .doc(loanRequestId)
+        .collection("approvals")
+        .get();
 
-//fetch the percentage of members who approved
+    // get Approved members list
+    List<dynamic> approvals =
+        (loanRequestSnapshot.data()! as dynamic)['approvedMembers'];
+    approvals.add(memberId);
+    await _firestore
+        .collection("saccos")
+        .doc(saccoId)
+        .collection('loanRequests')
+        .doc(loanRequestId)
+        .update({'approvedMembers': approvals});
 
-getMemberApprovalPercentage(
-    MembersLoanApprovalModel? members, LoanApprovalModel member) {
-  int? totalMembers = members!.members!.length;
-  int? percentage = 100;
-  int? countMemberApprovalStatus = 0;
-  // ignore: unnecessary_null_comparison
-  if (members == null) {
-    return;
-  } else if (member.isApproved = true) {
-    countMemberApprovalStatus = countMemberApprovalStatus + 1;
-    var ans = countMemberApprovalStatus * percentage;
-    var solution = ans / totalMembers;
+    // Calculate the percentage of member approvals
+    double approvalPercentage = snapshot.size / loanRequest.members.length;
 
-    return solution;
+    // check to see if the approval percentage is greater than or equal to the member approval percentage
+    if (approvalPercentage >= _approvalThreshold) {
+      // Update the status of the loan request to "approved"
+      await _firestore
+          .collection("saccos")
+          .doc(saccoId)
+          .collection('loanRequests')
+          .doc(loanRequestId)
+          .update({'status': 'approved'});
+
+      // Retrieve the current deposit amount for the SACCO
+      DocumentSnapshot saccoSnapshot = await _firestore
+          .collection("saccos")
+          .doc(saccoId)
+          .collection('deposits')
+          .doc()
+          .get();
+      double currentDepositAmount =
+          (saccoSnapshot.data() as Map<String, dynamic>)['depositAmount'];
+      double newDepositAmount =
+          currentDepositAmount - loanRequest.loanAmount!.toDouble();
+
+      // Update the loan amount for the SACCO
+      await _firestore
+          .collection("saccos")
+          .doc(saccoId)
+          .collection('loans')
+          .doc()
+          .update({'depositAmount': newDepositAmount});
+
+      //create loan request history record
+      DocumentReference docRef = await _firestore
+          .collection('saccos')
+          .doc(loanRequest.saccoId)
+          .collection('loanRequestHistory')
+          .add(loanRequest.toMap());
+      loanRequest.id = docRef.id;
+      await docRef.set(loanRequest.toMap());
+    }
+  }
+
+  Future<void> rejectLoanRequest(
+      String memberId, String saccoId, String loanRequestId) async {
+    // Update the status of the loan request to "rejected"
+    await _firestore
+        .collection("saccos")
+        .doc(saccoId)
+        .collection('loanRequest')
+        .doc(loanRequestId)
+        .update({'status': 'rejected'});
   }
 }

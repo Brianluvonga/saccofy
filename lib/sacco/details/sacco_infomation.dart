@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:saccofy/sacco/activate/create_sacco/activate_sacco.dart';
@@ -23,12 +24,12 @@ class _SaccoDetailsState extends State<SaccoDetails> {
         Provider.of<SaccoNotifier>(context, listen: false);
 
     return Card(
-      color: Colors.pink[100],
+      color: const Color.fromARGB(255, 25, 48, 71),
       elevation: 8.0,
       shadowColor: Colors.black,
       child: Container(
         height: 80,
-        width: 150,
+        width: 120,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15.0),
         ),
@@ -43,14 +44,17 @@ class _SaccoDetailsState extends State<SaccoDetails> {
                   title: const Text(
                     "Sacco Name",
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
+                    style: TextStyle(
+                        fontFamily: 'times',
+                        fontSize: 10,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.grey),
                   ),
                   subtitle: Text(
                     saccoNotifier.currentSacco.saccoName.toString(),
                     // authNotifier.user!.displayName.toString(),
                     textAlign: TextAlign.center,
-                    style:
-                        const TextStyle(color: Color(0xff2a0404), fontSize: 10),
+                    style: const TextStyle(color: Colors.white, fontSize: 10),
                   ),
                   onTap: () {
                     // Navigator.push(
@@ -71,18 +75,16 @@ class _SaccoDetailsState extends State<SaccoDetails> {
     );
   }
 
-  loginUser() {}
-
   Widget type() {
     SaccoNotifier saccoNotifier =
         Provider.of<SaccoNotifier>(context, listen: false);
     return Card(
-      color: Colors.pink[100],
+      color: const Color.fromARGB(255, 25, 48, 71),
       elevation: 8.0,
       shadowColor: Colors.black,
       child: Container(
         height: 180,
-        width: 380,
+        width: 310,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(45.0),
         ),
@@ -93,53 +95,29 @@ class _SaccoDetailsState extends State<SaccoDetails> {
             children: <Widget>[
               Positioned(
                 top: 50,
-                left: 30,
-                child: Column(
-                  children: const [
-                    Text(
-                      'Total Contributions',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      'Kshs. 0',
-                    ),
-                  ],
+                left: 100,
+                child: Center(
+                  child: Column(
+                    children: const [
+                      Text(
+                        'Total Contributions',
+                        style: TextStyle(
+                            fontFamily: 'times',
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.grey),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        'Kshs. 0',
+                        style: TextStyle(color: Colors.white, fontSize: 20),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              Positioned(
-                top: 50,
-                right: 50,
-                child: Column(
-                  children: [
-                    Material(
-                      elevation: 5.0,
-                      borderRadius: BorderRadius.circular(40.0),
-                      color: Colors.white,
-                      child: MaterialButton(
-                        padding:
-                            const EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10),
-                        minWidth: 80,
-                        onPressed: () => loginUser(),
-                        child: const Text(
-                          'Deposit',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 12, color: Colors.black),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    // Text(
-                    //   'Kshs. 0',
-                    // ),
-                  ],
-                ),
-              )
             ],
           ),
         ),
@@ -148,65 +126,15 @@ class _SaccoDetailsState extends State<SaccoDetails> {
   }
 
   Widget invitationLink() {
-    return Card(
-      color: Colors.pink[100],
-      elevation: 8.0,
-      shadowColor: Colors.black,
-      child: Container(
-          height: 80,
-          width: 150,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15.0),
-          ),
-          child: Container(
-            alignment: Alignment.center,
-            width: MediaQuery.of(context).size.width,
-            // height: MediaQuery.of(context).size.height * 0.16,
-            child: Center(
-              child: ListView(
-                children: <Widget>[
-                  ListTile(
-                    leading: const Icon(Icons.link_sharp),
-                    title: const Text(
-                      "Join Link",
-                      textAlign: TextAlign.center,
-                      style:
-                          TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-                    ),
-                    subtitle: const Text(
-                      '',
-                      // fetch from database
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Color(0xff2a0404), fontSize: 10),
-                    ),
-                    onTap: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (BuildContext context) =>
-
-                      //   ),
-                      // )
-                    },
-                  ),
-                  // Icon(Icons.edit)
-                ],
-              ),
-            ),
-          )),
-    );
-  }
-
-  Widget members() {
     SaccoNotifier saccoNotifier =
         Provider.of<SaccoNotifier>(context, listen: false);
     return Card(
-      color: Colors.pink[100],
+      color: const Color.fromARGB(255, 25, 48, 71),
       elevation: 8.0,
       shadowColor: Colors.black,
       child: Container(
           height: 80,
-          width: 310,
+          width: 180,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15.0),
           ),
@@ -218,18 +146,21 @@ class _SaccoDetailsState extends State<SaccoDetails> {
               child: ListView(
                 children: <Widget>[
                   ListTile(
-                    leading: const Icon(Icons.people_outline),
+                    leading: const Icon(Icons.people, color: Colors.grey),
                     title: const Text(
                       "Members",
                       textAlign: TextAlign.center,
-                      style:
-                          TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                      style: TextStyle(
+                          fontSize: 10,
+                          fontFamily: 'times',
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey),
                     ),
                     subtitle: Text(
-                      saccoNotifier.currentSacco.members!.length.toString(),
+                      saccoNotifier.currentSacco.members.length.toString(),
+                      // sacco new member can join sacco with
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
-                          color: Color(0xff2a0404), fontSize: 10),
+                      style: const TextStyle(color: Colors.white, fontSize: 8),
                     ),
                     onTap: () {
                       saccoNotifier.currentSacco = saccoNotifier.saccoList[0];
@@ -249,11 +180,57 @@ class _SaccoDetailsState extends State<SaccoDetails> {
     );
   }
 
+  Widget members() {
+    SaccoNotifier saccoNotifier =
+        Provider.of<SaccoNotifier>(context, listen: false);
+    return Card(
+      color: const Color.fromARGB(255, 25, 48, 71),
+      elevation: 8.0,
+      shadowColor: Colors.black,
+      child: Container(
+          height: 80,
+          width: 310,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          child: Container(
+            alignment: Alignment.center,
+            width: MediaQuery.of(context).size.width,
+            // height: MediaQuery.of(context).size.height * 0.16,
+            child: Center(
+              child: ListView(
+                children: <Widget>[
+                  ListTile(
+                    leading: const Icon(Icons.share, color: Colors.grey),
+                    title: const Text(
+                      "Invite Code",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontFamily: 'times',
+                          fontSize: 10,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey),
+                    ),
+                    subtitle: Text(
+                      saccoNotifier.currentSacco.saccoId.toString(),
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(color: Colors.white, fontSize: 10),
+                    ),
+                    onTap: () {},
+                  ),
+                  // Icon(Icons.edit)
+                ],
+              ),
+            ),
+          )),
+    );
+  }
+
   Widget about() {
     SaccoNotifier saccoNotifier =
         Provider.of<SaccoNotifier>(context, listen: false);
     return Card(
-      color: Colors.pink[100],
+      color: const Color.fromARGB(255, 25, 48, 71),
       elevation: 8.0,
       shadowColor: Colors.black,
       child: Container(
@@ -270,18 +247,20 @@ class _SaccoDetailsState extends State<SaccoDetails> {
               child: ListView(
                 children: <Widget>[
                   ListTile(
-                    leading: const Icon(Icons.details),
+                    leading: const Icon(Icons.details, color: Colors.grey),
                     title: const Text(
                       "About Sacco",
                       textAlign: TextAlign.center,
-                      style:
-                          TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                      style: TextStyle(
+                          fontSize: 10,
+                          fontFamily: 'times',
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey),
                     ),
                     subtitle: Text(
                       saccoNotifier.currentSacco.aboutSacco.toString(),
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
-                          color: Color(0xff2a0404), fontSize: 10),
+                      style: const TextStyle(color: Colors.white, fontSize: 10),
                     ),
                     onTap: () {
                       // Navigator.push(
@@ -305,7 +284,7 @@ class _SaccoDetailsState extends State<SaccoDetails> {
     SaccoNotifier saccoNotifier =
         Provider.of<SaccoNotifier>(context, listen: false);
     return Card(
-      color: Colors.pink[100],
+      color: const Color.fromARGB(255, 25, 48, 71),
       elevation: 8.0,
       shadowColor: Colors.black,
       child: Container(
@@ -322,18 +301,21 @@ class _SaccoDetailsState extends State<SaccoDetails> {
               child: ListView(
                 children: <Widget>[
                   ListTile(
-                    leading: const Icon(Icons.info_outline_rounded),
+                    leading: const Icon(Icons.info_outline_rounded,
+                        color: Colors.grey),
                     title: const Text(
                       "Purpose",
                       textAlign: TextAlign.center,
-                      style:
-                          TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                      style: TextStyle(
+                          fontFamily: 'times',
+                          fontSize: 10,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey),
                     ),
                     subtitle: Text(
                       saccoNotifier.currentSacco.purpose.toString(),
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
-                          color: Color(0xff2a0404), fontSize: 10),
+                      style: const TextStyle(color: Colors.white, fontSize: 10),
                     ),
                     onTap: () {
                       // Navigator.push(
@@ -357,7 +339,7 @@ class _SaccoDetailsState extends State<SaccoDetails> {
     SaccoNotifier saccoNotifier =
         Provider.of<SaccoNotifier>(context, listen: false);
     return Card(
-      color: Colors.pink[100],
+      color: const Color.fromARGB(255, 25, 48, 71),
       elevation: 8.0,
       shadowColor: Colors.black,
       child: Container(
@@ -374,18 +356,20 @@ class _SaccoDetailsState extends State<SaccoDetails> {
               child: ListView(
                 children: <Widget>[
                   ListTile(
-                    leading: const Icon(Icons.info_outline),
+                    leading: const Icon(Icons.info_outline, color: Colors.grey),
                     title: const Text(
-                      "Terms & Conditions",
+                      "Terms",
                       textAlign: TextAlign.center,
-                      style:
-                          TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                      style: TextStyle(
+                          fontFamily: 'times',
+                          fontSize: 10,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey),
                     ),
                     subtitle: Text(
                       saccoNotifier.currentSacco.termconditions.toString(),
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
-                          color: Color(0xff2a0404), fontSize: 10),
+                      style: const TextStyle(color: Colors.white, fontSize: 10),
                     ),
                     onTap: () {
                       // Navigator.push(
@@ -409,7 +393,7 @@ class _SaccoDetailsState extends State<SaccoDetails> {
     SaccoNotifier saccoNotifier =
         Provider.of<SaccoNotifier>(context, listen: false);
     return Card(
-      color: Colors.pink[100],
+      color: const Color.fromARGB(255, 25, 48, 71),
       elevation: 8.0,
       shadowColor: Colors.black,
       child: Container(
@@ -426,20 +410,21 @@ class _SaccoDetailsState extends State<SaccoDetails> {
               child: ListView(
                 children: <Widget>[
                   ListTile(
-                    leading: const Icon(Icons.savings),
+                    contentPadding: const EdgeInsets.all(5),
+                    leading: const Icon(Icons.savings, color: Colors.grey),
                     title: const Text(
-                      "Accounts & Savings",
+                      "Type",
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 12,
+                          color: Colors.grey,
+                          fontFamily: 'times',
+                          fontSize: 10,
                           fontWeight: FontWeight.w600),
                     ),
                     subtitle: Text(
                       saccoNotifier.currentSacco.type.toString(),
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
-                          color: const Color(0xff2a0404), fontSize: 10),
+                      style: const TextStyle(color: Colors.white, fontSize: 10),
                     ),
                     onTap: () {
                       // Navigator.push(
@@ -460,17 +445,25 @@ class _SaccoDetailsState extends State<SaccoDetails> {
   }
 
   void selectedItem(BuildContext context, item) {
+    SaccoNotifier saccoNotifier =
+        Provider.of<SaccoNotifier>(context, listen: false);
     switch (item) {
       case 0:
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => const LoanApplicationForm()));
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => const ActivateSacco(
+              isUpdating: true,
+            ),
+          ),
+        );
         break;
       case 1:
         Navigator.of(context).push(
           MaterialPageRoute(
-              builder: (context) => ActivateSacco(
-                    isUpdating: true,
-                  )),
+            builder: (context) => const ActivateSacco(
+              isUpdating: true,
+            ),
+          ),
         );
         break;
       // case 2:
@@ -496,207 +489,182 @@ class _SaccoDetailsState extends State<SaccoDetails> {
     SaccoNotifier saccoNotifier =
         Provider.of<SaccoNotifier>(context, listen: false);
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          saccoNotifier.currentSacco.saccoName.toString(),
-          style: TextStyle(color: Colors.black, fontSize: 14),
-        ),
-        centerTitle: true,
-        elevation: 40,
-        backgroundColor: Colors.white,
-        actions: [
-          const Icon(Icons.more_vert, color: Colors.black),
-          Theme(
-            data: Theme.of(context).copyWith(
-                textTheme: const TextTheme().apply(bodyColor: Colors.black),
-                dividerColor: Colors.white,
-                iconTheme: const IconThemeData(color: Colors.white)),
-            child: Container(
-              height: 5,
-              child: PopupMenuButton<int>(
-                constraints: const BoxConstraints(
-                  minHeight: 10,
-                  maxHeight: 250,
-                ),
-                color: Colors.pink[200],
-                itemBuilder: (context) => [
-                  PopupMenuItem<int>(
+        backgroundColor: const Color(0xff1c3751),
+        appBar: AppBar(
+          backgroundColor: const Color(0xff1c3751),
+          title: Text(
+            saccoNotifier.currentSacco.saccoName.toString(),
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 14,
+            ),
+          ),
+          centerTitle: true,
+          elevation: 0,
+          actions: [
+            Theme(
+              data: Theme.of(context).copyWith(
+                  textTheme: const TextTheme().apply(bodyColor: Colors.black),
+                  dividerColor: Colors.white,
+                  iconTheme: const IconThemeData(color: Colors.white)),
+              child: Container(
+                height: 5,
+                child: PopupMenuButton<int>(
+                  constraints: const BoxConstraints(
+                      minHeight: 10, maxHeight: 250, minWidth: 50),
+                  color: const Color.fromARGB(255, 25, 48, 71),
+                  itemBuilder: (context) => [
+                    PopupMenuItem<int>(
                       height: 25.0,
                       value: 0,
                       child: Row(
                         children: const [
                           Icon(
-                            Icons.monetization_on,
-                            color: Colors.red,
+                            Icons.edit,
+                            color: Colors.grey,
                             size: 15,
                           ),
                           SizedBox(
                             width: 7,
                           ),
-                          Text("Apply Loan", style: TextStyle(fontSize: 10))
+                          Text("Edit Sacco", style: TextStyle(fontSize: 10))
                         ],
-                      )),
-                  // const PopupMenuDivider(),
-                  // PopupMenuItem<int>(
-                  //   height: 25.0,
-                  //   value: 1,
-                  //   child: Row(
-                  //     children: const [
-                  //       Icon(
-                  //         Icons.history,
-                  //         color: Colors.red,
-                  //         size: 15,
-                  //       ),
-                  //       SizedBox(
-                  //         width: 7,
-                  //       ),
-                  //       Text("Records", style: TextStyle(fontSize: 10))
-                  //     ],
-                  //   ),
-                  // ),
-                  const PopupMenuDivider(),
-                  PopupMenuItem<int>(
-                    height: 25.0,
-                    value: 1,
-                    child: Row(
-                      children: const [
-                        Icon(
-                          Icons.edit,
-                          color: Colors.red,
-                          size: 15,
-                        ),
-                        SizedBox(
-                          width: 7,
-                        ),
-                        Text("Edit Sacco", style: TextStyle(fontSize: 10))
-                      ],
+                      ),
                     ),
-                  ),
-                  // const PopupMenuDivider(),
-                  // PopupMenuItem<int>(
-                  //     height: 25.0,
-                  //     value: 2,
-                  //     child: Row(
-                  //       children: const [
-                  //         Icon(
-                  //           Icons.logout,
-                  //           color: Colors.red,
-                  //           size: 15,
-                  //         ),
-                  //         SizedBox(
-                  //           width: 7,
-                  //         ),
-                  //         Text("Logout", style: TextStyle(fontSize: 10))
-                  //       ],
-                  //     )),
-                ],
-                onSelected: (item) => selectedItem(context, item),
+                    // PopupMenuItem<int>(
+                    //   height: 25.0,
+                    //   value: 0,
+                    //   child: Row(
+                    //     children: const [
+                    //       Icon(
+                    //         Icons.edit,
+                    //         color: Colors.red,
+                    //         size: 15,
+                    //       ),
+                    //       SizedBox(
+                    //         width: 7,
+                    //       ),
+                    //       Text("Log Out", style: TextStyle(fontSize: 10))
+                    //     ],
+                    //   ),
+                    // ),
+                  ],
+                  onSelected: (item) => selectedItem(context, item),
+                ),
               ),
-            ),
-          )
-        ],
-      ),
-      // drawer: const Drawer(backgroundColor: Colors.black),
-      body: Stack(
-        clipBehavior: Clip.none,
-        fit: StackFit.loose,
-        children: <Widget>[
-          Positioned(
-            top: 5,
-            left: 10,
-            child: Column(
+            )
+          ],
+        ),
+        // drawer: const Drawer(backgroundColor: Colors.black),
+        body: StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance.collection('saccos').snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) return CircularProgressIndicator();
+            return Stack(
+              clipBehavior: Clip.none,
+              fit: StackFit.loose,
               children: <Widget>[
-                GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                Positioned(
+                  top: 30,
+                  left: 50,
+                  child: Column(
                     children: <Widget>[
-                      Row(children: <Widget>[type()]),
+                      GestureDetector(
+                        behavior: HitTestBehavior.translucent,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            Row(
+                              children: <Widget>[
+                                type(),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Positioned(
+                  left: 5,
+                  top: 530,
+                  right: 2,
+                  child: Column(
+                    children: <Widget>[
+                      GestureDetector(
+                        behavior: HitTestBehavior.translucent,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            Row(children: <Widget>[
+                              termsAndConditions(),
+                              accountAndSavings()
+                            ]),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Positioned(
+                  left: 10,
+                  top: 230,
+                  right: 2,
+                  child: Column(
+                    children: <Widget>[
+                      GestureDetector(
+                        behavior: HitTestBehavior.translucent,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            Row(children: <Widget>[
+                              sacconame(),
+                              invitationLink(),
+                            ]),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Positioned(
+                  left: 50,
+                  top: 330,
+                  child: Column(
+                    children: <Widget>[
+                      GestureDetector(
+                        behavior: HitTestBehavior.translucent,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            Row(children: <Widget>[members()]),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Positioned(
+                  left: 6,
+                  top: 430,
+                  right: 2,
+                  child: Column(
+                    children: <Widget>[
+                      GestureDetector(
+                        behavior: HitTestBehavior.translucent,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            Row(children: <Widget>[about(), purpose()]),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ],
-            ),
-          ),
-          Positioned(
-            left: 5,
-            top: 470,
-            right: 2,
-            child: Column(
-              children: <Widget>[
-                GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      Row(children: <Widget>[
-                        termsAndConditions(),
-                        accountAndSavings()
-                      ]),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Positioned(
-            left: 10,
-            top: 200,
-            right: 2,
-            child: Column(
-              children: <Widget>[
-                GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      Row(children: <Widget>[
-                        sacconame(),
-                        invitationLink(),
-                      ]),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Positioned(
-            left: 50,
-            top: 290,
-            child: Column(
-              children: <Widget>[
-                GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      Row(children: <Widget>[members()]),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Positioned(
-            left: 6,
-            top: 380,
-            right: 2,
-            child: Column(
-              children: <Widget>[
-                GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      Row(children: <Widget>[about(), purpose()]),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+            );
+          },
+        ));
   }
 }

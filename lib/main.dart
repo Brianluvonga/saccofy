@@ -1,26 +1,22 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:saccofy/home/homepage.dart';
-import 'package:saccofy/home/sampleforgot.dart';
-import 'package:saccofy/navigation/navigation.dart';
-import 'package:saccofy/payment/contributions/sacco_contribution_details.dart';
-import 'package:saccofy/sacco/deposit/deposit_to_sacco.dart';
-import 'package:saccofy/sacco/details/member/notifier/member_notifier.dart';
+import 'package:saccofy/sacco/contributions/member/individual_contribution.dart';
 
-import 'package:saccofy/sacco/details/member/view_member_details.dart';
-import 'package:saccofy/sacco/details/sacco_details.dart';
-import 'package:saccofy/sacco/loan/application/loan_application.dart';
+import 'package:saccofy/sacco/deposit/deposit_to_sacco.dart';
+import 'package:saccofy/sacco/deposit/notifier/deposit_notifier.dart';
+import 'package:saccofy/sacco/details/member/notifier/member_notifier.dart';
+import 'package:saccofy/sacco/loan/records/loan_records.dart';
 
 import 'package:saccofy/sacco/notifier/sacco_notifier.dart';
-import 'package:saccofy/sacco/pages/home/home.dart';
 import 'package:saccofy/state/auth_state_redirect.dart';
-import 'package:saccofy/user/account/login.dart';
-import 'package:saccofy/user/account/reset_password.dart';
+import 'package:saccofy/user/account/register.dart';
 
 import 'package:saccofy/user/auth/firebase/auth_notifier.dart';
 import 'package:saccofy/user/auth/firebase/user_model_notifier.dart';
-import 'package:saccofy/user/settings/profile.dart';
+import 'package:saccofy/home/homepage.dart';
+import 'package:saccofy/user/auth/firebase/user_notifier.dart';
 
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,10 +44,16 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => MemberNotifier(),
         ),
+        ChangeNotifierProvider(
+          create: (_) => UserNotifier(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => DepositNotifier(),
+        )
       ],
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: SaccoHomePage(),
+        home: AuthStateScreen(),
       ),
     );
   }

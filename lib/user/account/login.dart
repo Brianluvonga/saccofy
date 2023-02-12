@@ -4,10 +4,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:saccofy/home/homepage.dart';
 import 'package:saccofy/navigation/navigation.dart';
 import 'package:saccofy/user/account/register.dart';
 import 'package:saccofy/user/account/reset_password.dart';
 import 'package:saccofy/user/auth/firebase/api.dart';
+import 'package:saccofy/user/auth/firebase/user_notifier.dart';
+
 import 'package:saccofy/user/auth/firebase/auth_notifier.dart';
 import 'package:saccofy/user/auth/firebase/user_model_notifier.dart';
 import 'package:saccofy/user/models/user_model.dart';
@@ -24,53 +27,77 @@ class _LoginUserFormState extends State<LoginUserForm> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passController = TextEditingController();
 
+  bool isLoggingIn = false;
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   // ignore: prefer_final_fields
   UserModel _user = UserModel();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  UserModelNotifier userNotifier = UserModelNotifier();
+  AuthNotifier authNotifier = AuthNotifier();
 
   //
   //
 
   @override
   void initState() {
+    // UserNotifier authNotifier =
+    //     Provider.of<UserNotifier>(context, listen: false);
     AuthNotifier authNotifier =
         Provider.of<AuthNotifier>(context, listen: false);
     initializeCurrentUser(authNotifier);
+
     super.initState();
   }
 
-  Future<void> _loginUserEmailAndPassword() async {
-    try {
-      final UserCredential user = await _auth.signInWithEmailAndPassword(
-          email: emailController.toString(),
-          password: passController.toString());
-      User? currentUser = user.user;
-      currentUser;
-      // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          duration: const Duration(seconds: 1),
-          backgroundColor: Colors.red[600],
-          content: const Text("Login Successful", style: TextStyle()),
-        ),
-      );
-      // ignore: use_build_context_synchronously
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const Navigation(),
-        ),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          backgroundColor: Colors.black,
-          content: Text(
-              "Login Not Successful, invalid credentials or poor internet connection"),
-        ),
-      );
+  loginUserEmailAndPassword() async {
+    if (_formKey.currentState!.validate()) {
+      setState(() {
+        isLoggingIn = true;
+      });
+
+      try {
+        // _formKey.currentState!.save();
+        var result = (await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: emailController.text.trim(),
+          password: passController.text.trim(),
+        ))
+            .user;
+        initializeCurrentUser(authNotifier);
+        result;
+
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            duration: Duration(seconds: 2),
+            backgroundColor: Colors.green,
+            content: Text("Login Successful", style: TextStyle()),
+          ),
+        );
+
+        // ignore: use_build_context_synchronously
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const Navigation(),
+          ),
+        );
+      } catch (e) {
+        print(e); // Print the exception message for debugging
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            duration: Duration(seconds: 1),
+            backgroundColor: Colors.red,
+            content: Text("Login Not Successful: ${e}", style: TextStyle()),
+          ),
+        );
+      } finally {
+        setState(
+          () {
+            isLoggingIn = false;
+          },
+        );
+      }
     }
   }
 
@@ -82,11 +109,11 @@ class _LoginUserFormState extends State<LoginUserForm> {
           labelText: 'Email Address',
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(32.0)),
-            borderSide: BorderSide(width: 1, color: Colors.pink),
+            borderSide: BorderSide(width: 1, color: Color(0xff1c3751)),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(32.0)),
-            borderSide: BorderSide(width: 1, color: Colors.pink),
+            borderSide: BorderSide(width: 1, color: Color(0xff1c3751)),
           ),
           fillColor: Colors.white,
           contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
@@ -126,11 +153,11 @@ class _LoginUserFormState extends State<LoginUserForm> {
             labelText: 'Password',
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(32.0)),
-              borderSide: BorderSide(width: 1, color: Colors.pink),
+              borderSide: BorderSide(width: 1, color: Color(0xff1c3751)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(32.0)),
-              borderSide: BorderSide(width: 1, color: Colors.pink),
+              borderSide: BorderSide(width: 1, color: Color(0xff1c3751)),
             ),
             fillColor: Colors.white,
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
@@ -156,43 +183,6 @@ class _LoginUserFormState extends State<LoginUserForm> {
     );
   }
 
-  Future<void> loginUser() async {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    } else {
-      try {
-        _formKey.currentState!.save();
-
-        UserModelNotifier authNotifier =
-            Provider.of<UserModelNotifier>(context, listen: false);
-        signInUser(_user, authNotifier);
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            duration: const Duration(seconds: 1),
-            backgroundColor: Colors.red[600],
-            content: const Text("Login Successful", style: TextStyle()),
-          ),
-        );
-        // ignore: use_build_context_synchronously
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const Navigation(),
-          ),
-        );
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            backgroundColor: Colors.black,
-            content: Text(
-                "Login Not Successful, invalid credentials or poor internet connection"),
-          ),
-        );
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -202,9 +192,16 @@ class _LoginUserFormState extends State<LoginUserForm> {
           style: TextStyle(color: Colors.white, fontSize: 14),
         ),
         centerTitle: true,
-        backgroundColor: Colors.pink[300],
+        backgroundColor: const Color(0xff1c3751),
       ),
-      body: form(),
+      body: isLoggingIn
+          ? const Center(
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: Color(0xff1c3751),
+              ),
+            )
+          : form(),
     );
   }
 
@@ -248,7 +245,7 @@ class _LoginUserFormState extends State<LoginUserForm> {
             width: 350,
             height: 530,
             child: Card(
-              shadowColor: Colors.pink,
+              shadowColor: const Color(0xff1c3751),
               elevation: 8.0,
               color: Colors.white,
               child: Padding(
@@ -350,21 +347,21 @@ class _LoginUserFormState extends State<LoginUserForm> {
                       ),
                     ),
                     Positioned(
-                      left: 40,
+                      left: 70,
                       top: 270,
                       child: Material(
                         elevation: 5.0,
                         borderRadius: BorderRadius.circular(30.0),
-                        color: Colors.white,
+                        color: const Color(0xff1c3751),
                         child: MaterialButton(
                           padding:
                               const EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10),
-                          minWidth: 200,
-                          onPressed: () => loginUser(),
+                          minWidth: 150,
+                          onPressed: () => loginUserEmailAndPassword(),
                           child: const Text(
                             'Login',
                             textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 20, color: Colors.black),
+                            style: TextStyle(fontSize: 14, color: Colors.white),
                           ),
                         ),
                       ),
