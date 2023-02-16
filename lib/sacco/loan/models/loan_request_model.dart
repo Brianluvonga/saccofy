@@ -4,20 +4,18 @@ import 'package:saccofy/sacco/models/create_sacco_model.dart';
 class LoanRequest extends Sacco {
   String? id;
   String? memberId;
-  double? loanAmount;
+  String? loanAmount;
   String? loanPurpose;
-  String? loanType;
-  int? interestRate;
+  String? interestRate;
   String? status;
-  Timestamp? dateOfRequest;
-  Timestamp? dateOfRepayment;
+  String? dateOfRequest;
+  String? dateOfRepayment;
 
   LoanRequest(
       {this.id,
       this.memberId,
       this.loanAmount,
       this.loanPurpose,
-      this.loanType,
       this.interestRate,
       this.status = 'pending',
       this.dateOfRequest,
@@ -29,7 +27,6 @@ class LoanRequest extends Sacco {
       memberId: data['memberId'],
       loanAmount: data['loanAmount'],
       loanPurpose: data['loanPurpose'],
-      loanType: data['loanType'],
       status: data['status'],
       interestRate: data['interestRate'],
       dateOfRequest: data['dateOfRequest'],
@@ -43,12 +40,10 @@ class LoanRequest extends Sacco {
       "memberId": memberId,
       "loanAmount": loanAmount,
       "loanPurpose": loanPurpose,
-      "loanType": loanType,
       "interestRate": interestRate,
       "status": status,
       "dateOfRequest": dateOfRequest,
       "dateOfRepayment": dateOfRepayment,
-      "saccoId": saccoId,
     };
   }
 }

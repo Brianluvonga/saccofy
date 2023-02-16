@@ -9,6 +9,7 @@ import 'package:saccofy/sacco/details/member/notifier/member_notifier.dart';
 import 'package:saccofy/sacco/details/member/view_member_details.dart';
 import 'package:saccofy/sacco/details/sacco_infomation.dart';
 import 'package:saccofy/sacco/loan/application/loan_application.dart';
+import 'package:saccofy/sacco/loan/feed/loan_feed.dart';
 import 'package:saccofy/sacco/notifier/sacco_notifier.dart';
 import 'package:saccofy/sacco/pages/member/add/add_member.dart';
 import 'package:saccofy/sacco/records/loan/loan_records.dart';
@@ -42,12 +43,16 @@ class _SaccoHomePageState extends State<SaccoHomePage> {
   ActionType action = ActionType.contributions;
 
   void selectedItem(BuildContext context, item) {
+    SaccoNotifier saccoNotifier =
+        Provider.of<SaccoNotifier>(context, listen: false);
     switch (item) {
       case 0:
         Navigator.of(context).push(
             MaterialPageRoute(builder: (context) => const SaccoDetails()));
         break;
       case 1:
+        saccoNotifier.currentSacco = saccoNotifier.saccoList[0];
+
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => const SaccoRecords(),
@@ -332,7 +337,7 @@ class _SaccoHomePageState extends State<SaccoHomePage> {
                 ),
               ),
               Positioned(
-                top: 410.0,
+                top: 290.0,
                 left: -30,
                 width: size.width,
                 child: Container(
@@ -351,61 +356,7 @@ class _SaccoHomePageState extends State<SaccoHomePage> {
                 ),
               ),
               Positioned(
-                top: 300.0,
-                left: -5,
-                width: size.width,
-                child: Container(
-                  // padding: const EdgeInsets.symmetric(horizontal: 50.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      headersTitle('Actions'),
-                      const SizedBox(
-                        height: 20.0,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Positioned(
                 top: 340.0,
-                left: 0,
-                width: size.width,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      saccoActions(),
-                    ],
-                  ),
-                ),
-              ),
-              Positioned(
-                top: 383.0,
-                left: 0,
-                width: size.width,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      actionTitles(),
-                      const SizedBox(
-                        height: 20.0,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Positioned(
-                top: 460.0,
                 width: size.width,
                 child: Padding(
                   padding: const EdgeInsets.only(left: 10, right: 10),
@@ -426,6 +377,7 @@ class _SaccoHomePageState extends State<SaccoHomePage> {
                       const SizedBox(
                         width: 16,
                       ),
+                      getButtonUI(ActionType.paid, action == ActionType.paid),
                     ],
                   ),
                 ),
@@ -579,50 +531,6 @@ class _SaccoHomePageState extends State<SaccoHomePage> {
     );
   }
 
-  Widget addNewMember() {
-    return IconButton(
-        icon: const Icon(
-          Icons.add_circle_outline,
-          size: 25,
-        ),
-        color: Colors.black,
-        onPressed: () {});
-  }
-
-  Widget saccoActions() {
-    return Row(
-      children: [
-        Card(
-          color: Color(0xff1c3751),
-          child: Padding(
-            padding: EdgeInsets.all(11),
-            child: Image.asset(
-              'images/deposit.png',
-              width: 18,
-              color: Colors.white,
-            ),
-            // Icon(Icons.savings_outlined, color: Colors.white),
-          ),
-        ),
-        SizedBox(
-          width: 10,
-        ),
-        Card(
-          color: Color(0xff1c3751),
-          child: Padding(
-            padding: EdgeInsets.all(11),
-            child: Image.asset(
-              'images/file2.png',
-              width: 18,
-              color: Colors.white,
-            ),
-            // Icon(Icons.savings_outlined, color: Colors.white),
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget headersTitle(String title) {
     return Center(
       child: Padding(
@@ -674,11 +582,13 @@ class _SaccoHomePageState extends State<SaccoHomePage> {
   Widget getButtonUI(ActionType actionTypeData, bool isSelected) {
     String txt = '';
     if (ActionType.contributions == actionTypeData) {
-      txt = 'Contributions';
+      txt = 'Deposits';
     } else if (ActionType.loanRequests == actionTypeData) {
       txt = 'Requests';
     } else if (ActionType.loansDisbursed == actionTypeData) {
       txt = 'Disbursed';
+    } else if (ActionType.paid == actionTypeData) {
+      txt = 'Paid';
     }
 
     return Expanded(
@@ -782,4 +692,5 @@ enum ActionType {
   contributions,
   loanRequests,
   loansDisbursed,
+  paid,
 }

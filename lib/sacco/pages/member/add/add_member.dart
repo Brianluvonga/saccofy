@@ -83,7 +83,7 @@ class _AddMemberToSaccoState extends State<AddMemberToSacco> {
 
   bool isAddingMember = false;
 
-  // action done by any member that has been added to the sacco
+  // action done by any member in the sacco
   addMember() async {
     SaccoNotifier saccoNotifier =
         Provider.of<SaccoNotifier>(context, listen: false);

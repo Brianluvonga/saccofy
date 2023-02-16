@@ -7,6 +7,8 @@ import 'package:saccofy/sacco/contributions/member/individual_contribution.dart'
 import 'package:saccofy/sacco/deposit/deposit_to_sacco.dart';
 import 'package:saccofy/sacco/deposit/notifier/deposit_notifier.dart';
 import 'package:saccofy/sacco/details/member/notifier/member_notifier.dart';
+import 'package:saccofy/sacco/loan/notifier/loan_notifier.dart';
+import 'package:saccofy/sacco/loan/notifier/loan_request_notifier.dart';
 import 'package:saccofy/sacco/loan/records/loan_records.dart';
 
 import 'package:saccofy/sacco/notifier/sacco_notifier.dart';
@@ -49,6 +51,12 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (_) => DepositNotifier(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => LoanRequestNotifier(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => LoanNotifier(),
         )
       ],
       child: const MaterialApp(

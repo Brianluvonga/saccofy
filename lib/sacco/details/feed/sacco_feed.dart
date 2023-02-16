@@ -121,22 +121,22 @@ class _SaccoFeedState extends State<SaccoFeed> {
           shape: const CircleBorder(), //shape of button
 
           children: [
-            SpeedDialChild(
-              child: const Icon(Icons.join_inner_sharp),
-              backgroundColor: Colors.pink[300],
-              foregroundColor: Colors.white,
-              label: 'Join A Sacco',
-              labelStyle: const TextStyle(fontSize: 15.0),
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (BuildContext context) {
-                      return const JoinSaccoScreen();
-                    },
-                  ),
-                );
-              },
-            ),
+            // SpeedDialChild(
+            //   child: const Icon(Icons.join_inner_sharp),
+            //   backgroundColor: Colors.pink[300],
+            //   foregroundColor: Colors.white,
+            //   label: 'Join A Sacco',
+            //   labelStyle: const TextStyle(fontSize: 15.0),
+            //   onTap: () {
+            //     Navigator.of(context).push(
+            //       MaterialPageRoute(
+            //         builder: (BuildContext context) {
+            //           return const JoinSaccoScreen();
+            //         },
+            //       ),
+            //     );
+            //   },
+            // ),
             SpeedDialChild(
               child: const Icon(Icons.add),
               foregroundColor: Colors.white,
