@@ -357,8 +357,6 @@ class _UserHomePageState extends State<UserHomePage> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
                       Row(children: <Widget>[
-                        // userTotalDeposits(),
-
                         personalUserSavings(),
                         const SizedBox(
                           width: 10,
@@ -421,7 +419,7 @@ class _UserHomePageState extends State<UserHomePage> {
                       style: const TextStyle(color: Colors.white, fontSize: 20),
                     );
                   } else if (snapshot.data == null) {
-                    return const Text("0",
+                    return const Text("You Don't Belong To Any Sacco",
                         style: TextStyle(color: Colors.white));
                   } else {
                     return const CircularProgressIndicator(
@@ -451,41 +449,6 @@ class _UserHomePageState extends State<UserHomePage> {
           ),
         )
       ],
-    );
-  }
-
-  Widget loanWid() {
-    return Card(
-      elevation: 5,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(30),
-      ),
-      child: InkWell(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (BuildContext context) {
-                return const LoanScreenSection();
-              },
-            ),
-          );
-        },
-        child: Column(
-          children: const [
-            SizedBox(
-              height: 25,
-            ),
-            Text(
-              "Loans Section",
-              style: TextStyle(
-                color: Colors.grey,
-                fontSize: 14,
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 

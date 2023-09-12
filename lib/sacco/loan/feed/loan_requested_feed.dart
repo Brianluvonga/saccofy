@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:saccofy/sacco/loan/feed/loan_details.dart';
 import 'package:saccofy/sacco/loan/functions/loan_functions.dart';
-import 'package:saccofy/sacco/loan/models/loan_request_model.dart';
-import 'package:saccofy/sacco/loan/notifier/loan_notifier.dart';
+
 import 'package:saccofy/sacco/loan/notifier/loan_request_notifier.dart';
 import 'package:saccofy/sacco/notifier/sacco_notifier.dart';
-import 'package:saccofy/user/auth/firebase/auth_notifier.dart';
 import 'package:saccofy/user/auth/firebase/user_model_notifier.dart';
 
 class SaccoLoanRequestFeed extends StatefulWidget {

@@ -8,14 +8,14 @@ import 'package:saccofy/sacco/loan/notifier/loan_request_notifier.dart';
 import 'package:saccofy/sacco/loan/notifier/member_approval_notifier.dart';
 import 'package:saccofy/sacco/notifier/sacco_notifier.dart';
 
-class LoanDetails extends StatefulWidget {
-  const LoanDetails({super.key});
+class IndividualLoanDetails extends StatefulWidget {
+  const IndividualLoanDetails({super.key});
 
   @override
-  State<LoanDetails> createState() => _LoanDetailsState();
+  State<IndividualLoanDetails> createState() => _IndividualLoanDetailsState();
 }
 
-class _LoanDetailsState extends State<LoanDetails> {
+class _IndividualLoanDetailsState extends State<IndividualLoanDetails> {
   LoanService loanRequest = LoanService();
   @override
   Widget build(BuildContext context) {
@@ -28,7 +28,7 @@ class _LoanDetailsState extends State<LoanDetails> {
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
-          'Loan Request Details',
+          'My Loan Request Details',
           style: TextStyle(fontFamily: 'times', fontSize: 12),
         ),
         backgroundColor: const Color(0xff1c3751),
@@ -94,15 +94,6 @@ class _LoanDetailsState extends State<LoanDetails> {
                 columns: const [
                   DataColumn(
                     label: Text(
-                      'name',
-                      style: TextStyle(
-                          fontFamily: 'times',
-                          fontSize: 10,
-                          fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                  DataColumn(
-                    label: Text(
                       'amount',
                       style: TextStyle(
                           fontFamily: 'times',
@@ -161,13 +152,6 @@ class _LoanDetailsState extends State<LoanDetails> {
                     cells: [
                       DataCell(
                         Text(
-                          loanNotifier.currentLoan.memberId.toString(),
-                          style: const TextStyle(
-                              fontFamily: 'times', fontSize: 10),
-                        ),
-                      ),
-                      DataCell(
-                        Text(
                           loanNotifier.currentLoan.loanAmount.toString(),
                           style: const TextStyle(
                               fontFamily: 'times', fontSize: 10),
@@ -224,50 +208,6 @@ class _LoanDetailsState extends State<LoanDetails> {
               ),
               const SizedBox(
                 height: 10,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Material(
-                    elevation: 5.0,
-                    borderRadius: BorderRadius.circular(30.0),
-                    color: Colors.green,
-                    child: MaterialButton(
-                      padding: const EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10),
-                      minWidth: 100,
-                      onPressed: () async {
-                        await loanRequest.approveLoanRequest(
-                            loanNotifier,
-                            saccoNotifier.currentSacco.saccoId.toString(),
-                            currentMember!.uid);
-                      },
-                      child: const Text(
-                        'approve',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 11, color: Colors.white),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 15,
-                  ),
-                  Material(
-                    elevation: 5.0,
-                    borderRadius: BorderRadius.circular(30.0),
-                    color: Colors.red,
-                    child: MaterialButton(
-                      // padding:
-                      //     const EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10),
-                      minWidth: 100,
-                      onPressed: () {},
-                      child: const Text(
-                        'reject',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 11, color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ],
               ),
             ],
           ),

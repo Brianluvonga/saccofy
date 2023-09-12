@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:saccofy/sacco/deposit/feed/deposit_feed.dart';
+import 'package:saccofy/sacco/deposit/view_deposits.dart';
 import 'package:saccofy/sacco/loan/feed/loan_disbursed_feed.dart';
 import 'package:saccofy/sacco/loan/feed/loan_feed.dart';
 import 'package:saccofy/sacco/loan/feed/loan_requested_feed.dart';
@@ -88,7 +89,7 @@ class SaccoRecordsState extends State<SaccoRecords> {
         centerTitle: true,
       ),
       body: Padding(
-        padding: EdgeInsets.all(10),
+        padding: EdgeInsets.all(30),
         child: ListView(
           children: [
             // SizedBox(
@@ -134,13 +135,13 @@ class SaccoRecordsState extends State<SaccoRecords> {
           ),
           child: InkWell(
             onTap: () {
-              // Navigator.of(context).push(
-              //   MaterialPageRoute(
-              //     builder: (BuildContext context) {
-              //       return const LoanScreenSection();
-              //     },
-              //   ),
-              // );
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (BuildContext context) {
+                    return const ViewSaccoDeposits();
+                  },
+                ),
+              );
             },
             child: Column(
               children: [
@@ -158,7 +159,7 @@ class SaccoRecordsState extends State<SaccoRecords> {
                   height: 10,
                 ),
                 Image.asset(
-                  'images/file.png',
+                  'images/deposit.png',
                   width: 30,
                   color: Colors.white,
                 )

@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:saccofy/sacco/models/create_sacco_model.dart';
 
-class LoanRequest extends Sacco {
+class LoanRequest {
   String? id;
   String? memberId;
   String? loanAmount;

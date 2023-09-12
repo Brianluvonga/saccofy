@@ -21,14 +21,4 @@ class LoanRequestNotifier with ChangeNotifier {
     _currentLoan = loan;
     notifyListeners();
   }
-
-  addLoan(LoanRequest request) {
-    _loanRequestList.insert(0, request);
-    notifyListeners();
-  }
-
-  deleteloanRequest(LoanRequest request) {
-    _loanRequestList.removeWhere((_request) => _request.id == request.id);
-    notifyListeners();
-  }
 }

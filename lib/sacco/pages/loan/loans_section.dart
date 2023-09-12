@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:saccofy/user/records/loans/requested_loan_feed.dart';
 
 class LoanScreenSection extends StatefulWidget {
   const LoanScreenSection({super.key});
@@ -10,7 +11,7 @@ class LoanScreenSection extends StatefulWidget {
 class LoanScreenSectionState extends State<LoanScreenSection> {
   int selectedMenuIndex = 0;
 
-  List<String> loans = ['Requested', 'Approved', 'Applied'];
+  List<String> loans = ['Requested', 'Approved', 'Awarded'];
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +26,8 @@ class LoanScreenSectionState extends State<LoanScreenSection> {
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(48.0),
           child: Container(
-            height: 48.0,
+            color: Color.fromARGB(255, 36, 70, 102),
+            height: 50.0,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: List.generate(loans.length, (index) {
@@ -43,7 +45,7 @@ class LoanScreenSectionState extends State<LoanScreenSection> {
                       style: TextStyle(
                         fontSize: 14.0,
                         color: selectedMenuIndex == index
-                            ? Colors.pink
+                            ? Color.fromARGB(255, 247, 132, 170)
                             : Colors.white,
                       ),
                     ),
@@ -61,7 +63,9 @@ class LoanScreenSectionState extends State<LoanScreenSection> {
   Widget _getBody() {
     switch (selectedMenuIndex) {
       case 0:
-        return const Center(child: Text('Loans Requested'));
+        return const Center(
+          child: IndividualLoanRequestFeed(),
+        );
       case 1:
         return const Center(child: Text('Loans Approved'));
       case 2:

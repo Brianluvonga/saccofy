@@ -25,35 +25,33 @@ class _SaccoDepositFeedState extends State<SaccoDepositFeed> {
         Provider.of<DepositNotifier>(context, listen: false);
     SaccoNotifier saccoNotifier =
         Provider.of<SaccoNotifier>(context, listen: false);
-    return Scaffold(
-      body: RefreshIndicator(
-        onRefresh: refreshList,
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: FutureBuilder(
-            future: depositService.getSaccoDeposits(
-                depositNotifier, saccoNotifier.currentSacco.saccoId.toString()),
-            builder: ((context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: Color(0xff1c3751),
-                  ),
-                );
-              }
-              // check if snapshot.data is null
-              if (snapshot.hasData && snapshot.data != null) {
-                return Center(
-                  child: depostFeed(),
-                );
-              } else {
-                return const Center(
-                  child: Text('No Deposit Records At The Moment'),
-                );
-              }
-            }),
-          ),
+    return RefreshIndicator(
+      onRefresh: refreshList,
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: FutureBuilder(
+          future: depositService.getSaccoDeposits(
+              depositNotifier, saccoNotifier.currentSacco.saccoId.toString()),
+          builder: ((context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Color(0xff1c3751),
+                ),
+              );
+            }
+            // check if snapshot.data is null
+            if (snapshot.hasData && snapshot.data != null) {
+              return Center(
+                child: depostFeed(),
+              );
+            } else {
+              return const Center(
+                child: Text('No Deposit Made At The Moment'),
+              );
+            }
+          }),
         ),
       ),
     );

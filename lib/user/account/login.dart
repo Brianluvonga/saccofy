@@ -1,15 +1,11 @@
-import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:saccofy/home/homepage.dart';
 import 'package:saccofy/navigation/navigation.dart';
 import 'package:saccofy/user/account/register.dart';
 import 'package:saccofy/user/account/reset_password.dart';
 import 'package:saccofy/user/auth/firebase/api.dart';
-import 'package:saccofy/user/auth/firebase/user_notifier.dart';
 
 import 'package:saccofy/user/auth/firebase/auth_notifier.dart';
 import 'package:saccofy/user/auth/firebase/user_model_notifier.dart';

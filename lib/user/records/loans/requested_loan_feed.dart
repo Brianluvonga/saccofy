@@ -1,29 +1,50 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:saccofy/sacco/details/member/notifier/member_notifier.dart';
+import 'package:saccofy/sacco/loan/feed/loan_details.dart';
 import 'package:saccofy/sacco/loan/functions/loan_functions.dart';
+
 import 'package:saccofy/sacco/loan/notifier/loan_request_notifier.dart';
+
+import 'package:saccofy/user/auth/firebase/user_model_notifier.dart';
 import 'package:saccofy/user/records/loans/loan_request_details.dart';
 
-class MemberLoanRequests extends StatefulWidget {
-  const MemberLoanRequests({super.key});
+class IndividualLoanRequestFeed extends StatefulWidget {
+  const IndividualLoanRequestFeed({super.key});
 
   @override
-  State<MemberLoanRequests> createState() => _MemberLoanRequestsState();
+  State<IndividualLoanRequestFeed> createState() =>
+      _IndividualLoanRequestFeedState();
 }
 
-class _MemberLoanRequestsState extends State<MemberLoanRequests> {
+class _IndividualLoanRequestFeedState extends State<IndividualLoanRequestFeed> {
   LoanService loanService = LoanService();
+
+  @override
+  void initState() {
+    LoanRequestNotifier loanRequestNotifier =
+        Provider.of<LoanRequestNotifier>(context, listen: false);
+    UserModelNotifier userNotifier =
+        Provider.of<UserModelNotifier>(context, listen: false);
+    var currentMember = FirebaseAuth.instance.currentUser;
+
+    loanService.fetchIndividualLoanRequests(
+        currentMember!.uid, loanRequestNotifier);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     LoanRequestNotifier loanRequestNotifier =
         Provider.of<LoanRequestNotifier>(context, listen: false);
-    MemberNotifier memberNotifier =
-        Provider.of<MemberNotifier>(context, listen: false);
+    UserModelNotifier userNotifier =
+        Provider.of<UserModelNotifier>(context, listen: false);
+
+    var currentMember = FirebaseAuth.instance.currentUser;
 
     Future<void> refreshList() async {
-      loanService.fetchMemberLoanRequests(memberNotifier, loanRequestNotifier);
+      loanService.fetchIndividualLoanRequests(
+          currentMember!.uid, loanRequestNotifier);
     }
 
     return Scaffold(
@@ -32,8 +53,8 @@ class _MemberLoanRequestsState extends State<MemberLoanRequests> {
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: FutureBuilder(
-            future: loanService.fetchMemberLoanRequests(
-                memberNotifier, loanRequestNotifier),
+            future: loanService.fetchIndividualLoanRequests(
+                currentMember!.uid, loanRequestNotifier),
             builder: ((context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(
@@ -57,12 +78,6 @@ class _MemberLoanRequestsState extends State<MemberLoanRequests> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget noLoansRequestedFound() {
-    return const Center(
-      child: Text('No Loan Requests Found'),
     );
   }
 

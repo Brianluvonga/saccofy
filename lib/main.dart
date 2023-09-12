@@ -1,23 +1,18 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:saccofy/sacco/contributions/member/individual_contribution.dart';
 
-import 'package:saccofy/sacco/deposit/deposit_to_sacco.dart';
 import 'package:saccofy/sacco/deposit/notifier/deposit_notifier.dart';
 import 'package:saccofy/sacco/details/member/notifier/member_notifier.dart';
 import 'package:saccofy/sacco/loan/notifier/loan_notifier.dart';
 import 'package:saccofy/sacco/loan/notifier/loan_request_notifier.dart';
-import 'package:saccofy/sacco/loan/records/loan_records.dart';
+import 'package:saccofy/sacco/loan/notifier/member_approval_notifier.dart';
 
 import 'package:saccofy/sacco/notifier/sacco_notifier.dart';
 import 'package:saccofy/state/auth_state_redirect.dart';
-import 'package:saccofy/user/account/register.dart';
 
 import 'package:saccofy/user/auth/firebase/auth_notifier.dart';
 import 'package:saccofy/user/auth/firebase/user_model_notifier.dart';
-import 'package:saccofy/home/homepage.dart';
 import 'package:saccofy/user/auth/firebase/user_notifier.dart';
 
 main() async {
@@ -57,6 +52,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (_) => LoanNotifier(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => MemberApprovalNotifier(),
         )
       ],
       child: const MaterialApp(

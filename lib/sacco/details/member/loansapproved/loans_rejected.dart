@@ -16,8 +16,6 @@ class _MemberRejectedLoansState extends State<MemberRejectedLoans> {
   }
 
   Widget noResultsFound() {
-    return const Center(
-      child: Text('No Loans Rejected Found'),
-    );
+    return const Text('No Loans Rejected Found');
   }
 }

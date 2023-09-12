@@ -29,7 +29,7 @@ class _SaccoDetailsState extends State<SaccoDetails> {
       shadowColor: Colors.black,
       child: Container(
         height: 80,
-        width: 120,
+        width: 150,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15.0),
         ),
@@ -134,7 +134,7 @@ class _SaccoDetailsState extends State<SaccoDetails> {
       shadowColor: Colors.black,
       child: Container(
           height: 80,
-          width: 180,
+          width: 150,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15.0),
           ),
@@ -587,7 +587,7 @@ class _SaccoDetailsState extends State<SaccoDetails> {
                 ),
                 Positioned(
                   left: 5,
-                  top: 530,
+                  top: 430,
                   right: 2,
                   child: Column(
                     children: <Widget>[
@@ -627,26 +627,26 @@ class _SaccoDetailsState extends State<SaccoDetails> {
                     ],
                   ),
                 ),
-                Positioned(
-                  left: 50,
-                  top: 330,
-                  child: Column(
-                    children: <Widget>[
-                      GestureDetector(
-                        behavior: HitTestBehavior.translucent,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            Row(children: <Widget>[members()]),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                // Positioned(
+                //   left: 50,
+                //   top: 330,
+                //   child: Column(
+                //     children: <Widget>[
+                //       GestureDetector(
+                //         behavior: HitTestBehavior.translucent,
+                //         child: Row(
+                //           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                //           children: <Widget>[
+                //             Row(children: <Widget>[members()]),
+                //           ],
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
                 Positioned(
                   left: 6,
-                  top: 430,
+                  top: 330,
                   right: 2,
                   child: Column(
                     children: <Widget>[
